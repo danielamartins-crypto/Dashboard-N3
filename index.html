@@ -6,144 +6,139 @@
 <title>N3 Dashboard — Ampfy</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  :root {
-    --bg: #0A0A0A; --surface: #141414; --surface2: #1E1E1E;
-    --border: #2A2A2A; --text: #FFFFFF; --text-muted: #666666;
-    --text-secondary: #AAAAAA; --green: #00E676; --yellow: #FFD600;
-    --red: #FF3D3D; --orange: #FF5C00; --orange-dim: rgba(255,92,0,0.12);
-  }
-  body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; min-height: 100vh; font-size: 14px; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0A0A0A;--surface:#141414;--surface2:#1E1E1E;--border:#2A2A2A;
+  --text:#FFF;--muted:#666;--secondary:#AAA;
+  --green:#00E676;--yellow:#FFD600;--red:#FF3D3D;--orange:#FF5C00;
+}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;font-size:14px}
 
-  /* HEADER */
-  .header { display: flex; align-items: center; justify-content: space-between; padding: 18px 32px; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: var(--bg); z-index: 100; }
-  .header-left { display: flex; align-items: center; gap: 16px; }
-  .logo { font-size: 18px; font-weight: 900; letter-spacing: -0.5px; }
-  .logo span { color: var(--orange); }
-  .divider-v { width: 1px; height: 20px; background: var(--border); }
-  .header-title { font-size: 12px; color: var(--text-muted); font-weight: 500; letter-spacing: 0.8px; text-transform: uppercase; }
-  .header-actions { display: flex; gap: 10px; align-items: center; }
-  .btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; border: none; transition: all 0.15s; font-family: 'Inter', sans-serif; }
-  .btn-primary { background: var(--orange); color: #fff; }
-  .btn-primary:hover { background: #e05200; }
-  .btn-ghost { background: transparent; color: var(--text-secondary); border: 1px solid var(--border); }
-  .btn-ghost:hover { border-color: var(--orange); color: var(--orange); }
+/* HEADER */
+.header{display:flex;align-items:center;justify-content:space-between;padding:18px 32px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:100}
+.header-left{display:flex;align-items:center;gap:16px}
+.logo{font-size:18px;font-weight:900;letter-spacing:-0.5px}
+.logo span{color:var(--orange)}
+.dv{width:1px;height:20px;background:var(--border)}
+.header-title{font-size:11px;color:var(--muted);font-weight:600;letter-spacing:1px;text-transform:uppercase}
+.hactions{display:flex;gap:10px;align-items:center}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 16px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;border:none;transition:all .15s;font-family:'Inter',sans-serif}
+.btn-primary{background:var(--orange);color:#fff}.btn-primary:hover{background:#e05200}
+.btn-ghost{background:transparent;color:var(--secondary);border:1px solid var(--border)}.btn-ghost:hover{border-color:var(--orange);color:var(--orange)}
 
-  /* NAV */
-  .nav-tabs { display: flex; align-items: center; gap: 2px; padding: 0 32px; border-bottom: 1px solid var(--border); overflow-x: auto; scrollbar-width: none; }
-  .nav-tabs::-webkit-scrollbar { display: none; }
-  .nav-tab { padding: 14px 20px; font-size: 13px; font-weight: 500; color: var(--text-muted); cursor: pointer; border: none; background: transparent; white-space: nowrap; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.15s; font-family: 'Inter', sans-serif; }
-  .nav-tab:hover { color: var(--text-secondary); }
-  .nav-tab.active { color: var(--orange); border-bottom-color: var(--orange); font-weight: 700; }
+/* NAV */
+.nav-tabs{display:flex;align-items:center;gap:2px;padding:0 32px;border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none}
+.nav-tabs::-webkit-scrollbar{display:none}
+.nav-tab{padding:14px 20px;font-size:13px;font-weight:500;color:var(--muted);cursor:pointer;border:none;background:transparent;white-space:nowrap;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s;font-family:'Inter',sans-serif}
+.nav-tab:hover{color:var(--secondary)}
+.nav-tab.active{color:var(--orange);border-bottom-color:var(--orange);font-weight:700}
 
-  /* SUB TABS */
-  .sub-tabs { display: flex; gap: 8px; padding: 16px 32px 0; }
-  .sub-tab { padding: 6px 14px; font-size: 11px; font-weight: 600; border-radius: 4px; cursor: pointer; border: 1px solid var(--border); background: transparent; color: var(--text-muted); transition: all 0.15s; font-family: 'Inter', sans-serif; text-transform: uppercase; letter-spacing: 0.5px; }
-  .sub-tab:hover { border-color: var(--orange); color: var(--orange); }
-  .sub-tab.active { background: var(--orange-dim); border-color: var(--orange); color: var(--orange); }
+/* SUB TABS */
+.sub-tabs{display:flex;gap:8px;padding:16px 32px 0}
+.sub-tab{padding:6px 14px;font-size:11px;font-weight:600;border-radius:4px;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--muted);transition:all .15s;font-family:'Inter',sans-serif;text-transform:uppercase;letter-spacing:.5px}
+.sub-tab:hover{border-color:var(--orange);color:var(--orange)}
+.sub-tab.active{background:rgba(255,92,0,.12);border-color:var(--orange);color:var(--orange)}
 
-  /* MAIN */
-  .main { padding: 28px 32px; }
-  .page { display: none; }
-  .page.active { display: block; }
+/* MAIN */
+.main{padding:28px 32px}
+.page{display:none}.page.active{display:block}
 
-  /* ── OVERVIEW CARDS ── */
-  .overview-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
-  .ov-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 24px; cursor: pointer; transition: all 0.2s; }
-  .ov-card:hover { border-color: #3A3A3A; transform: translateY(-1px); }
+/* OVERVIEW GRID */
+.ov-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.ov-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px;cursor:pointer;transition:all .2s}
+.ov-card:hover{border-color:#3A3A3A;transform:translateY(-1px)}
 
-  .ov-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
-  .ov-name { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 6px; }
-  .ov-pct { font-size: 32px; font-weight: 900; letter-spacing: -1.5px; line-height: 1; }
-  .ov-pct-label { font-size: 12px; font-weight: 400; color: var(--text-muted); margin-left: 4px; }
-  .ov-hours { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+/* OVERVIEW TOP */
+.ov-top{display:grid;grid-template-columns:1fr auto;gap:16px;margin-bottom:20px;align-items:start}
+.ov-name{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;margin-bottom:6px}
+.ov-pct{font-size:36px;font-weight:900;letter-spacing:-2px;line-height:1}
+.ov-pct-lbl{font-size:12px;font-weight:400;color:var(--muted);margin-left:4px}
+.ov-hours{font-size:12px;color:var(--muted);margin-top:4px}
+.kpi-badge{display:inline-block;padding:3px 8px;border-radius:3px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-top:8px}
+.badge-green{background:rgba(0,230,118,.12);color:var(--green)}
+.badge-yellow{background:rgba(255,214,0,.12);color:var(--yellow)}
+.badge-red{background:rgba(255,61,61,.12);color:var(--red)}
 
-  .ov-right { text-align: right; }
-  .ov-escopo-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 4px; }
-  .ov-escopo-value { font-size: 18px; font-weight: 800; letter-spacing: -0.5px; }
-  .ov-escopo-sub { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
+/* FEE BOX */
+.ov-fee-box{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px 16px;text-align:right;min-width:160px}
+.ov-fee-label{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px}
+.ov-fee-value{font-size:16px;font-weight:800;letter-spacing:-0.5px;color:var(--orange)}
+.ov-fee-sub{font-size:9px;color:var(--muted);margin-top:3px}
 
-  .kpi-badge { display: inline-block; padding: 3px 8px; border-radius: 3px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 8px; }
-  .badge-green { background: rgba(0,230,118,0.12); color: var(--green); }
-  .badge-yellow { background: rgba(255,214,0,0.12); color: var(--yellow); }
-  .badge-red { background: rgba(255,61,61,0.12); color: var(--red); }
+/* MINI CHART */
+.ov-divider{border:none;border-top:1px solid var(--border);margin:16px 0}
+.ov-chart-title{font-size:9px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px}
+.ov-bars{display:flex;align-items:flex-end;gap:6px;height:72px}
+.ov-bar-group{display:flex;flex-direction:column;align-items:center;flex:1}
+.ov-bar-cols{display:flex;gap:2px;align-items:flex-end;height:56px;width:100%;justify-content:center}
+.ov-bar-col{display:flex;flex-direction:column;justify-content:flex-end;flex:1;max-width:16px}
+.ov-bar{width:100%;border-radius:2px 2px 0 0;position:relative;transition:height .5s cubic-bezier(.34,1.56,.64,1)}
+.ov-bar:hover::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 5px);left:50%;transform:translateX(-50%);background:#2A2A2A;color:#fff;padding:3px 7px;border-radius:4px;font-size:9px;white-space:nowrap;z-index:20;pointer-events:none}
+.ov-bar-label{font-size:8px;color:var(--muted);margin-top:4px;text-align:center;text-transform:uppercase;letter-spacing:.3px}
 
-  /* DIVISOR */
-  .ov-divider { border: none; border-top: 1px solid var(--border); margin: 0 0 16px; }
+.ov-legend{display:flex;gap:12px;margin-top:10px}
+.ov-leg-item{display:flex;align-items:center;gap:4px;font-size:9px;color:var(--muted)}
+.ov-leg-dot{width:6px;height:6px;border-radius:1px}
 
-  /* MINI CHART — barras verticais por área */
-  .ov-chart-title { font-size: 10px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 12px; }
-  .ov-bars { display: flex; align-items: flex-end; gap: 8px; height: 80px; }
-  .ov-bar-group { display: flex; flex-direction: column; align-items: center; flex: 1; }
-  .ov-bar-cols { display: flex; gap: 2px; align-items: flex-end; height: 64px; width: 100%; justify-content: center; }
-  .ov-bar-col { display: flex; flex-direction: column; justify-content: flex-end; flex: 1; max-width: 18px; }
-  .ov-bar { width: 100%; border-radius: 2px 2px 0 0; position: relative; cursor: default; transition: height 0.5s cubic-bezier(0.34,1.56,0.64,1); }
-  .ov-bar:hover::after { content: attr(data-tip); position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%); background: #2A2A2A; color: #fff; padding: 4px 8px; border-radius: 4px; font-size: 10px; white-space: nowrap; z-index: 20; }
-  .ov-bar-label { font-size: 9px; color: var(--text-muted); margin-top: 5px; text-align: center; text-transform: uppercase; letter-spacing: 0.3px; }
+/* DETAIL */
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
+.kpi-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 18px}
+.kpi-label{font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px}
+.kpi-value{font-size:22px;font-weight:800;letter-spacing:-1px;line-height:1}
+.kpi-sub{font-size:10px;color:var(--muted);margin-top:4px}
 
-  .ov-legend { display: flex; gap: 12px; margin-top: 10px; }
-  .ov-legend-item { display: flex; align-items: center; gap: 4px; font-size: 9px; color: var(--text-muted); }
-  .ov-legend-dot { width: 7px; height: 7px; border-radius: 1px; }
+.charts-row{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:20px}
+.chart-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px}
+.chart-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:16px}
 
-  /* ── DETAIL PAGE ── */
-  .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 28px; }
-  .kpi-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 18px 20px; }
-  .kpi-label { font-size: 10px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px; }
-  .kpi-value { font-size: 26px; font-weight: 800; letter-spacing: -1px; line-height: 1; }
-  .kpi-sub { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+/* VERTICAL BARS */
+.bar-chart{display:flex;align-items:flex-end;gap:8px;height:150px}
+.bar-group{display:flex;flex-direction:column;align-items:center;flex:1}
+.bar-wrap{display:flex;gap:3px;align-items:flex-end;height:120px;width:100%;justify-content:center}
+.bar-col{display:flex;flex-direction:column;align-items:center;flex:1;height:100%;justify-content:flex-end}
+.bar{width:100%;border-radius:3px 3px 0 0;position:relative;cursor:default;min-width:10px;max-width:26px;transition:height .6s cubic-bezier(.34,1.56,.64,1)}
+.bar:hover::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 5px);left:50%;transform:translateX(-50%);background:#2A2A2A;color:#fff;padding:3px 8px;border-radius:4px;font-size:9px;white-space:nowrap;z-index:20;pointer-events:none}
+.bar-label{font-size:8px;color:var(--muted);text-align:center;margin-top:5px;line-height:1.3;font-weight:600;text-transform:uppercase;letter-spacing:.3px}
+.bar-pct{font-size:8px;font-weight:700;margin-top:2px}
+.bar-scope{background:var(--border)}
 
-  .charts-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px; }
-  .chart-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px; }
-  .chart-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-muted); margin-bottom: 20px; }
+.legend{display:flex;gap:12px;margin-top:10px;flex-wrap:wrap}
+.legend-item{display:flex;align-items:center;gap:4px;font-size:9px;color:var(--muted)}
+.legend-dot{width:7px;height:7px;border-radius:2px}
 
-  .bar-chart { display: flex; align-items: flex-end; gap: 10px; height: 160px; }
-  .bar-group { display: flex; flex-direction: column; align-items: center; flex: 1; }
-  .bar-wrap { display: flex; gap: 3px; align-items: flex-end; height: 130px; width: 100%; justify-content: center; }
-  .bar-col { display: flex; flex-direction: column; align-items: center; flex: 1; height: 100%; justify-content: flex-end; }
-  .bar { width: 100%; border-radius: 3px 3px 0 0; position: relative; cursor: pointer; min-width: 12px; max-width: 28px; transition: height 0.6s cubic-bezier(0.34,1.56,0.64,1); }
-  .bar:hover::after { content: attr(data-tip); position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%); background: #2A2A2A; color: #fff; padding: 4px 8px; border-radius: 4px; font-size: 10px; white-space: nowrap; z-index: 10; }
-  .bar-label { font-size: 9px; color: var(--text-muted); text-align: center; margin-top: 6px; line-height: 1.3; font-weight: 500; text-transform: uppercase; letter-spacing: 0.3px; }
-  .bar-pct { font-size: 9px; font-weight: 700; color: var(--text-secondary); margin-top: 2px; }
-  .bar-scope { background: var(--border); }
+/* EDIT TABLE */
+.edit-wrap{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:18px}
+.edit-head{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;border-bottom:1px solid var(--border)}
+.sec-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--secondary)}
+.sec-hint{font-size:10px;color:var(--muted)}
+.edit-table{width:100%;border-collapse:collapse}
+.edit-table th{text-align:left;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);padding:9px 16px;background:var(--surface2);border-bottom:1px solid var(--border)}
+.edit-table td{padding:9px 16px;border-bottom:1px solid var(--border);font-size:12px}
+.edit-table tr:last-child td{border-bottom:none}
+.edit-table tr:hover td{background:rgba(255,255,255,.02)}
+.edit-input{background:var(--surface2);border:1px solid var(--border);border-radius:4px;color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:4px 8px;width:88px;text-align:right;transition:border-color .15s}
+.edit-input:focus{outline:none;border-color:var(--orange)}
+.status-dot{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:6px}
 
-  .legend { display: flex; gap: 16px; margin-top: 12px; }
-  .legend-item { display: flex; align-items: center; gap: 5px; font-size: 10px; color: var(--text-muted); }
-  .legend-dot { width: 8px; height: 8px; border-radius: 2px; }
+/* IMPORT */
+.import-area{border:1px dashed var(--border);border-radius:10px;padding:20px;text-align:center;margin-bottom:20px;cursor:pointer;transition:border-color .2s}
+.import-area:hover{border-color:var(--orange)}
+.import-text{font-size:12px;color:var(--muted)}.import-text strong{color:var(--orange)}
+.import-hint{font-size:10px;color:var(--muted);margin-top:3px}
+#csvInput{display:none}
 
-  .edit-table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin-bottom: 24px; }
-  .edit-table-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; border-bottom: 1px solid var(--border); }
-  .section-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-secondary); }
-  .section-hint { font-size: 11px; color: var(--text-muted); }
-  .edit-table { width: 100%; border-collapse: collapse; }
-  .edit-table th { text-align: left; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-muted); padding: 10px 16px; background: var(--surface2); border-bottom: 1px solid var(--border); }
-  .edit-table td { padding: 10px 16px; border-bottom: 1px solid var(--border); font-size: 13px; }
-  .edit-table tr:last-child td { border-bottom: none; }
-  .edit-table tr:hover td { background: rgba(255,255,255,0.02); }
-  .edit-input { background: var(--surface2); border: 1px solid var(--border); border-radius: 4px; color: var(--text); font-family: 'Inter', sans-serif; font-size: 12px; padding: 4px 8px; width: 90px; text-align: right; transition: border-color 0.15s; }
-  .edit-input:focus { outline: none; border-color: var(--orange); }
-  .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; }
+.acct-heading{display:flex;align-items:center;gap:12px;margin-bottom:22px}
+.acct-bar{width:4px;height:30px;border-radius:2px}
 
-  .import-area { border: 1px dashed var(--border); border-radius: 10px; padding: 24px; text-align: center; margin-bottom: 24px; transition: border-color 0.2s; cursor: pointer; }
-  .import-area:hover { border-color: var(--orange); }
-  .import-text { font-size: 13px; color: var(--text-muted); }
-  .import-text strong { color: var(--orange); }
-  .import-hint { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
-  #csvInput { display: none; }
+.toast{position:fixed;bottom:24px;right:24px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:11px 16px;font-size:12px;display:none;z-index:999;box-shadow:0 4px 20px rgba(0,0,0,.4)}
+.toast.show{display:block;animation:fadeIn .2s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 
-  .acct-heading { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
-  .acct-bar { width: 4px; height: 32px; border-radius: 2px; }
-
-  .toast { position: fixed; bottom: 24px; right: 24px; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 12px 18px; font-size: 13px; display: none; z-index: 999; box-shadow: 0 4px 20px rgba(0,0,0,0.4); }
-  .toast.show { display: block; animation: fadeIn 0.2s ease; }
-  @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
-
-  @media(max-width:768px) {
-    .overview-grid { grid-template-columns: 1fr; }
-    .kpi-row { grid-template-columns: repeat(2,1fr); }
-    .charts-row { grid-template-columns: 1fr; }
-    .main { padding: 20px 16px; }
-    .header, .nav-tabs { padding-left: 16px; padding-right: 16px; }
-  }
+@media(max-width:768px){
+  .ov-grid,.kpi-row,.charts-row{grid-template-columns:1fr}
+  .main{padding:18px 16px}
+  .header,.nav-tabs{padding-left:16px;padding-right:16px}
+}
 </style>
 </head>
 <body>
@@ -151,13 +146,13 @@
 <header class="header">
   <div class="header-left">
     <div class="logo">amp<span>fy</span></div>
-    <div class="divider-v"></div>
+    <div class="dv"></div>
     <div class="header-title">N3 · Dashboard Operacional</div>
   </div>
-  <div class="header-actions">
-    <label class="btn btn-ghost" for="csvInput" style="font-size:12px;padding:7px 14px;">⬆ Importar CSV</label>
+  <div class="hactions">
+    <label class="btn btn-ghost" for="csvInput">⬆ Importar CSV</label>
     <input type="file" id="csvInput" accept=".csv" onchange="importCSV(event)">
-    <button class="btn btn-primary" style="font-size:12px;padding:7px 14px;" onclick="saveAll()">✓ Salvar</button>
+    <button class="btn btn-primary" onclick="saveAll()">✓ Salvar</button>
   </div>
 </header>
 
@@ -170,17 +165,14 @@
 </nav>
 
 <main class="main">
-
-  <div id="page-overview" class="page active">
-    <div class="overview-grid" id="overview-grid"></div>
-  </div>
+  <div id="page-overview" class="page active"><div class="ov-grid" id="ov-grid"></div></div>
 
   <div id="page-risque" class="page">
     <div class="sub-tabs" id="risque-subtabs">
-      <button class="sub-tab active" onclick="showSubPage('risque','base',this)">Base</button>
-      <button class="sub-tab" onclick="showSubPage('risque','fiscal27',this)">Fiscal 27</button>
-      <button class="sub-tab" onclick="showSubPage('risque','belga',this)">Belga</button>
-      <button class="sub-tab" onclick="showSubPage('risque','desgel',this)">Desgel Secante</button>
+      <button class="sub-tab active" onclick="showSub('risque','base',this)">Base</button>
+      <button class="sub-tab" onclick="showSub('risque','fiscal27',this)">Fiscal 27</button>
+      <button class="sub-tab" onclick="showSub('risque','belga',this)">Belga</button>
+      <button class="sub-tab" onclick="showSub('risque','desgel',this)">Desgel Secante</button>
     </div>
     <div style="height:20px"></div>
     <div id="risque-content"></div>
@@ -188,302 +180,338 @@
 
   <div id="page-bozzano" class="page">
     <div class="sub-tabs" id="bozzano-subtabs">
-      <button class="sub-tab active" onclick="showSubPage('bozzano','base',this)">Base</button>
-      <button class="sub-tab" onclick="showSubPage('bozzano','expert',this)">Expert</button>
+      <button class="sub-tab active" onclick="showSub('bozzano','base',this)">Base</button>
+      <button class="sub-tab" onclick="showSub('bozzano','expert',this)">Expert</button>
     </div>
     <div style="height:20px"></div>
     <div id="bozzano-content"></div>
   </div>
 
-  <div id="page-oetker" class="page">
-    <div id="oetker-content"></div>
-  </div>
-
-  <div id="page-suhai" class="page">
-    <div id="suhai-content"></div>
-  </div>
-
+  <div id="page-oetker" class="page"><div id="oetker-content"></div></div>
+  <div id="page-suhai" class="page"><div id="suhai-content"></div></div>
 </main>
 
 <div class="toast" id="toast"></div>
 
 <script>
-// ══════════════════════════════════════════════
-// DATA
-// ══════════════════════════════════════════════
+// ══════════════════════════════════════════
+// DADOS REAIS — extraídos dos documentos
+// ══════════════════════════════════════════
 const DATA = {
   risque: {
-    escopoTotal: 0,
-    base:     { horas: { Criação:{v:40,t:80}, Atendimento:{v:20,t:40}, Mídia:{v:15,t:30}, Produção:{v:10,t:20}, Planejamento:{v:5,t:20} }, budget: { Produção:{v:0,t:0}, Mídia:{v:0,t:0}, Influenciadores:{v:0,t:0} } },
-    fiscal27: { horas: { Criação:{v:60,t:80}, Atendimento:{v:30,t:40}, Mídia:{v:28,t:30}, Produção:{v:18,t:20}, Planejamento:{v:12,t:20} }, budget: { Produção:{v:0,t:0}, Mídia:{v:0,t:0}, Influenciadores:{v:0,t:0} } },
-    belga:    { horas: { Criação:{v:20,t:40}, Atendimento:{v:10,t:20}, Mídia:{v:5,t:20},  Produção:{v:0,t:10},  Planejamento:{v:0,t:10}  }, budget: { Produção:{v:0,t:0}, Mídia:{v:0,t:0}, Influenciadores:{v:0,t:0} } },
-    desgel:   { horas: { Criação:{v:10,t:30}, Atendimento:{v:5,t:15},  Mídia:{v:0,t:10},  Produção:{v:0,t:10},  Planejamento:{v:0,t:10}  }, budget: { Produção:{v:0,t:0}, Mídia:{v:0,t:0}, Influenciadores:{v:0,t:0} } },
+    feeMensal: 225805,
+    feePeriodo: 'Jul–Dez 2026 (6m)',
+    feeTotal: 1354832,
+    horas: {
+      // t = horas vendidas/mês (65% do time Coty)
+      // v = consumido (placeholder — preencher via import/manual)
+      base: {
+        horas: {
+          Planejamento:  {v:0, t:31},
+          Criação:       {v:0, t:659},
+          'Mídia/BI':    {v:0, t:177},
+          Atendimento:   {v:0, t:143},
+          Operações:     {v:0, t:143},
+        },
+        budget: { Produção:{v:0,t:0}, Mídia:{v:0,t:0}, Influenciadores:{v:0,t:0} }
+      },
+      fiscal27: {
+        horas: { Planejamento:{v:0,t:31}, Criação:{v:0,t:200}, 'Mídia/BI':{v:0,t:60}, Atendimento:{v:0,t:60}, Operações:{v:0,t:30} },
+        budget: { Produção:{v:0,t:0}, Mídia:{v:0,t:0}, Influenciadores:{v:0,t:0} }
+      },
+      belga: {
+        horas: { Planejamento:{v:0,t:20}, Criação:{v:0,t:120}, 'Mídia/BI':{v:0,t:40}, Atendimento:{v:0,t:40}, Operações:{v:0,t:20} },
+        budget: { Produção:{v:0,t:0}, Mídia:{v:0,t:0}, Influenciadores:{v:0,t:0} }
+      },
+      desgel: {
+        horas: { Planejamento:{v:0,t:10}, Criação:{v:0,t:80}, 'Mídia/BI':{v:0,t:20}, Atendimento:{v:0,t:20}, Operações:{v:0,t:10} },
+        budget: { Produção:{v:0,t:0}, Mídia:{v:0,t:0}, Influenciadores:{v:0,t:0} }
+      }
+    }
   },
   bozzano: {
-    escopoTotal: 0,
-    base:   { horas: { Criação:{v:30,t:60}, Atendimento:{v:15,t:30}, Mídia:{v:10,t:20}, Produção:{v:5,t:15},  Planejamento:{v:5,t:15}  }, budget: { Produção:{v:0,t:0}, Mídia:{v:0,t:0}, Influenciadores:{v:0,t:0} } },
-    expert: { horas: { Criação:{v:50,t:60}, Atendimento:{v:25,t:30}, Mídia:{v:18,t:20}, Produção:{v:12,t:15}, Planejamento:{v:10,t:15} }, budget: { Produção:{v:0,t:0}, Mídia:{v:0,t:0}, Influenciadores:{v:0,t:0} } },
+    feeMensal: 129919,
+    feePeriodo: 'Jul–Dez 2026 (6m)',
+    feeTotal: 779514,
+    horas: {
+      base: {
+        horas: {
+          Planejamento:  {v:0, t:17},
+          Criação:       {v:0, t:353},
+          'Mídia/BI':    {v:0, t:95},
+          Atendimento:   {v:0, t:77},
+          Operações:     {v:0, t:77},
+        },
+        budget: { Produção:{v:0,t:0}, Mídia:{v:0,t:0}, Influenciadores:{v:0,t:0} }
+      },
+      expert: {
+        horas: { Planejamento:{v:0,t:17}, Criação:{v:0,t:150}, 'Mídia/BI':{v:0,t:50}, Atendimento:{v:0,t:40}, Operações:{v:0,t:40} },
+        budget: { Produção:{v:0,t:0}, Mídia:{v:0,t:0}, Influenciadores:{v:0,t:0} }
+      }
+    }
   },
   oetker: {
-    escopoTotal: 0,
-    base: { horas: { Criação:{v:55,t:80}, Atendimento:{v:28,t:40}, Mídia:{v:20,t:30}, Produção:{v:15,t:20}, Planejamento:{v:8,t:20} }, budget: { Produção:{v:0,t:0}, Mídia:{v:0,t:0}, Influenciadores:{v:0,t:0} } }
+    feeMensal: 240000,
+    feePeriodo: 'Jan–Dez 2026 (12m)',
+    feeTotal: 2880000,
+    horas: {
+      base: {
+        horas: {
+          Atendimento:  {v:0, t:368},
+          Operações:    {v:0, t:8},
+          Planejamento: {v:0, t:68},
+          Criação:      {v:0, t:754},
+          Mídia:        {v:0, t:622},
+          Dados:        {v:0, t:352},
+        },
+        budget: { Produção:{v:0,t:0}, Mídia:{v:0,t:0}, Influenciadores:{v:0,t:0} }
+      }
+    }
   },
   suhai: {
-    escopoTotal: 0,
-    base: { horas: { Criação:{v:35,t:60}, Atendimento:{v:20,t:35}, Mídia:{v:10,t:20}, Produção:{v:25,t:30}, Planejamento:{v:12,t:20} }, budget: { Produção:{v:0,t:0}, Mídia:{v:0,t:0}, Influenciadores:{v:0,t:0} } }
+    feeMensal: 285526,
+    feePeriodo: 'Mai–Dez 2026 (8m)',
+    feeTotal: 2284208,
+    horas: {
+      base: {
+        horas: {
+          Atendimento:  {v:0, t:308},
+          Operações:    {v:0, t:44},
+          Planejamento: {v:0, t:100},
+          Criação:      {v:0, t:724},
+          'Mídia/BI':   {v:0, t:200},
+        },
+        budget: { Produção:{v:0,t:0}, Mídia:{v:0,t:0}, Influenciadores:{v:0,t:0} }
+      }
+    }
   }
 };
 
-const LABELS  = { risque:'Risqué', bozzano:'Bozzano', oetker:'Dr. Oetker', suhai:'Suhai' };
-const COLORS  = { risque:'#E91E8C', bozzano:'#2196F3', oetker:'#FF9800', suhai:'#9C27B0' };
-const SUBS    = { risque:['base','fiscal27','belga','desgel'], bozzano:['base','expert'], oetker:['base'], suhai:['base'] };
+const LABELS = {risque:'Risqué', bozzano:'Bozzano', oetker:'Dr. Oetker', suhai:'Suhai'};
+const COLORS = {risque:'#E91E8C', bozzano:'#2196F3', oetker:'#FF9800', suhai:'#9C27B0'};
+const SUBS   = {risque:['base','fiscal27','belga','desgel'], bozzano:['base','expert'], oetker:['base'], suhai:['base']};
 
-// ── helpers ──
-function pct(v,t){ return t>0 ? Math.min(Math.round((v/t)*100),100) : 0; }
-function sColor(p){ return p>=90?'var(--red)':p>=70?'var(--yellow)':'var(--green)'; }
-function sCls(p)  { return p>=90?'badge-red':p>=70?'badge-yellow':'badge-green'; }
-function sLbl(p)  { return p>=90?'⚠ Crítico':p>=70?'◉ Atenção':'✓ Saudável'; }
+// helpers
+const pct   = (v,t) => t>0 ? Math.min(Math.round((v/t)*100),100) : 0;
+const sCol  = p => p>=90?'var(--red)':p>=70?'var(--yellow)':'var(--green)';
+const sCls  = p => p>=90?'badge-red':p>=70?'badge-yellow':'badge-green';
+const sLbl  = p => p>=90?'⚠ Crítico':p>=70?'◉ Atenção':'✓ Saudável';
+const fmtR  = v => 'R$\u00A0'+Math.round(v).toLocaleString('pt-BR');
+const fmtH  = v => v+'h';
 
 function totalHorasConta(acct) {
-  let v=0, t=0;
-  SUBS[acct].forEach(sub => {
-    Object.values(DATA[acct][sub].horas).forEach(h => { v+=h.v; t+=h.t; });
-  });
+  let v=0,t=0;
+  SUBS[acct].forEach(sub => Object.values(DATA[acct].horas[sub].horas).forEach(h=>{v+=h.v;t+=h.t}));
   return {v,t};
 }
 
-function horasPorArea(acct) {
-  // Aggregate all subs into areas
-  const areas = {};
-  SUBS[acct].forEach(sub => {
-    Object.entries(DATA[acct][sub].horas).forEach(([area, h]) => {
-      if (!areas[area]) areas[area] = {v:0, t:0};
-      areas[area].v += h.v;
-      areas[area].t += h.t;
-    });
-  });
+function horasPorAreaConta(acct) {
+  const areas={};
+  SUBS[acct].forEach(sub => Object.entries(DATA[acct].horas[sub].horas).forEach(([a,h])=>{
+    if(!areas[a]) areas[a]={v:0,t:0};
+    areas[a].v+=h.v; areas[a].t+=h.t;
+  }));
   return areas;
 }
 
-function showToast(msg) {
-  const el = document.getElementById('toast');
-  el.textContent = msg;
-  el.classList.add('show');
-  setTimeout(() => el.classList.remove('show'), 2200);
+function showToast(msg){
+  const el=document.getElementById('toast');
+  el.textContent=msg; el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'),2200);
 }
 
-// ══════════════════════════════════════════════
-// NAVIGATION
-// ══════════════════════════════════════════════
-function showPage(id, btn) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+// NAV
+function showPage(id,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
   document.getElementById('page-'+id).classList.add('active');
   btn.classList.add('active');
-  if (id==='overview') renderOverview();
-  else if (id==='risque')  renderSubPage('risque','base');
-  else if (id==='bozzano') renderSubPage('bozzano','base');
-  else if (id==='oetker')  renderAccountPage('oetker','base');
-  else if (id==='suhai')   renderAccountPage('suhai','base');
+  if(id==='overview') renderOverview();
+  else if(id==='risque')  renderSub('risque','base');
+  else if(id==='bozzano') renderSub('bozzano','base');
+  else if(id==='oetker')  renderDetail('oetker','base');
+  else if(id==='suhai')   renderDetail('suhai','base');
 }
 
-function showSubPage(acct, sub, btn) {
-  document.querySelectorAll('#'+acct+'-subtabs .sub-tab').forEach(t => t.classList.remove('active'));
+function showSub(acct,sub,btn){
+  document.querySelectorAll('#'+acct+'-subtabs .sub-tab').forEach(t=>t.classList.remove('active'));
   btn.classList.add('active');
-  renderSubPage(acct, sub);
+  renderSub(acct,sub);
 }
 
-function goToAccount(acct) {
-  const map = {risque:1,bozzano:2,oetker:3,suhai:4};
+function goToAcct(acct){
+  const map={risque:1,bozzano:2,oetker:3,suhai:4};
   document.querySelectorAll('.nav-tab')[map[acct]].click();
 }
 
-// ══════════════════════════════════════════════
-// RENDER OVERVIEW
-// ══════════════════════════════════════════════
-function renderOverview() {
-  const grid = document.getElementById('overview-grid');
-  let html = '';
+// ══════════════════════════════════════════
+// OVERVIEW
+// ══════════════════════════════════════════
+function renderOverview(){
+  const grid=document.getElementById('ov-grid');
+  let html='';
+  Object.keys(LABELS).forEach(acct=>{
+    const tot=totalHorasConta(acct);
+    const p=pct(tot.v,tot.t);
+    const color=COLORS[acct];
+    const d=DATA[acct];
+    const areas=horasPorAreaConta(acct);
+    const aKeys=Object.keys(areas);
+    const maxT=Math.max(...aKeys.map(a=>areas[a].t),1);
 
-  Object.keys(LABELS).forEach(acct => {
-    const tot   = totalHorasConta(acct);
-    const p     = pct(tot.v, tot.t);
-    const color = COLORS[acct];
-    const escopo = DATA[acct].escopoTotal;
-    const areas  = horasPorArea(acct);
-    const areaKeys = Object.keys(areas);
-
-    // max vendido para escalar barras
-    const maxT = Math.max(...areaKeys.map(a => areas[a].t), 1);
-
-    let bars = '';
-    areaKeys.forEach(area => {
-      const a = areas[area];
-      const ap = pct(a.v, a.t);
-      const hT = Math.max(Math.round((a.t/maxT)*56), 4);
-      const hV = a.v>0 ? Math.max(Math.round((a.v/maxT)*56), 2) : 0;
-      const shortName = area.substring(0,3).toUpperCase();
-      bars += `<div class="ov-bar-group">
+    let bars='';
+    aKeys.forEach(area=>{
+      const a=areas[area];
+      const ap=pct(a.v,a.t);
+      const hT=Math.max(Math.round((a.t/maxT)*48),3);
+      const hV=a.v>0?Math.max(Math.round((a.v/maxT)*48),2):0;
+      const lbl=area.substring(0,3).toUpperCase();
+      bars+=`<div class="ov-bar-group">
         <div class="ov-bar-cols">
-          <div class="ov-bar-col">
-            <div class="ov-bar bar-scope" style="height:${hT}px" data-tip="Vendido: ${a.t}h"></div>
-          </div>
-          <div class="ov-bar-col">
-            <div class="ov-bar" style="height:0px;background:${sColor(ap)}" data-height="${hV}" data-tip="${area}: ${a.v}h/${a.t}h (${ap}%)"></div>
-          </div>
+          <div class="ov-bar-col"><div class="ov-bar bar-scope" style="height:${hT}px" data-tip="Vendido: ${a.t}h"></div></div>
+          <div class="ov-bar-col"><div class="ov-bar" style="height:0px;background:${sCol(ap)}" data-height="${hV}" data-tip="${area}: ${a.v}h/${a.t}h (${ap}%)"></div></div>
         </div>
-        <div class="ov-bar-label">${shortName}</div>
+        <div class="ov-bar-label">${lbl}</div>
       </div>`;
     });
 
-    html += `<div class="ov-card" onclick="goToAccount('${acct}')">
+    html+=`<div class="ov-card" onclick="goToAcct('${acct}')">
       <div class="ov-top">
         <div>
           <div class="ov-name" style="color:${color}">${LABELS[acct]}</div>
-          <div class="ov-pct" style="color:${sColor(p)}">${p}<span class="ov-pct-label">% consumido</span></div>
-          <div class="ov-hours">${tot.v}h consumidas · ${tot.t}h vendidas</div>
+          <div class="ov-pct" style="color:${sCol(p)}">${p}<span class="ov-pct-lbl">% consumido</span></div>
+          <div class="ov-hours">${tot.v}h consumidas · ${tot.t}h/mês vendidas</div>
           <span class="kpi-badge ${sCls(p)}">${sLbl(p)}</span>
         </div>
-        <div class="ov-right">
-          <div class="ov-escopo-label">Escopo Total</div>
-          <div class="ov-escopo-value">${escopo>0 ? 'R$'+escopo.toLocaleString('pt-BR') : '—'}</div>
-          <div class="ov-escopo-sub">${escopo>0 ? 'valor contratado' : 'inserir valor'}</div>
-          <div style="margin-top:12px;">
-            <input class="edit-input" type="number" min="0" placeholder="R$ Escopo"
-              value="${escopo>0?escopo:''}"
-              onclick="event.stopPropagation()"
-              onchange="DATA['${acct}'].escopoTotal=parseFloat(this.value)||0;renderOverview()"
-              style="width:110px;font-size:11px;padding:4px 8px;text-align:right;" />
-          </div>
+        <div class="ov-fee-box">
+          <div class="ov-fee-label">Fee Mensal</div>
+          <div class="ov-fee-value">${fmtR(d.feeMensal)}</div>
+          <div class="ov-fee-sub">Fee total: ${fmtR(d.feeTotal)}</div>
+          <div class="ov-fee-sub" style="margin-top:2px">${d.feePeriodo}</div>
         </div>
       </div>
       <hr class="ov-divider">
       <div class="ov-chart-title">Horas por área — consumido vs. vendido</div>
       <div class="ov-bars">${bars}</div>
       <div class="ov-legend">
-        <div class="ov-legend-item"><div class="ov-legend-dot" style="background:var(--border)"></div>Vendido</div>
-        <div class="ov-legend-item"><div class="ov-legend-dot" style="background:var(--green)"></div>&lt;70%</div>
-        <div class="ov-legend-item"><div class="ov-legend-dot" style="background:var(--yellow)"></div>70–90%</div>
-        <div class="ov-legend-item"><div class="ov-legend-dot" style="background:var(--red)"></div>+90%</div>
+        <div class="ov-leg-item"><div class="ov-leg-dot" style="background:var(--border)"></div>Vendido</div>
+        <div class="ov-leg-item"><div class="ov-leg-dot" style="background:var(--green)"></div>&lt;70%</div>
+        <div class="ov-leg-item"><div class="ov-leg-dot" style="background:var(--yellow)"></div>70–90%</div>
+        <div class="ov-leg-item"><div class="ov-leg-dot" style="background:var(--red)"></div>+90%</div>
       </div>
     </div>`;
   });
-
-  grid.innerHTML = html;
+  grid.innerHTML=html;
   animateBars();
 }
 
-// ══════════════════════════════════════════════
-// RENDER DETAIL
-// ══════════════════════════════════════════════
-function renderAccountPage(acct, sub) {
-  document.getElementById(acct+'-content').innerHTML = buildDetailHTML(acct, sub);
-  animateBars();
-}
-function renderSubPage(acct, sub) {
-  document.getElementById(acct+'-content').innerHTML = buildDetailHTML(acct, sub);
-  animateBars();
-}
+// ══════════════════════════════════════════
+// DETAIL
+// ══════════════════════════════════════════
+function renderDetail(acct,sub){ document.getElementById(acct+'-content').innerHTML=buildDetail(acct,sub); animateBars(); }
+function renderSub(acct,sub){ document.getElementById(acct+'-content').innerHTML=buildDetail(acct,sub); animateBars(); }
 
-function buildDetailHTML(acct, sub) {
-  const d      = DATA[acct][sub];
-  const horas  = d.horas;
-  const budget = d.budget;
-  const aKeys  = Object.keys(horas);
-  const bKeys  = Object.keys(budget);
-  const color  = COLORS[acct];
+function buildDetail(acct,sub){
+  const d=DATA[acct];
+  const sd=d.horas[sub];
+  const horas=sd.horas;
+  const budget=sd.budget;
+  const aKeys=Object.keys(horas);
+  const bKeys=Object.keys(budget);
+  const color=COLORS[acct];
 
-  let totV=0, totT=0;
-  aKeys.forEach(a => { totV+=horas[a].v; totT+=horas[a].t; });
-  const totP = pct(totV, totT);
+  let totV=0,totT=0;
+  aKeys.forEach(a=>{totV+=horas[a].v;totT+=horas[a].t});
+  const totP=pct(totV,totT);
 
-  let budV=0, budT=0;
-  bKeys.forEach(a => { budV+=budget[a].v; budT+=budget[a].t; });
+  let budV=0,budT=0;
+  bKeys.forEach(a=>{budV+=budget[a].v;budT+=budget[a].t});
 
-  const subLabel = sub==='base' ? '' : ' · '+({fiscal27:'Fiscal 27',belga:'Belga',desgel:'Desgel Secante',expert:'Expert'}[sub]||sub);
+  const subLbls={base:'',fiscal27:' · Fiscal 27',belga:' · Belga',desgel:' · Desgel Secante',expert:' · Expert'};
+  const label=LABELS[acct]+(subLbls[sub]||'');
 
   // KPI
-  const kpi = `<div class="kpi-row">
+  const kpi=`<div class="kpi-row">
     <div class="kpi-card">
       <div class="kpi-label">Horas Consumidas</div>
-      <div class="kpi-value" style="color:${sColor(totP)}">${totV}h</div>
-      <div class="kpi-sub">de ${totT}h vendidas</div>
+      <div class="kpi-value" style="color:${sCol(totP)}">${fmtH(totV)}</div>
+      <div class="kpi-sub">de ${totT}h/mês vendidas</div>
       <span class="kpi-badge ${sCls(totP)}" style="margin-top:8px;display:inline-block">${sLbl(totP)}</span>
     </div>
     <div class="kpi-card">
       <div class="kpi-label">Horas Disponíveis</div>
-      <div class="kpi-value">${totT-totV}h</div>
+      <div class="kpi-value">${fmtH(totT-totV)}</div>
       <div class="kpi-sub">restantes no escopo</div>
     </div>
     <div class="kpi-card">
-      <div class="kpi-label">% Escopo Consumido</div>
-      <div class="kpi-value" style="color:${sColor(totP)}">${totP}%</div>
-      <div class="kpi-sub">do total vendido</div>
+      <div class="kpi-label">Fee Mensal</div>
+      <div class="kpi-value" style="font-size:16px;color:var(--orange)">${fmtR(d.feeMensal)}</div>
+      <div class="kpi-sub">${d.feePeriodo}</div>
     </div>
     <div class="kpi-card">
-      <div class="kpi-label">Budget</div>
-      <div class="kpi-value">${budT>0?'R$'+budT.toLocaleString('pt-BR'):'—'}</div>
-      <div class="kpi-sub">${budT>0?'R$'+budV.toLocaleString('pt-BR')+' consumido':'Aguardando dados'}</div>
+      <div class="kpi-label">Fee Total Contrato</div>
+      <div class="kpi-value" style="font-size:16px">${fmtR(d.feeTotal)}</div>
+      <div class="kpi-sub">${totP}% escopo consumido</div>
     </div>
   </div>`;
 
   // Barras horas
-  const maxH = Math.max(...aKeys.map(a=>horas[a].t),1);
-  let horasBars = '';
-  aKeys.forEach(a => {
-    const ap = pct(horas[a].v, horas[a].t);
-    const hT = Math.max(Math.round((horas[a].t/maxH)*120), 4);
-    const hV = horas[a].v>0 ? Math.max(Math.round((horas[a].v/maxH)*120), 2) : 0;
-    horasBars += `<div class="bar-group">
+  const maxH=Math.max(...aKeys.map(a=>horas[a].t),1);
+  let horasBars='';
+  aKeys.forEach(a=>{
+    const ap=pct(horas[a].v,horas[a].t);
+    const hT=Math.max(Math.round((horas[a].t/maxH)*115),3);
+    const hV=horas[a].v>0?Math.max(Math.round((horas[a].v/maxH)*115),2):0;
+    horasBars+=`<div class="bar-group">
       <div class="bar-wrap">
         <div class="bar-col"><div class="bar bar-scope" style="height:${hT}px" data-tip="Vendido: ${horas[a].t}h"></div></div>
-        <div class="bar-col"><div class="bar" style="height:0px;background:${sColor(ap)}" data-height="${hV}" data-tip="${horas[a].v}h consumidas (${ap}%)"></div></div>
+        <div class="bar-col"><div class="bar" style="height:0px;background:${sCol(ap)}" data-height="${hV}" data-tip="${horas[a].v}h consumidas (${ap}%)"></div></div>
       </div>
       <div class="bar-label">${a}</div>
-      <div class="bar-pct" style="color:${sColor(ap)}">${ap}%</div>
+      <div class="bar-pct" style="color:${sCol(ap)}">${ap}%</div>
     </div>`;
   });
 
   // Barras budget
-  const maxB = Math.max(...bKeys.map(a=>budget[a].t),1);
-  let budgetBars = '';
-  bKeys.forEach(a => {
-    const ap = pct(budget[a].v, budget[a].t);
-    const hT = budget[a].t>0 ? Math.max(Math.round((budget[a].t/maxB)*120),4) : 30;
-    const hV = budget[a].v>0 ? Math.max(Math.round((budget[a].v/maxB)*120),2) : 0;
-    budgetBars += `<div class="bar-group">
+  const maxB=Math.max(...bKeys.map(a=>budget[a].t),1);
+  let budgetBars='';
+  bKeys.forEach(a=>{
+    const ap=pct(budget[a].v,budget[a].t);
+    const hT=budget[a].t>0?Math.max(Math.round((budget[a].t/maxB)*115),3):28;
+    const hV=budget[a].v>0?Math.max(Math.round((budget[a].v/maxB)*115),2):0;
+    budgetBars+=`<div class="bar-group">
       <div class="bar-wrap">
-        <div class="bar-col"><div class="bar bar-scope" style="height:${hT}px" data-tip="Contratado: ${budget[a].t>0?'R$'+budget[a].t.toLocaleString('pt-BR'):'—'}"></div></div>
-        <div class="bar-col"><div class="bar" style="height:0px;background:${budget[a].v>0?sColor(ap):'var(--border)'}" data-height="${hV}" data-tip="${budget[a].v>0?'R$'+budget[a].v.toLocaleString('pt-BR')+' ('+ap+'%)':'Sem dados'}"></div></div>
+        <div class="bar-col"><div class="bar bar-scope" style="height:${hT}px" data-tip="Contratado: ${budget[a].t>0?fmtR(budget[a].t):'—'}"></div></div>
+        <div class="bar-col"><div class="bar" style="height:0px;background:${budget[a].v>0?sCol(ap):'var(--border)'}" data-height="${hV}" data-tip="${budget[a].v>0?fmtR(budget[a].v)+' ('+ap+'%)':'Sem dados'}"></div></div>
       </div>
       <div class="bar-label">${a}</div>
-      <div class="bar-pct" style="color:${budget[a].t>0?sColor(ap):'var(--text-muted)'}">${budget[a].t>0?ap+'%':'—'}</div>
+      <div class="bar-pct" style="color:${budget[a].t>0?sCol(ap):'var(--muted)'}">${budget[a].t>0?ap+'%':'—'}</div>
     </div>`;
   });
 
   // Tabela horas
-  let rowsH = '';
-  aKeys.forEach(a => {
-    const ap = pct(horas[a].v, horas[a].t);
-    rowsH += `<tr>
-      <td><span class="status-dot" style="background:${sColor(ap)}"></span>${a}</td>
-      <td><input class="edit-input" type="number" min="0" value="${horas[a].v}" onchange="updateHoras('${acct}','${sub}','${a}','v',this.value)"/></td>
-      <td><input class="edit-input" type="number" min="0" value="${horas[a].t}" onchange="updateHoras('${acct}','${sub}','${a}','t',this.value)"/></td>
-      <td style="color:${sColor(ap)};font-weight:700">${ap}%</td>
+  let rowsH='';
+  aKeys.forEach(a=>{
+    const ap=pct(horas[a].v,horas[a].t);
+    rowsH+=`<tr>
+      <td><span class="status-dot" style="background:${sCol(ap)}"></span>${a}</td>
+      <td><input class="edit-input" type="number" min="0" value="${horas[a].v}" onchange="updateH('${acct}','${sub}','${a}','v',this.value)"/></td>
+      <td style="color:var(--muted)">${horas[a].t}h <span style="font-size:9px">(fixo)</span></td>
+      <td style="color:${sCol(ap)};font-weight:700">${ap}%</td>
       <td><span class="kpi-badge ${sCls(ap)}">${sLbl(ap)}</span></td>
     </tr>`;
   });
 
   // Tabela budget
-  let rowsB = '';
-  bKeys.forEach(a => {
-    const ap = pct(budget[a].v, budget[a].t);
-    rowsB += `<tr>
-      <td><span class="status-dot" style="background:${budget[a].t>0?sColor(ap):'var(--border)'}"></span>${a}</td>
-      <td><input class="edit-input" type="number" min="0" value="${budget[a].v}" onchange="updateBudget('${acct}','${sub}','${a}','v',this.value)"/></td>
-      <td><input class="edit-input" type="number" min="0" value="${budget[a].t}" onchange="updateBudget('${acct}','${sub}','${a}','t',this.value)"/></td>
-      <td style="color:${budget[a].t>0?sColor(ap):'var(--text-muted)'};font-weight:700">${budget[a].t>0?ap+'%':'—'}</td>
-      <td>${budget[a].t>0?`<span class="kpi-badge ${sCls(ap)}">${sLbl(ap)}</span>`:'<span style="color:var(--text-muted);font-size:11px">Aguardando</span>'}</td>
+  let rowsB='';
+  bKeys.forEach(a=>{
+    const ap=pct(budget[a].v,budget[a].t);
+    rowsB+=`<tr>
+      <td><span class="status-dot" style="background:${budget[a].t>0?sCol(ap):'var(--border)'}"></span>${a}</td>
+      <td><input class="edit-input" type="number" min="0" value="${budget[a].v}" onchange="updateB('${acct}','${sub}','${a}','v',this.value)"/></td>
+      <td><input class="edit-input" type="number" min="0" value="${budget[a].t}" onchange="updateB('${acct}','${sub}','${a}','t',this.value)"/></td>
+      <td style="color:${budget[a].t>0?sCol(ap):'var(--muted)'};font-weight:700">${budget[a].t>0?ap+'%':'—'}</td>
+      <td>${budget[a].t>0?`<span class="kpi-badge ${sCls(ap)}">${sLbl(ap)}</span>`:'<span style="color:var(--muted);font-size:10px">Inserir</span>'}</td>
     </tr>`;
   });
 
@@ -491,8 +519,8 @@ function buildDetailHTML(acct, sub) {
     <div class="acct-heading">
       <div class="acct-bar" style="background:${color}"></div>
       <div>
-        <div style="font-size:20px;font-weight:800;letter-spacing:-0.5px">${LABELS[acct]}${subLabel}</div>
-        <div style="font-size:12px;color:var(--text-muted);margin-top:2px">Edite os campos abaixo ou importe CSV · sem dados de pessoa, apenas por área</div>
+        <div style="font-size:18px;font-weight:800;letter-spacing:-.5px">${label}</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:2px">Horas por área · sem dados de pessoa · consumido vs. vendido</div>
       </div>
     </div>
     ${kpi}
@@ -502,7 +530,7 @@ function buildDetailHTML(acct, sub) {
         <div class="bar-chart">${horasBars}</div>
         <div class="legend">
           <div class="legend-item"><div class="legend-dot" style="background:var(--border)"></div>Vendido</div>
-          <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div>Consumido &lt;70%</div>
+          <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div>&lt;70%</div>
           <div class="legend-item"><div class="legend-dot" style="background:var(--yellow)"></div>70–90%</div>
           <div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div>+90%</div>
         </div>
@@ -516,20 +544,20 @@ function buildDetailHTML(acct, sub) {
         </div>
       </div>
     </div>
-    <div class="edit-table-wrap">
-      <div class="edit-table-header">
-        <span class="section-title">✏ Horas por Área</span>
-        <span class="section-hint">Clique para editar · sem nomes de pessoas</span>
+    <div class="edit-wrap">
+      <div class="edit-head">
+        <span class="sec-title">✏ Horas consumidas por área</span>
+        <span class="sec-hint">Horas vendidas são fixas do contrato · insira o consumido</span>
       </div>
       <table class="edit-table">
         <thead><tr><th>Área</th><th>Consumido (h)</th><th>Vendido (h)</th><th>%</th><th>Status</th></tr></thead>
         <tbody>${rowsH}</tbody>
       </table>
     </div>
-    <div class="edit-table-wrap">
-      <div class="edit-table-header">
-        <span class="section-title">✏ Budget por Categoria</span>
-        <span class="section-hint">Valores em R$</span>
+    <div class="edit-wrap">
+      <div class="edit-head">
+        <span class="sec-title">✏ Budget por categoria</span>
+        <span class="sec-hint">Valores em R$</span>
       </div>
       <table class="edit-table">
         <thead><tr><th>Categoria</th><th>Consumido (R$)</th><th>Contratado (R$)</th><th>%</th><th>Status</th></tr></thead>
@@ -537,74 +565,69 @@ function buildDetailHTML(acct, sub) {
       </table>
     </div>
     <div class="import-area" onclick="document.getElementById('csvInput').click()">
-      <div style="font-size:22px;margin-bottom:8px">📂</div>
-      <div class="import-text">Clique para <strong>importar CSV</strong> com horas por área</div>
-      <div class="import-hint">Formato: Área, Consumido, Vendido — sem colunas de pessoa</div>
+      <div style="font-size:20px;margin-bottom:6px">📂</div>
+      <div class="import-text">Clique para <strong>importar CSV</strong> · horas consumidas por área</div>
+      <div class="import-hint">Formato: Área, Consumido — as horas vendidas já estão no sistema</div>
     </div>`;
 }
 
-// ══════════════════════════════════════════════
-// UPDATE
-// ══════════════════════════════════════════════
-function updateHoras(acct, sub, area, key, val) {
-  DATA[acct][sub].horas[area][key] = parseFloat(val)||0;
-  refreshCharts(acct, sub);
+// ══════════════════════════════════════════
+// UPDATE & REFRESH
+// ══════════════════════════════════════════
+function updateH(acct,sub,area,key,val){
+  DATA[acct].horas[sub].horas[area][key]=parseFloat(val)||0;
+  refreshCharts(acct,sub);
 }
-function updateBudget(acct, sub, area, key, val) {
-  DATA[acct][sub].budget[area][key] = parseFloat(val)||0;
-  refreshCharts(acct, sub);
+function updateB(acct,sub,area,key,val){
+  DATA[acct].horas[sub].budget[area][key]=parseFloat(val)||0;
+  refreshCharts(acct,sub);
 }
-function refreshCharts(acct, sub) {
-  const el = document.getElementById(acct+'-content');
-  if (!el) return;
-  const tmp = document.createElement('div');
-  tmp.innerHTML = buildDetailHTML(acct, sub);
-  const newKpi = tmp.querySelector('.kpi-row');
-  const oldKpi = el.querySelector('.kpi-row');
-  if (newKpi && oldKpi) oldKpi.replaceWith(newKpi);
-  const newCharts = tmp.querySelectorAll('.chart-card');
-  const oldCharts = el.querySelectorAll('.chart-card');
-  newCharts.forEach((c,i) => { if (oldCharts[i]) oldCharts[i].replaceWith(c); });
+function refreshCharts(acct,sub){
+  const el=document.getElementById(acct+'-content');
+  if(!el) return;
+  const tmp=document.createElement('div');
+  tmp.innerHTML=buildDetail(acct,sub);
+  const newKpi=tmp.querySelector('.kpi-row');
+  const oldKpi=el.querySelector('.kpi-row');
+  if(newKpi&&oldKpi) oldKpi.replaceWith(newKpi);
+  tmp.querySelectorAll('.chart-card').forEach((c,i)=>{
+    const old=el.querySelectorAll('.chart-card')[i];
+    if(old) old.replaceWith(c);
+  });
   animateBars();
 }
 
-// ══════════════════════════════════════════════
+// ══════════════════════════════════════════
 // ANIMATE
-// ══════════════════════════════════════════════
-function animateBars() {
-  requestAnimationFrame(() => {
-    document.querySelectorAll('[data-height]').forEach(bar => {
-      const h = bar.getAttribute('data-height');
-      setTimeout(() => { bar.style.height = h+'px'; }, 60);
+// ══════════════════════════════════════════
+function animateBars(){
+  requestAnimationFrame(()=>{
+    document.querySelectorAll('[data-height]').forEach(b=>{
+      const h=b.getAttribute('data-height');
+      setTimeout(()=>{b.style.height=h+'px'},60);
     });
   });
 }
 
-// ══════════════════════════════════════════════
+// ══════════════════════════════════════════
 // CSV IMPORT
-// ══════════════════════════════════════════════
-function importCSV(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = e => {
-    const lines = e.target.result.trim().split('\n');
-    let imported = 0;
-    lines.slice(1).forEach(line => {
-      const cols = line.split(',').map(c => c.trim());
-      if (cols.length >= 3) {
-        let acct, sub, area, v, t;
-        if (cols.length >= 5) {
-          acct=cols[0].toLowerCase(); sub=cols[1].toLowerCase();
-          area=cols[2]; v=parseFloat(cols[3]); t=parseFloat(cols[4]);
-        } else {
-          const activeTab = document.querySelector('.nav-tab.active');
-          const txt = activeTab ? activeTab.textContent.toLowerCase() : '';
-          acct = txt.includes('risq')?'risque':txt.includes('bozz')?'bozzano':txt.includes('oet')?'oetker':'suhai';
-          sub='base'; area=cols[0]; v=parseFloat(cols[1]); t=parseFloat(cols[2]);
-        }
-        if (DATA[acct] && DATA[acct][sub] && DATA[acct][sub].horas[area]!==undefined) {
-          DATA[acct][sub].horas[area]={v,t}; imported++;
+// ══════════════════════════════════════════
+function importCSV(event){
+  const file=event.target.files[0];
+  if(!file) return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const lines=e.target.result.trim().split('\n');
+    let imported=0;
+    lines.slice(1).forEach(line=>{
+      const cols=line.split(',').map(c=>c.trim());
+      if(cols.length>=2){
+        const activeTab=document.querySelector('.nav-tab.active');
+        const txt=activeTab?activeTab.textContent.toLowerCase():'';
+        const acct=txt.includes('risq')?'risque':txt.includes('bozz')?'bozzano':txt.includes('oet')?'oetker':'suhai';
+        const area=cols[0], v=parseFloat(cols[1]);
+        if(DATA[acct]&&DATA[acct].horas.base.horas[area]!==undefined){
+          DATA[acct].horas.base.horas[area].v=v; imported++;
         }
       }
     });
@@ -615,31 +638,27 @@ function importCSV(event) {
   reader.readAsText(file,'UTF-8');
 }
 
-// ══════════════════════════════════════════════
+// ══════════════════════════════════════════
 // SAVE / LOAD
-// ══════════════════════════════════════════════
-function saveAll() {
-  try { localStorage.setItem('n3_v2', JSON.stringify(DATA)); showToast('✓ Salvo com sucesso'); }
-  catch(e) { showToast('⚠ Erro ao salvar'); }
+// ══════════════════════════════════════════
+function saveAll(){
+  try{ localStorage.setItem('n3_v3',JSON.stringify(DATA)); showToast('✓ Salvo com sucesso'); }
+  catch(e){ showToast('⚠ Erro ao salvar'); }
 }
-function loadSaved() {
-  try {
-    const s = localStorage.getItem('n3_v2');
-    if (!s) return;
-    const p = JSON.parse(s);
-    Object.keys(p).forEach(acct => {
-      if (!DATA[acct]) return;
-      if (p[acct].escopoTotal !== undefined) DATA[acct].escopoTotal = p[acct].escopoTotal;
-      SUBS[acct].forEach(sub => {
-        if (p[acct][sub]) DATA[acct][sub] = p[acct][sub];
+function loadSaved(){
+  try{
+    const s=localStorage.getItem('n3_v3');
+    if(!s) return;
+    const p=JSON.parse(s);
+    Object.keys(p).forEach(acct=>{
+      if(!DATA[acct]) return;
+      if(p[acct].horas) Object.keys(p[acct].horas).forEach(sub=>{
+        if(DATA[acct].horas[sub]) DATA[acct].horas[sub]=p[acct].horas[sub];
       });
     });
-  } catch(e) {}
+  }catch(e){}
 }
 
-// ══════════════════════════════════════════════
-// INIT
-// ══════════════════════════════════════════════
 loadSaved();
 renderOverview();
 </script>
