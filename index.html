@@ -193,7 +193,7 @@
   <div class="tab" onclick="showTab('budget')">Budget</div>
 </div>
 
-<div class="filtros">
+<div class="filtros" id="barra-filtros">
   <span class="filtro-label">Filtros</span>
   <select id="filtro-mes" onchange="aplicarFiltros()">
     <option value="todos">Todos os meses</option>
@@ -661,8 +661,8 @@ const OTK_DETALHE = {
 
 const budgetClientesHome = {
   "Dr. Oetker": {cor:"#CC0000", label:"Dr. Oetker Budget", periodo:"Jan–Dez 2026", total:38888778.15, campanhas:10, temDados:true},
-  "Suhai":       {cor:"#F57C00", label:"Suhai Budget",      periodo:"Mai–Dez 2026", total:1500000,     campanhas:4,  temDados:false},
-  "Coty":        {cor:"#FFD600", label:"Coty Budget",       periodo:"Jul–Dez 2026", total:2134346.28,  campanhas:3,  temDados:false},
+  "Suhai":       {cor:"#F57C00", label:"Suhai Budget",      periodo:"Mai–Dez 2026", total:0,           campanhas:4,  temDados:false},
+  "Coty":        {cor:"#FFD600", label:"Coty Budget",       periodo:"Jul–Dez 2026", total:0,            campanhas:5,  temDados:false},
 };
 
 // consumido manual para campanhas sem detalhe real
@@ -690,27 +690,65 @@ function statusBadge(s) {
 }
 
 // ── NIVEL 1: HOME ──────────────────────────────
+function getTotalBudgetCliente(cli) {
+  if (cli === 'Dr. Oetker') return OTK_GERAL.reduce((s,c)=>s+c.total,0);
+  return Object.entries(consumidoManual).filter(([k])=>k.startsWith(cli+'_bgt_')).reduce((s,[,v])=>s+v,0);
+}
+function getTotalConsumidoCliente(cli) {
+  if (cli === 'Dr. Oetker') {
+    return [...Object.values(OTK_DETALHE).map(d=>d.gastos.reduce((s,g)=>s+g.valor,0)),
+            ...OTK_GERAL.filter(c=>!OTK_DETALHE[c.campanha]).map(c=>consumidoManual[c.campanha]||0)
+           ].reduce((s,v)=>s+v,0);
+  }
+  return Object.entries(consumidoManual).filter(([k])=>k.startsWith(cli+'_cons_')).reduce((s,[,v])=>s+v,0);
+}
+
 function renderBudgetHome() {
-  const totalGeral = Object.values(budgetClientesHome).reduce((s,c)=>s+c.total,0);
+  const totalGeralBgt  = Object.keys(budgetClientesHome).reduce((s,cli)=>s+getTotalBudgetCliente(cli),0);
+  const totalGeralCons = Object.keys(budgetClientesHome).reduce((s,cli)=>s+getTotalConsumidoCliente(cli),0);
+  const totalGeralSaldo = totalGeralBgt - totalGeralCons;
+  const pctGeral = totalGeralBgt > 0 ? Math.round(totalGeralCons/totalGeralBgt*100) : 0;
+
   document.getElementById('kpi-budget-home').innerHTML = `
-    <div class="kpi amarelo"><div class="kpi-label">Budget Total N3 2026</div><div class="kpi-value" style="font-size:18px">${brl(totalGeral)}</div><div class="kpi-sub">3 clientes ativos</div></div>
-    <div class="kpi laranja"><div class="kpi-label">OTK — Budget Campanhas</div><div class="kpi-value" style="font-size:18px">R$ 38,9M</div><div class="kpi-sub">10 campanhas · dados reais</div></div>
-    <div class="kpi verde"><div class="kpi-label">Suhai — Mídia Digital</div><div class="kpi-value" style="font-size:18px">R$ 1,5M</div><div class="kpi-sub">Mai–Dez 2026 previsto</div></div>
-    <div class="kpi" style="border-top:3px solid #FFD600"><div class="kpi-label">Coty — Fee Período</div><div class="kpi-value" style="font-size:18px">R$ 2,1M</div><div class="kpi-sub">Fee principal + CM · Q3–Q4</div></div>
+    <div class="kpi amarelo"><div class="kpi-label">Budget Total N3 2026</div><div class="kpi-value" style="font-size:18px">${totalGeralBgt>0?brl(totalGeralBgt):'A preencher'}</div><div class="kpi-sub">3 clientes ativos</div></div>
+    <div class="kpi laranja"><div class="kpi-label">Total Consumido</div><div class="kpi-value" style="font-size:18px">${brl(totalGeralCons)}</div><div class="kpi-sub">${pctGeral>0?pctGeral+'% do total':'—'}</div></div>
+    <div class="kpi verde"><div class="kpi-label">Saldo Disponível</div><div class="kpi-value" style="font-size:18px">${totalGeralBgt>0?brl(totalGeralSaldo):'—'}</div></div>
   `;
 
-  document.getElementById('budget-cliente-cards').innerHTML = Object.entries(budgetClientesHome).map(([cli, d]) => `
-    <div onclick="abrirBudgetCampanhas('${cli}')" style="
-      background:var(--cinza-esc);border:1px solid #2a2a2a;border-top:3px solid ${d.cor};
-      border-radius:8px;padding:24px;cursor:pointer;transition:border-color 0.2s
-    " onmouseover="this.style.borderColor='${d.cor}'" onmouseout="this.style.borderTopColor='${d.cor}';this.style.borderRightColor='#2a2a2a';this.style.borderBottomColor='#2a2a2a';this.style.borderLeftColor='#2a2a2a'">
-      <div style="font-size:16px;font-weight:700;color:var(--branco);margin-bottom:4px">${d.label}</div>
-      <div style="font-size:11px;color:var(--texto-dim);margin-bottom:16px">${d.periodo} · ${d.campanhas} campanhas/frentes</div>
-      <div style="font-size:22px;font-weight:700;color:var(--branco);margin-bottom:4px">${brl(d.total)}</div>
-      <div style="font-size:11px;color:var(--texto-dim)">${d.temDados ? '✅ Dados reais disponíveis' : '✏️ Editável — clique para preencher'}</div>
-      <div style="margin-top:16px;font-size:11px;color:${d.cor}">Ver detalhe →</div>
-    </div>
-  `).join('');
+  document.getElementById('budget-cliente-cards').innerHTML = Object.entries(budgetClientesHome).map(([cli, d]) => {
+    const aprov = getTotalBudgetCliente(cli);
+    const cons  = getTotalConsumidoCliente(cli);
+    const saldo = aprov - cons;
+    const pct   = aprov > 0 ? Math.round(cons/aprov*100) : 0;
+    const sc    = statusColor(pct);
+    return `
+      <div onclick="abrirBudgetCampanhas('${cli}')" style="
+        background:var(--cinza-esc);border:1px solid #2a2a2a;border-top:3px solid ${d.cor};
+        border-radius:8px;padding:24px;cursor:pointer;transition:border-color 0.2s
+      " onmouseover="this.style.borderColor='${d.cor}'" onmouseout="this.style.borderTopColor='${d.cor}';this.style.borderRightColor='#2a2a2a';this.style.borderBottomColor='#2a2a2a';this.style.borderLeftColor='#2a2a2a'">
+        <div style="font-size:16px;font-weight:700;color:var(--branco);margin-bottom:4px">${d.label}</div>
+        <div style="font-size:11px;color:var(--texto-dim);margin-bottom:16px">${d.periodo} · ${d.campanhas} campanhas/frentes</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px">
+          <div style="text-align:center">
+            <div style="font-size:9px;color:var(--texto-dim);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Budget</div>
+            <div style="font-size:13px;font-weight:700;color:var(--branco)">${aprov>0?brl(aprov):'—'}</div>
+          </div>
+          <div style="text-align:center">
+            <div style="font-size:9px;color:var(--texto-dim);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Consumido</div>
+            <div style="font-size:13px;font-weight:700;color:var(--${sc})">${cons>0?brl(cons):'—'}</div>
+          </div>
+          <div style="text-align:center">
+            <div style="font-size:9px;color:var(--texto-dim);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Saldo</div>
+            <div style="font-size:13px;font-weight:700;color:var(--verde)">${aprov>0?brl(saldo):'—'}</div>
+          </div>
+        </div>
+        <div style="background:#222;border-radius:3px;height:6px">
+          <div style="height:100%;border-radius:3px;background:${d.cor};width:${Math.min(pct,100)}%;opacity:0.8"></div>
+        </div>
+        <div style="font-size:10px;color:${d.cor};margin-top:8px">${d.temDados?'✅ Dados reais':'✏️ Editável'} · clique para detalhar →</div>
+      </div>
+    `;
+  }).join('');
 }
 
 // ── NIVEL 2: CAMPANHAS DO CLIENTE ─────────────
@@ -816,22 +854,24 @@ function renderBudgetCampanhas(cli) {
       : [{nome:"Fee Principal (Jul–Dez)", desc:"R$ 319.624,26 × 6 meses"}, {nome:"Fee CM (Jul–Dez)", desc:"R$ 36.100,12 × 6 meses"}, {nome:"Shootings", desc:"Budget extra — por projeto"}, {nome:"Campanhas", desc:"Desdobramento mídia e always on"}, {nome:"Estratégia Anual FY", desc:"Planejamento anual de conteúdo"}];
 
     document.getElementById('budget-camp-lista').innerHTML = `
-      <div class="alert" style="margin-bottom:16px">✏️ Insira os valores consumidos em cada frente. Saldo calculado automaticamente.</div>
+      <div class="alert" style="margin-bottom:16px">✏️ Preencha o budget e o consumido de cada frente. Os KPIs do topo atualizam automaticamente.</div>
       <table class="budget-table">
-        <thead><tr><th>Frente</th><th>Descrição</th><th class="num">Budget</th><th class="num">Consumido</th><th class="num">Saldo</th><th>Status</th></tr></thead>
+        <thead><tr><th>Frente</th><th>Descrição</th><th class="num">Budget</th><th class="num">Consumido</th><th class="num">Saldo</th><th>%</th></tr></thead>
         <tbody>
           ${frentesCliente.map((f,i) => {
-            const bg = i%2===0?'#1a1a1a':'';
-            const bgt = cli==='Coty' ? (i===0?1917745.56:i===1?216600.72:0) : (i===0?1500000:0);
-            const cons = consumidoManual[cli+'_'+f.nome]||0;
+            const bgtKey  = cli+'_bgt_'+f.nome;
+            const consKey = cli+'_cons_'+f.nome;
+            const bgt  = consumidoManual[bgtKey]||0;
+            const cons = consumidoManual[consKey]||0;
             const saldo = bgt - cons;
             const pct = bgt>0?Math.round(cons/bgt*100):0;
             const sc = statusColor(pct);
+            const bg = i%2===0?'#1a1a1a':'';
             return `<tr style="${bg?'background:'+bg:''}">
               <td style="font-weight:600">${f.nome}</td>
               <td style="color:var(--texto-dim);font-size:11px">${f.desc}</td>
-              <td class="num">${bgt>0?brl(bgt):'A definir'}</td>
-              <td class="num"><input class="consumido-input" type="number" value="${cons}" placeholder="0" onchange="consumidoManual['${cli}_${f.nome}']=(parseFloat(this.value)||0);renderBudgetCampanhas('${cli}')"></td>
+              <td class="num"><input class="consumido-input" type="number" value="${bgt||''}" placeholder="Budget" onchange="consumidoManual['${bgtKey}']=(parseFloat(this.value)||0);renderBudgetCampanhas('${cli}');renderBudgetHome()"></td>
+              <td class="num"><input class="consumido-input" type="number" value="${cons||''}" placeholder="Consumido" onchange="consumidoManual['${consKey}']=(parseFloat(this.value)||0);renderBudgetCampanhas('${cli}');renderBudgetHome()"></td>
               <td class="num" style="color:var(--${sc})">${bgt>0?brl(saldo):'—'}</td>
               <td><span class="badge-status ${sc}">${pct>0?pct+'%':'—'}</span></td>
             </tr>`;
@@ -898,56 +938,74 @@ function renderBudgetDetalhe(campanha) {
 
   // Campanha com dados reais
   const gastos = det.gastos;
-  const totalBudget = (det.budget.midia||0)+(det.budget.infl||0)+(det.budget.prod||0);
-  const totalReal   = gastos.reduce((s,g)=>s+g.valor,0);
-  const totalSaldo  = totalBudget - totalReal;
-  const pct = totalBudget > 0 ? Math.round(totalReal/totalBudget*100) : 0;
-  const sc  = statusColor(pct);
+  const bgtMidia = det.budget.midia||0;
+  const bgtInfl  = det.budget.infl||0;
+  const bgtProd  = det.budget.prod||0;
+  const totalBudget = bgtMidia + bgtInfl + bgtProd;
 
-  // Real por frente
   const realMidia = gastos.filter(g=>g.grupo==='Mídia').reduce((s,g)=>s+g.valor,0);
   const realInfl  = gastos.filter(g=>g.grupo==='Influs').reduce((s,g)=>s+g.valor,0);
   const realProd  = gastos.filter(g=>g.grupo==='Produção').reduce((s,g)=>s+g.valor,0);
+  const totalReal = realMidia + realInfl + realProd;
+  const totalSaldo = totalBudget - totalReal;
+  const pct = totalBudget > 0 ? Math.round(totalReal/totalBudget*100) : 0;
+  const sc  = statusColor(pct);
 
   document.getElementById('kpi-budget-detalhe').innerHTML = `
     <div class="kpi amarelo"><div class="kpi-label">Budget Total</div><div class="kpi-value" style="font-size:18px">${brl(totalBudget)}</div></div>
     <div class="kpi laranja"><div class="kpi-label">Realizado</div><div class="kpi-value" style="font-size:18px">${brl(totalReal)}</div><div class="kpi-sub">${pct}% do budget</div></div>
-    <div class="kpi verde"><div class="kpi-label">Saldo</div><div class="kpi-value" style="font-size:18px">${brl(totalSaldo)}</div></div>
+    <div class="kpi ${sc==='vermelho'?'vermelho':sc==='laranja'?'laranja':'verde'}"><div class="kpi-label">Saldo</div><div class="kpi-value" style="font-size:18px">${brl(totalSaldo)}</div><div class="kpi-sub">${totalSaldo<0?'⚠️ Acima do budget':''}</div></div>
     <div class="kpi" style="border-top:3px solid #888"><div class="kpi-label">Lançamentos</div><div class="kpi-value">${gastos.length}</div><div class="kpi-sub">${gastos.filter(g=>g.status==='Faturado').length} faturados</div></div>
   `;
 
-  document.getElementById('budget-alert-detalhe').textContent = `✅ Dados reais da planilha OTK — ${gastos.length} lançamentos registrados.`;
+  document.getElementById('budget-alert-detalhe').textContent = `✅ ${gastos.length} lançamentos · Dados reais da planilha OTK`;
 
-  // Gráficos
-  setTimeout(() => {
-    const ctx1 = document.getElementById('grafico-frentes').getContext('2d');
-    if (graficoFrentes) graficoFrentes.destroy();
-    graficoFrentes = new Chart(ctx1, {
-      type:'doughnut',
-      data:{
-        labels:['Mídia','Influs','Produção'],
-        datasets:[{data:[realMidia,realInfl,realProd],backgroundColor:['#1565C0','#6A1B9A','#E65100'],borderWidth:0}]
-      },
-      options:{plugins:{legend:{labels:{color:'#e0e0e0',font:{size:11}}},tooltip:{callbacks:{label:c=>`${c.label}: ${brl(c.raw)}`}}}}
-    });
+  // Barras por frente — sem pizza
+  const frentes = [
+    {nome:'Mídia',   budget:bgtMidia, real:realMidia, cor:'#1565C0'},
+    {nome:'Influs',  budget:bgtInfl,  real:realInfl,  cor:'#6A1B9A'},
+    {nome:'Produção',budget:bgtProd,  real:realProd,  cor:'#E65100'},
+  ];
 
-    const statusCount = {};
-    gastos.forEach(g => statusCount[g.status] = (statusCount[g.status]||0)+1);
-    const ctx2 = document.getElementById('grafico-status').getContext('2d');
-    if (graficoStatus) graficoStatus.destroy();
-    graficoStatus = new Chart(ctx2, {
-      type:'doughnut',
-      data:{
-        labels:Object.keys(statusCount),
-        datasets:[{data:Object.values(statusCount),backgroundColor:['#4CAF50','#FF9800','#64B5F6','#888'],borderWidth:0}]
-      },
-      options:{plugins:{legend:{labels:{color:'#e0e0e0',font:{size:11}}}}}
-    });
-  }, 100);
+  // Substitui os dois canvas por barras
+  document.querySelector('#grafico-frentes').closest('div').closest('div').innerHTML = `
+    <div style="background:var(--cinza-esc);border:1px solid #2a2a2a;border-radius:6px;padding:20px;margin-bottom:20px">
+      <div class="section-title" style="margin-bottom:16px">Budget × Realizado por Frente</div>
+      ${frentes.map(f => {
+        const pctF = f.budget > 0 ? Math.round(f.real/f.budget*100) : 0;
+        const scF  = statusColor(pctF);
+        const saldoF = f.budget - f.real;
+        return `
+          <div style="margin-bottom:20px">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+              <span style="font-size:12px;font-weight:700;color:${f.cor}">${f.nome}</span>
+              <span style="font-size:11px;color:var(--texto-dim)">Saldo: <b style="color:var(--${scF})">${brl(saldoF)}</b></span>
+            </div>
+            <div style="display:grid;gap:4px">
+              <div style="display:flex;align-items:center;gap:8px">
+                <span style="font-size:10px;color:var(--texto-dim);min-width:60px">Budget</span>
+                <div style="flex:1;background:#222;border-radius:3px;height:10px">
+                  <div style="width:100%;height:100%;border-radius:3px;background:#333"></div>
+                </div>
+                <span style="font-size:11px;color:var(--texto);min-width:120px;text-align:right">${brl(f.budget)}</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px">
+                <span style="font-size:10px;color:var(--texto-dim);min-width:60px">Realizado</span>
+                <div style="flex:1;background:#222;border-radius:3px;height:10px">
+                  <div style="width:${Math.min(pctF,100)}%;height:100%;border-radius:3px;background:${f.cor};${pctF>100?'background:#F44336':''}" title="${pctF}%"></div>
+                </div>
+                <span style="font-size:11px;font-weight:700;color:var(--${scF});min-width:120px;text-align:right">${brl(f.real)} <span style="font-size:10px">(${pctF}%)</span></span>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('')}
+    </div>
+  `;
 
   // Filtro frentes
-  const frentes = ['Todos','Mídia','Influs','Produção'];
-  document.getElementById('filtro-frente-tabs').innerHTML = frentes.map(f => `
+  const frenteOpts = ['Todos','Mídia','Influs','Produção'];
+  document.getElementById('filtro-frente-tabs').innerHTML = frenteOpts.map(f => `
     <button onclick="filtrarFrente('${f}','${campanha}')" style="
       background:${frenteAtiva===f?'var(--amarelo)':'var(--cinza-med)'};
       color:${frenteAtiva===f?'var(--preto)':'var(--texto)'};
@@ -965,9 +1023,8 @@ function renderBudgetDetalhe(campanha) {
     </tr></thead>
     <tbody>
       ${lista.map((g,i) => {
-        const bg = i%2===0?'#1a1a1a':'';
-        return `<tr style="${bg?'background:'+bg:''}">
-          <td><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:3px;background:${g.grupo==='Mídia'?'#0d2040':g.grupo==='Influs'?'#1a0d2e':'#2a1a00'};color:${g.grupo==='Mídia'?'#64B5F6':g.grupo==='Influs'?'#BB86FC':'#FF9800'}">${g.grupo}</td>
+        return `<tr style="${i%2===0?'background:#1a1a1a':''}">
+          <td><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:3px;background:${g.grupo==='Mídia'?'#0d2040':g.grupo==='Influs'?'#1a0d2e':'#2a1a00'};color:${g.grupo==='Mídia'?'#64B5F6':g.grupo==='Influs'?'#BB86FC':'#FF9800'}">${g.grupo}</span></td>
           <td style="color:var(--texto-dim);font-size:11px">${g.data}</td>
           <td style="color:var(--texto-dim);font-size:11px">${g.mes||'—'}</td>
           <td style="font-size:12px">${g.item}</td>
@@ -997,6 +1054,8 @@ function showTab(id) {
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
   event.target.classList.add('active');
   document.getElementById('sec-'+id).classList.add('active');
+  // Esconde filtros na aba Budget
+  document.getElementById('barra-filtros').style.display = id === 'budget' ? 'none' : 'flex';
 }
 
 // ── INIT ───────────────────────────────────────
