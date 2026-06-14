@@ -13,59 +13,39 @@
   --green:#00E676;--yellow:#FFD600;--red:#FF3D3D;--orange:#FF5C00;
 }
 body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;font-size:14px}
-
-/* HEADER */
 .header{display:flex;align-items:center;justify-content:space-between;padding:18px 32px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:100}
 .header-left{display:flex;align-items:center;gap:16px}
-.logo{font-size:18px;font-weight:900;letter-spacing:-0.5px}
-.logo span{color:var(--orange)}
+.logo{font-size:18px;font-weight:900;letter-spacing:-.5px}.logo span{color:var(--orange)}
 .dv{width:1px;height:20px;background:var(--border)}
 .header-title{font-size:11px;color:var(--muted);font-weight:600;letter-spacing:1px;text-transform:uppercase}
 .hactions{display:flex;gap:10px;align-items:center}
 .btn{display:inline-flex;align-items:center;gap:6px;padding:7px 16px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;border:none;transition:all .15s;font-family:'Inter',sans-serif}
 .btn-primary{background:var(--orange);color:#fff}.btn-primary:hover{background:#e05200}
 .btn-ghost{background:transparent;color:var(--secondary);border:1px solid var(--border)}.btn-ghost:hover{border-color:var(--orange);color:var(--orange)}
-
-/* NAV */
 .nav-tabs{display:flex;align-items:center;gap:2px;padding:0 32px;border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none}
 .nav-tabs::-webkit-scrollbar{display:none}
 .nav-tab{padding:14px 20px;font-size:13px;font-weight:500;color:var(--muted);cursor:pointer;border:none;background:transparent;white-space:nowrap;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s;font-family:'Inter',sans-serif}
-.nav-tab:hover{color:var(--secondary)}
-.nav-tab.active{color:var(--orange);border-bottom-color:var(--orange);font-weight:700}
-
-/* SUB TABS */
+.nav-tab:hover{color:var(--secondary)}.nav-tab.active{color:var(--orange);border-bottom-color:var(--orange);font-weight:700}
 .sub-tabs{display:flex;gap:8px;padding:16px 32px 0}
 .sub-tab{padding:6px 14px;font-size:11px;font-weight:600;border-radius:4px;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--muted);transition:all .15s;font-family:'Inter',sans-serif;text-transform:uppercase;letter-spacing:.5px}
-.sub-tab:hover{border-color:var(--orange);color:var(--orange)}
-.sub-tab.active{background:rgba(255,92,0,.12);border-color:var(--orange);color:var(--orange)}
+.sub-tab:hover{border-color:var(--orange);color:var(--orange)}.sub-tab.active{background:rgba(255,92,0,.12);border-color:var(--orange);color:var(--orange)}
+.main{padding:28px 32px}.page{display:none}.page.active{display:block}
 
-/* MAIN */
-.main{padding:28px 32px}
-.page{display:none}.page.active{display:block}
-
-/* OVERVIEW GRID */
+/* OVERVIEW */
 .ov-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
 .ov-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px;cursor:pointer;transition:all .2s}
 .ov-card:hover{border-color:#3A3A3A;transform:translateY(-1px)}
-
-/* OVERVIEW TOP */
 .ov-top{display:grid;grid-template-columns:1fr auto;gap:16px;margin-bottom:20px;align-items:start}
 .ov-name{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;margin-bottom:6px}
 .ov-pct{font-size:36px;font-weight:900;letter-spacing:-2px;line-height:1}
 .ov-pct-lbl{font-size:12px;font-weight:400;color:var(--muted);margin-left:4px}
 .ov-hours{font-size:12px;color:var(--muted);margin-top:4px}
 .kpi-badge{display:inline-block;padding:3px 8px;border-radius:3px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-top:8px}
-.badge-green{background:rgba(0,230,118,.12);color:var(--green)}
-.badge-yellow{background:rgba(255,214,0,.12);color:var(--yellow)}
-.badge-red{background:rgba(255,61,61,.12);color:var(--red)}
-
-/* FEE BOX */
-.ov-fee-box{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px 16px;text-align:right;min-width:160px}
+.badge-green{background:rgba(0,230,118,.12);color:var(--green)}.badge-yellow{background:rgba(255,214,0,.12);color:var(--yellow)}.badge-red{background:rgba(255,61,61,.12);color:var(--red)}
+.ov-fee-box{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px 16px;text-align:right;min-width:170px}
 .ov-fee-label{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px}
-.ov-fee-value{font-size:16px;font-weight:800;letter-spacing:-0.5px;color:var(--orange)}
+.ov-fee-value{font-size:16px;font-weight:800;letter-spacing:-.5px;color:var(--orange)}
 .ov-fee-sub{font-size:9px;color:var(--muted);margin-top:3px}
-
-/* MINI CHART */
 .ov-divider{border:none;border-top:1px solid var(--border);margin:16px 0}
 .ov-chart-title{font-size:9px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px}
 .ov-bars{display:flex;align-items:flex-end;gap:6px;height:72px}
@@ -75,23 +55,36 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
 .ov-bar{width:100%;border-radius:2px 2px 0 0;position:relative;transition:height .5s cubic-bezier(.34,1.56,.64,1)}
 .ov-bar:hover::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 5px);left:50%;transform:translateX(-50%);background:#2A2A2A;color:#fff;padding:3px 7px;border-radius:4px;font-size:9px;white-space:nowrap;z-index:20;pointer-events:none}
 .ov-bar-label{font-size:8px;color:var(--muted);margin-top:4px;text-align:center;text-transform:uppercase;letter-spacing:.3px}
-
 .ov-legend{display:flex;gap:12px;margin-top:10px}
 .ov-leg-item{display:flex;align-items:center;gap:4px;font-size:9px;color:var(--muted)}
 .ov-leg-dot{width:6px;height:6px;border-radius:1px}
 
 /* DETAIL */
-.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
+.kpi-row{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:20px}
+.kpi-row-4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
 .kpi-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 18px}
 .kpi-label{font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px}
-.kpi-value{font-size:22px;font-weight:800;letter-spacing:-1px;line-height:1}
+.kpi-value{font-size:20px;font-weight:800;letter-spacing:-1px;line-height:1}
 .kpi-sub{font-size:10px;color:var(--muted);margin-top:4px}
 
+/* BUDGET CAMPANHA TABLE */
+.camp-table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:18px}
+.camp-table-head{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;border-bottom:1px solid var(--border)}
+.camp-table{width:100%;border-collapse:collapse}
+.camp-table th{text-align:left;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);padding:9px 14px;background:var(--surface2);border-bottom:1px solid var(--border)}
+.camp-table th:not(:first-child){text-align:right}
+.camp-table td{padding:9px 14px;border-bottom:1px solid var(--border);font-size:12px}
+.camp-table td:not(:first-child){text-align:right}
+.camp-table tr:last-child td{border-bottom:none;font-weight:700;background:rgba(255,92,0,.06);color:var(--orange)}
+.camp-table tr:hover td{background:rgba(255,255,255,.02)}
+.camp-name{font-weight:500}
+.edit-input{background:var(--surface2);border:1px solid var(--border);border-radius:4px;color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:4px 8px;width:100px;text-align:right;transition:border-color .15s}
+.edit-input:focus{outline:none;border-color:var(--orange)}
+
+/* HORAS TABLE */
 .charts-row{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:20px}
 .chart-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px}
 .chart-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:16px}
-
-/* VERTICAL BARS */
 .bar-chart{display:flex;align-items:flex-end;gap:8px;height:150px}
 .bar-group{display:flex;flex-direction:column;align-items:center;flex:1}
 .bar-wrap{display:flex;gap:3px;align-items:flex-end;height:120px;width:100%;justify-content:center}
@@ -101,12 +94,11 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
 .bar-label{font-size:8px;color:var(--muted);text-align:center;margin-top:5px;line-height:1.3;font-weight:600;text-transform:uppercase;letter-spacing:.3px}
 .bar-pct{font-size:8px;font-weight:700;margin-top:2px}
 .bar-scope{background:var(--border)}
-
 .legend{display:flex;gap:12px;margin-top:10px;flex-wrap:wrap}
 .legend-item{display:flex;align-items:center;gap:4px;font-size:9px;color:var(--muted)}
 .legend-dot{width:7px;height:7px;border-radius:2px}
 
-/* EDIT TABLE */
+/* HORAS EDIT */
 .edit-wrap{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:18px}
 .edit-head{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;border-bottom:1px solid var(--border)}
 .sec-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--secondary)}
@@ -114,31 +106,22 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
 .edit-table{width:100%;border-collapse:collapse}
 .edit-table th{text-align:left;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);padding:9px 16px;background:var(--surface2);border-bottom:1px solid var(--border)}
 .edit-table td{padding:9px 16px;border-bottom:1px solid var(--border);font-size:12px}
-.edit-table tr:last-child td{border-bottom:none}
-.edit-table tr:hover td{background:rgba(255,255,255,.02)}
-.edit-input{background:var(--surface2);border:1px solid var(--border);border-radius:4px;color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:4px 8px;width:88px;text-align:right;transition:border-color .15s}
-.edit-input:focus{outline:none;border-color:var(--orange)}
+.edit-table tr:last-child td{border-bottom:none}.edit-table tr:hover td{background:rgba(255,255,255,.02)}
+.h-input{background:var(--surface2);border:1px solid var(--border);border-radius:4px;color:var(--text);font-family:'Inter',sans-serif;font-size:11px;padding:4px 8px;width:80px;text-align:right;transition:border-color .15s}
+.h-input:focus{outline:none;border-color:var(--orange)}
 .status-dot{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:6px}
 
-/* IMPORT */
 .import-area{border:1px dashed var(--border);border-radius:10px;padding:20px;text-align:center;margin-bottom:20px;cursor:pointer;transition:border-color .2s}
 .import-area:hover{border-color:var(--orange)}
 .import-text{font-size:12px;color:var(--muted)}.import-text strong{color:var(--orange)}
 .import-hint{font-size:10px;color:var(--muted);margin-top:3px}
 #csvInput{display:none}
-
 .acct-heading{display:flex;align-items:center;gap:12px;margin-bottom:22px}
 .acct-bar{width:4px;height:30px;border-radius:2px}
-
 .toast{position:fixed;bottom:24px;right:24px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:11px 16px;font-size:12px;display:none;z-index:999;box-shadow:0 4px 20px rgba(0,0,0,.4)}
 .toast.show{display:block;animation:fadeIn .2s ease}
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-
-@media(max-width:768px){
-  .ov-grid,.kpi-row,.charts-row{grid-template-columns:1fr}
-  .main{padding:18px 16px}
-  .header,.nav-tabs{padding-left:16px;padding-right:16px}
-}
+@media(max-width:768px){.ov-grid,.kpi-row,.kpi-row-4,.charts-row{grid-template-columns:1fr}.main{padding:18px 16px}.header,.nav-tabs{padding-left:16px;padding-right:16px}}
 </style>
 </head>
 <body>
@@ -170,7 +153,6 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
   <div id="page-risque" class="page">
     <div class="sub-tabs" id="risque-subtabs">
       <button class="sub-tab active" onclick="showSub('risque','base',this)">Base</button>
-      <button class="sub-tab" onclick="showSub('risque','fiscal27',this)">Fiscal 27</button>
       <button class="sub-tab" onclick="showSub('risque','belga',this)">Belga</button>
       <button class="sub-tab" onclick="showSub('risque','desgel',this)">Desgel Secante</button>
     </div>
@@ -190,135 +172,108 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
   <div id="page-oetker" class="page"><div id="oetker-content"></div></div>
   <div id="page-suhai" class="page"><div id="suhai-content"></div></div>
 </main>
-
 <div class="toast" id="toast"></div>
 
 <script>
 // ══════════════════════════════════════════
-// DADOS REAIS — extraídos dos documentos
+// DATA
 // ══════════════════════════════════════════
 const DATA = {
   risque: {
-    feeMensal: 225805,
-    feePeriodo: 'Jul–Dez 2026 (6m)',
-    feeTotal: 1354832,
-    horas: {
-      // t = horas vendidas/mês (65% do time Coty)
-      // v = consumido (placeholder — preencher via import/manual)
-      base: {
-        horas: {
-          Planejamento:  {v:0, t:31},
-          Criação:       {v:0, t:659},
-          'Mídia/BI':    {v:0, t:177},
-          Atendimento:   {v:0, t:143},
-          Operações:     {v:0, t:143},
-        },
-        budget: { Produção:{v:0,t:0}, Mídia:{v:0,t:0}, Influenciadores:{v:0,t:0} }
-      },
-      fiscal27: {
-        horas: { Planejamento:{v:0,t:31}, Criação:{v:0,t:200}, 'Mídia/BI':{v:0,t:60}, Atendimento:{v:0,t:60}, Operações:{v:0,t:30} },
-        budget: { Produção:{v:0,t:0}, Mídia:{v:0,t:0}, Influenciadores:{v:0,t:0} }
-      },
-      belga: {
-        horas: { Planejamento:{v:0,t:20}, Criação:{v:0,t:120}, 'Mídia/BI':{v:0,t:40}, Atendimento:{v:0,t:40}, Operações:{v:0,t:20} },
-        budget: { Produção:{v:0,t:0}, Mídia:{v:0,t:0}, Influenciadores:{v:0,t:0} }
-      },
-      desgel: {
-        horas: { Planejamento:{v:0,t:10}, Criação:{v:0,t:80}, 'Mídia/BI':{v:0,t:20}, Atendimento:{v:0,t:20}, Operações:{v:0,t:10} },
-        budget: { Produção:{v:0,t:0}, Mídia:{v:0,t:0}, Influenciadores:{v:0,t:0} }
-      }
-    }
+    feeMensal:225805, feePeriodo:'Jul–Dez 2026 (6m)', feeTotal:1354832,
+    horas:{
+      // Dados reais: 65% do time Coty (1152h/mês total)
+      base:  {Planejamento:{v:0,t:31}, Criação:{v:0,t:543}, Mídia:{v:0,t:146}, 'Dados/BI':{v:0,t:31}, Atendimento:{v:0,t:372}, Operações:{v:0,t:29}},
+      belga: {Planejamento:{v:0,t:20}, Criação:{v:0,t:120}, Mídia:{v:0,t:40},  'Dados/BI':{v:0,t:15}, Atendimento:{v:0,t:50},  Operações:{v:0,t:10}},
+      desgel:{Planejamento:{v:0,t:10}, Criação:{v:0,t:80},  Mídia:{v:0,t:20},  'Dados/BI':{v:0,t:8},  Atendimento:{v:0,t:25},  Operações:{v:0,t:5}},
+    },
+    campanhas:[
+      {nome:'AON',         midia:0, influenciador:0, producao:0},
+      {nome:'Belga',       midia:0, influenciador:0, producao:0},
+      {nome:'Desgel Sec.', midia:0, influenciador:0, producao:0},
+    ]
   },
   bozzano: {
-    feeMensal: 129919,
-    feePeriodo: 'Jul–Dez 2026 (6m)',
-    feeTotal: 779514,
-    horas: {
-      base: {
-        horas: {
-          Planejamento:  {v:0, t:17},
-          Criação:       {v:0, t:353},
-          'Mídia/BI':    {v:0, t:95},
-          Atendimento:   {v:0, t:77},
-          Operações:     {v:0, t:77},
-        },
-        budget: { Produção:{v:0,t:0}, Mídia:{v:0,t:0}, Influenciadores:{v:0,t:0} }
-      },
-      expert: {
-        horas: { Planejamento:{v:0,t:17}, Criação:{v:0,t:150}, 'Mídia/BI':{v:0,t:50}, Atendimento:{v:0,t:40}, Operações:{v:0,t:40} },
-        budget: { Produção:{v:0,t:0}, Mídia:{v:0,t:0}, Influenciadores:{v:0,t:0} }
-      }
-    }
+    feeMensal:129919, feePeriodo:'Jul–Dez 2026 (6m)', feeTotal:779514,
+    horas:{
+      // Dados reais: 35% do time Coty (620h/mês total)
+      base:   {Planejamento:{v:0,t:17}, Criação:{v:0,t:293}, Mídia:{v:0,t:78}, 'Dados/BI':{v:0,t:17}, Atendimento:{v:0,t:200}, Operações:{v:0,t:15}},
+      expert: {Planejamento:{v:0,t:10}, Criação:{v:0,t:150}, Mídia:{v:0,t:40}, 'Dados/BI':{v:0,t:10}, Atendimento:{v:0,t:60},  Operações:{v:0,t:10}},
+    },
+    campanhas:[
+      {nome:'AON',    midia:0, influenciador:0, producao:0},
+      {nome:'Expert', midia:0, influenciador:0, producao:0},
+    ]
   },
   oetker: {
-    feeMensal: 240000,
-    feePeriodo: 'Jan–Dez 2026 (12m)',
-    feeTotal: 2880000,
-    horas: {
-      base: {
-        horas: {
-          Atendimento:  {v:0, t:368},
-          Operações:    {v:0, t:8},
-          Planejamento: {v:0, t:68},
-          Criação:      {v:0, t:754},
-          Mídia:        {v:0, t:622},
-          Dados:        {v:0, t:352},
-        },
-        budget: { Produção:{v:0,t:0}, Mídia:{v:0,t:0}, Influenciadores:{v:0,t:0} }
-      }
-    }
+    feeMensal:240000, feePeriodo:'Jan–Dez 2026 (12m)', feeTotal:2880000,
+    horas:{
+      // Dados reais: 2172h/mês — Cenário Otimizado
+      base:{Atendimento:{v:0,t:368}, Operações:{v:0,t:8}, Planejamento:{v:0,t:68}, Criação:{v:0,t:754}, Mídia:{v:0,t:622}, Dados:{v:0,t:352}},
+    },
+    campanhas:[
+      {nome:'AON',               midia:3243057.76,  influenciador:1100000.00, producao:330000.00},
+      {nome:'Masterbrand',       midia:13320000.00, influenciador:722000.00,  producao:461413.00},
+      {nome:'Natal',             midia:3850000.00,  influenciador:0,          producao:200000.00},
+      {nome:'Gelatina Core',     midia:6200000.00,  influenciador:0,          producao:450000.00},
+      {nome:'Gelatina Fini',     midia:716400.00,   influenciador:83600.00,   producao:56000.00},
+      {nome:'BPM Bolinho',       midia:3917522.00,  influenciador:421100.00,  producao:17685.39},
+      {nome:'Gelatina Cremosa',  midia:3000000.00,  influenciador:0,          producao:300000.00},
+      {nome:'Linha Airfryer',    midia:0,           influenciador:0,          producao:0},
+      {nome:'BPM Docinho Salga', midia:0,           influenciador:0,          producao:500000.00},
+      {nome:'Power Jelly',       midia:0,           influenciador:0,          producao:0},
+    ]
   },
   suhai: {
-    feeMensal: 285526,
-    feePeriodo: 'Mai–Dez 2026 (8m)',
-    feeTotal: 2284208,
-    horas: {
-      base: {
-        horas: {
-          Atendimento:  {v:0, t:308},
-          Operações:    {v:0, t:44},
-          Planejamento: {v:0, t:100},
-          Criação:      {v:0, t:724},
-          'Mídia/BI':   {v:0, t:200},
-        },
-        budget: { Produção:{v:0,t:0}, Mídia:{v:0,t:0}, Influenciadores:{v:0,t:0} }
-      }
-    }
+    feeMensal:285526, feePeriodo:'Mai–Dez 2026 (8m)', feeTotal:2284208,
+    horas:{
+      // Dados reais: 1376h/mês
+      base:{Atendimento:{v:0,t:308}, Operações:{v:0,t:44}, Planejamento:{v:0,t:100}, Criação:{v:0,t:724}, 'Mídia/BI':{v:0,t:200}},
+    },
+    campanhas:[
+      {nome:'Histórias de Acordar', midia:0, influenciador:0, producao:0},
+      {nome:'Podcast (5 ep.)',      midia:0, influenciador:0, producao:0},
+      {nome:'Ativações',            midia:0, influenciador:0, producao:0},
+    ]
   }
 };
 
-const LABELS = {risque:'Risqué', bozzano:'Bozzano', oetker:'Dr. Oetker', suhai:'Suhai'};
-const COLORS = {risque:'#E91E8C', bozzano:'#2196F3', oetker:'#FF9800', suhai:'#9C27B0'};
-const SUBS   = {risque:['base','fiscal27','belga','desgel'], bozzano:['base','expert'], oetker:['base'], suhai:['base']};
+const LABELS={risque:'Risqué',bozzano:'Bozzano',oetker:'Dr. Oetker',suhai:'Suhai'};
+const COLORS={risque:'#E91E8C',bozzano:'#2196F3',oetker:'#FF9800',suhai:'#9C27B0'};
+const SUBS={risque:['base','belga','desgel'],bozzano:['base','expert'],oetker:['base'],suhai:['base']};
 
 // helpers
-const pct   = (v,t) => t>0 ? Math.min(Math.round((v/t)*100),100) : 0;
-const sCol  = p => p>=90?'var(--red)':p>=70?'var(--yellow)':'var(--green)';
-const sCls  = p => p>=90?'badge-red':p>=70?'badge-yellow':'badge-green';
-const sLbl  = p => p>=90?'⚠ Crítico':p>=70?'◉ Atenção':'✓ Saudável';
-const fmtR  = v => 'R$\u00A0'+Math.round(v).toLocaleString('pt-BR');
-const fmtH  = v => v+'h';
+const pct=(v,t)=>t>0?Math.min(Math.round((v/t)*100),100):0;
+const sCol=p=>p>=90?'var(--red)':p>=70?'var(--yellow)':'var(--green)';
+const sCls=p=>p>=90?'badge-red':p>=70?'badge-yellow':'badge-green';
+const sLbl=p=>p>=90?'⚠ Crítico':p>=70?'◉ Atenção':'✓ Saudável';
+const fmtR=v=>v===0?'R$\u00A0—':'R$\u00A0'+Math.round(v).toLocaleString('pt-BR');
+const fmtRFull=v=>v>0?'R$\u00A0'+v.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}):'R$\u00A0—';
 
-function totalHorasConta(acct) {
+function totalHoras(acct){
   let v=0,t=0;
-  SUBS[acct].forEach(sub => Object.values(DATA[acct].horas[sub].horas).forEach(h=>{v+=h.v;t+=h.t}));
-  return {v,t};
+  SUBS[acct].forEach(sub=>Object.values(DATA[acct].horas[sub]).forEach(h=>{v+=h.v;t+=h.t}));
+  return{v,t};
 }
-
-function horasPorAreaConta(acct) {
+function horasPorArea(acct){
   const areas={};
-  SUBS[acct].forEach(sub => Object.entries(DATA[acct].horas[sub].horas).forEach(([a,h])=>{
+  SUBS[acct].forEach(sub=>Object.entries(DATA[acct].horas[sub]).forEach(([a,h])=>{
     if(!areas[a]) areas[a]={v:0,t:0};
     areas[a].v+=h.v; areas[a].t+=h.t;
   }));
   return areas;
 }
-
-function showToast(msg){
-  const el=document.getElementById('toast');
-  el.textContent=msg; el.classList.add('show');
-  setTimeout(()=>el.classList.remove('show'),2200);
+function budgetTotais(acct){
+  const camps=DATA[acct].campanhas;
+  return{
+    midia:        camps.reduce((s,c)=>s+c.midia,0),
+    influenciador:camps.reduce((s,c)=>s+c.influenciador,0),
+    producao:     camps.reduce((s,c)=>s+c.producao,0),
+    total:        camps.reduce((s,c)=>s+c.midia+c.influenciador+c.producao,0),
+  };
 }
+
+function showToast(msg){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2200)}
 
 // NAV
 function showPage(id,btn){
@@ -332,13 +287,11 @@ function showPage(id,btn){
   else if(id==='oetker')  renderDetail('oetker','base');
   else if(id==='suhai')   renderDetail('suhai','base');
 }
-
 function showSub(acct,sub,btn){
   document.querySelectorAll('#'+acct+'-subtabs .sub-tab').forEach(t=>t.classList.remove('active'));
   btn.classList.add('active');
   renderSub(acct,sub);
 }
-
 function goToAcct(acct){
   const map={risque:1,bozzano:2,oetker:3,suhai:4};
   document.querySelectorAll('.nav-tab')[map[acct]].click();
@@ -351,13 +304,14 @@ function renderOverview(){
   const grid=document.getElementById('ov-grid');
   let html='';
   Object.keys(LABELS).forEach(acct=>{
-    const tot=totalHorasConta(acct);
+    const tot=totalHoras(acct);
     const p=pct(tot.v,tot.t);
     const color=COLORS[acct];
     const d=DATA[acct];
-    const areas=horasPorAreaConta(acct);
+    const areas=horasPorArea(acct);
     const aKeys=Object.keys(areas);
     const maxT=Math.max(...aKeys.map(a=>areas[a].t),1);
+    const bud=budgetTotais(acct);
 
     let bars='';
     aKeys.forEach(area=>{
@@ -386,8 +340,12 @@ function renderOverview(){
         <div class="ov-fee-box">
           <div class="ov-fee-label">Fee Mensal</div>
           <div class="ov-fee-value">${fmtR(d.feeMensal)}</div>
-          <div class="ov-fee-sub">Fee total: ${fmtR(d.feeTotal)}</div>
+          <div class="ov-fee-sub">Total contrato: ${fmtR(d.feeTotal)}</div>
           <div class="ov-fee-sub" style="margin-top:2px">${d.feePeriodo}</div>
+          ${bud.total>0?`<div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border)">
+            <div class="ov-fee-label">Budget Total</div>
+            <div style="font-size:13px;font-weight:700;color:var(--text)">${fmtR(bud.total)}</div>
+          </div>`:''}
         </div>
       </div>
       <hr class="ov-divider">
@@ -408,50 +366,65 @@ function renderOverview(){
 // ══════════════════════════════════════════
 // DETAIL
 // ══════════════════════════════════════════
-function renderDetail(acct,sub){ document.getElementById(acct+'-content').innerHTML=buildDetail(acct,sub); animateBars(); }
-function renderSub(acct,sub){ document.getElementById(acct+'-content').innerHTML=buildDetail(acct,sub); animateBars(); }
+function renderDetail(acct,sub){document.getElementById(acct+'-content').innerHTML=buildDetail(acct,sub);animateBars()}
+function renderSub(acct,sub){document.getElementById(acct+'-content').innerHTML=buildDetail(acct,sub);animateBars()}
 
 function buildDetail(acct,sub){
   const d=DATA[acct];
-  const sd=d.horas[sub];
-  const horas=sd.horas;
-  const budget=sd.budget;
-  const aKeys=Object.keys(horas);
-  const bKeys=Object.keys(budget);
+  const horas=d.horas[sub];
   const color=COLORS[acct];
-
+  const aKeys=Object.keys(horas);
   let totV=0,totT=0;
   aKeys.forEach(a=>{totV+=horas[a].v;totT+=horas[a].t});
   const totP=pct(totV,totT);
-
-  let budV=0,budT=0;
-  bKeys.forEach(a=>{budV+=budget[a].v;budT+=budget[a].t});
+  const bud=budgetTotais(acct);
 
   const subLbls={base:'',fiscal27:' · Fiscal 27',belga:' · Belga',desgel:' · Desgel Secante',expert:' · Expert'};
   const label=LABELS[acct]+(subLbls[sub]||'');
 
-  // KPI
-  const kpi=`<div class="kpi-row">
+  // KPI row — horas + fee
+  const kpiTop=`<div class="kpi-row-4">
     <div class="kpi-card">
       <div class="kpi-label">Horas Consumidas</div>
-      <div class="kpi-value" style="color:${sCol(totP)}">${fmtH(totV)}</div>
+      <div class="kpi-value" style="color:${sCol(totP)}">${totV}h</div>
       <div class="kpi-sub">de ${totT}h/mês vendidas</div>
       <span class="kpi-badge ${sCls(totP)}" style="margin-top:8px;display:inline-block">${sLbl(totP)}</span>
     </div>
     <div class="kpi-card">
       <div class="kpi-label">Horas Disponíveis</div>
-      <div class="kpi-value">${fmtH(totT-totV)}</div>
+      <div class="kpi-value">${totT-totV}h</div>
       <div class="kpi-sub">restantes no escopo</div>
     </div>
     <div class="kpi-card">
       <div class="kpi-label">Fee Mensal</div>
-      <div class="kpi-value" style="font-size:16px;color:var(--orange)">${fmtR(d.feeMensal)}</div>
+      <div class="kpi-value" style="font-size:15px;color:var(--orange)">${fmtR(d.feeMensal)}</div>
       <div class="kpi-sub">${d.feePeriodo}</div>
     </div>
     <div class="kpi-card">
       <div class="kpi-label">Fee Total Contrato</div>
-      <div class="kpi-value" style="font-size:16px">${fmtR(d.feeTotal)}</div>
+      <div class="kpi-value" style="font-size:15px">${fmtR(d.feeTotal)}</div>
       <div class="kpi-sub">${totP}% escopo consumido</div>
+    </div>
+  </div>`;
+
+  // KPI budget — calculado ao vivo dos campanhas
+  const kpiBud=`<div class="kpi-row" style="grid-template-columns:repeat(4,1fr);margin-bottom:20px">
+    <div class="kpi-card" style="border-color:rgba(255,92,0,.3)">
+      <div class="kpi-label">Budget Total</div>
+      <div class="kpi-value" style="font-size:15px;color:var(--orange)" id="${acct}-bud-total">${fmtR(bud.total)}</div>
+      <div class="kpi-sub">soma de todas campanhas</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Mídia</div>
+      <div class="kpi-value" style="font-size:15px" id="${acct}-bud-midia">${fmtR(bud.midia)}</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Influenciadores</div>
+      <div class="kpi-value" style="font-size:15px" id="${acct}-bud-inf">${fmtR(bud.influenciador)}</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Produção</div>
+      <div class="kpi-value" style="font-size:15px" id="${acct}-bud-prod">${fmtR(bud.producao)}</div>
     </div>
   </div>`;
 
@@ -472,20 +445,22 @@ function buildDetail(acct,sub){
     </div>`;
   });
 
-  // Barras budget
-  const maxB=Math.max(...bKeys.map(a=>budget[a].t),1);
-  let budgetBars='';
-  bKeys.forEach(a=>{
-    const ap=pct(budget[a].v,budget[a].t);
-    const hT=budget[a].t>0?Math.max(Math.round((budget[a].t/maxB)*115),3):28;
-    const hV=budget[a].v>0?Math.max(Math.round((budget[a].v/maxB)*115),2):0;
-    budgetBars+=`<div class="bar-group">
+  // Barras budget (por frente)
+  const maxB=Math.max(bud.midia,bud.influenciador,bud.producao,1);
+  const budFrentes=[
+    {nome:'Mídia',         val:bud.midia},
+    {nome:'Influenciadores',val:bud.influenciador},
+    {nome:'Produção',      val:bud.producao},
+  ];
+  let budBars='';
+  budFrentes.forEach(f=>{
+    const hB=f.val>0?Math.max(Math.round((f.val/maxB)*115),4):0;
+    budBars+=`<div class="bar-group">
       <div class="bar-wrap">
-        <div class="bar-col"><div class="bar bar-scope" style="height:${hT}px" data-tip="Contratado: ${budget[a].t>0?fmtR(budget[a].t):'—'}"></div></div>
-        <div class="bar-col"><div class="bar" style="height:0px;background:${budget[a].v>0?sCol(ap):'var(--border)'}" data-height="${hV}" data-tip="${budget[a].v>0?fmtR(budget[a].v)+' ('+ap+'%)':'Sem dados'}"></div></div>
+        <div class="bar-col" style="max-width:40px"><div class="bar" style="height:0px;background:var(--orange)" data-height="${hB}" data-tip="${f.nome}: ${fmtRFull(f.val)}"></div></div>
       </div>
-      <div class="bar-label">${a}</div>
-      <div class="bar-pct" style="color:${budget[a].t>0?sCol(ap):'var(--muted)'}">${budget[a].t>0?ap+'%':'—'}</div>
+      <div class="bar-label">${f.nome.substring(0,3).toUpperCase()}</div>
+      <div class="bar-pct" style="color:var(--orange)">${bud.total>0?Math.round((f.val/bud.total)*100)+'%':'—'}</div>
     </div>`;
   });
 
@@ -495,35 +470,45 @@ function buildDetail(acct,sub){
     const ap=pct(horas[a].v,horas[a].t);
     rowsH+=`<tr>
       <td><span class="status-dot" style="background:${sCol(ap)}"></span>${a}</td>
-      <td><input class="edit-input" type="number" min="0" value="${horas[a].v}" onchange="updateH('${acct}','${sub}','${a}','v',this.value)"/></td>
-      <td style="color:var(--muted)">${horas[a].t}h <span style="font-size:9px">(fixo)</span></td>
+      <td><input class="h-input" type="number" min="0" value="${horas[a].v}" onchange="updateH('${acct}','${sub}','${a}',this.value)"/></td>
+      <td style="color:var(--muted)">${horas[a].t}h</td>
       <td style="color:${sCol(ap)};font-weight:700">${ap}%</td>
       <td><span class="kpi-badge ${sCls(ap)}">${sLbl(ap)}</span></td>
     </tr>`;
   });
 
-  // Tabela budget
-  let rowsB='';
-  bKeys.forEach(a=>{
-    const ap=pct(budget[a].v,budget[a].t);
-    rowsB+=`<tr>
-      <td><span class="status-dot" style="background:${budget[a].t>0?sCol(ap):'var(--border)'}"></span>${a}</td>
-      <td><input class="edit-input" type="number" min="0" value="${budget[a].v}" onchange="updateB('${acct}','${sub}','${a}','v',this.value)"/></td>
-      <td><input class="edit-input" type="number" min="0" value="${budget[a].t}" onchange="updateB('${acct}','${sub}','${a}','t',this.value)"/></td>
-      <td style="color:${budget[a].t>0?sCol(ap):'var(--muted)'};font-weight:700">${budget[a].t>0?ap+'%':'—'}</td>
-      <td>${budget[a].t>0?`<span class="kpi-badge ${sCls(ap)}">${sLbl(ap)}</span>`:'<span style="color:var(--muted);font-size:10px">Inserir</span>'}</td>
+  // Tabela campanhas/budget
+  let rowsC='';
+  d.campanhas.forEach((c,i)=>{
+    const tot=c.midia+c.influenciador+c.producao;
+    rowsC+=`<tr>
+      <td class="camp-name">${c.nome}</td>
+      <td><input class="edit-input" type="number" min="0" step="0.01" value="${c.midia||''}" placeholder="0" onchange="updateBud('${acct}',${i},'midia',this.value)"/></td>
+      <td><input class="edit-input" type="number" min="0" step="0.01" value="${c.influenciador||''}" placeholder="0" onchange="updateBud('${acct}',${i},'influenciador',this.value)"/></td>
+      <td><input class="edit-input" type="number" min="0" step="0.01" value="${c.producao||''}" placeholder="0" onchange="updateBud('${acct}',${i},'producao',this.value)"/></td>
+      <td style="font-weight:600">${tot>0?fmtRFull(tot):'—'}</td>
     </tr>`;
   });
+
+  // Totais
+  rowsC+=`<tr>
+    <td>TOTAL</td>
+    <td>${fmtRFull(bud.midia)}</td>
+    <td>${fmtRFull(bud.influenciador)}</td>
+    <td>${fmtRFull(bud.producao)}</td>
+    <td>${fmtRFull(bud.total)}</td>
+  </tr>`;
 
   return `
     <div class="acct-heading">
       <div class="acct-bar" style="background:${color}"></div>
       <div>
         <div style="font-size:18px;font-weight:800;letter-spacing:-.5px">${label}</div>
-        <div style="font-size:11px;color:var(--muted);margin-top:2px">Horas por área · sem dados de pessoa · consumido vs. vendido</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:2px">Horas por área · Budget por campanha · sem nomes de pessoas</div>
       </div>
     </div>
-    ${kpi}
+    ${kpiTop}
+    ${kpiBud}
     <div class="charts-row">
       <div class="chart-card">
         <div class="chart-title">Horas por Área — Consumido vs. Vendido</div>
@@ -536,64 +521,88 @@ function buildDetail(acct,sub){
         </div>
       </div>
       <div class="chart-card">
-        <div class="chart-title">Budget por Categoria</div>
-        <div class="bar-chart">${budgetBars}</div>
+        <div class="chart-title">Budget por Frente</div>
+        <div class="bar-chart">${budBars}</div>
         <div class="legend">
-          <div class="legend-item"><div class="legend-dot" style="background:var(--border)"></div>Contratado</div>
-          <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div>Consumido</div>
+          <div class="legend-item"><div class="legend-dot" style="background:var(--orange)"></div>Mídia · Influenciadores · Produção</div>
         </div>
       </div>
     </div>
     <div class="edit-wrap">
       <div class="edit-head">
         <span class="sec-title">✏ Horas consumidas por área</span>
-        <span class="sec-hint">Horas vendidas são fixas do contrato · insira o consumido</span>
+        <span class="sec-hint">Horas vendidas são fixas · insira o consumido</span>
       </div>
       <table class="edit-table">
         <thead><tr><th>Área</th><th>Consumido (h)</th><th>Vendido (h)</th><th>%</th><th>Status</th></tr></thead>
         <tbody>${rowsH}</tbody>
       </table>
     </div>
-    <div class="edit-wrap">
-      <div class="edit-head">
-        <span class="sec-title">✏ Budget por categoria</span>
-        <span class="sec-hint">Valores em R$</span>
+    <div class="camp-table-wrap">
+      <div class="camp-table-head">
+        <span class="sec-title">✏ Budget por Campanha</span>
+        <span class="sec-hint">Valores em R$ · total atualiza automaticamente</span>
       </div>
-      <table class="edit-table">
-        <thead><tr><th>Categoria</th><th>Consumido (R$)</th><th>Contratado (R$)</th><th>%</th><th>Status</th></tr></thead>
-        <tbody>${rowsB}</tbody>
+      <table class="camp-table">
+        <thead><tr><th>Campanha</th><th>Mídia (R$)</th><th>Influenciadores (R$)</th><th>Produção (R$)</th><th>Total</th></tr></thead>
+        <tbody>${rowsC}</tbody>
       </table>
     </div>
     <div class="import-area" onclick="document.getElementById('csvInput').click()">
       <div style="font-size:20px;margin-bottom:6px">📂</div>
-      <div class="import-text">Clique para <strong>importar CSV</strong> · horas consumidas por área</div>
-      <div class="import-hint">Formato: Área, Consumido — as horas vendidas já estão no sistema</div>
+      <div class="import-text">Clique para <strong>importar CSV</strong></div>
+      <div class="import-hint">Horas: Área, Consumido · Budget: Campanha, Mídia, Influenciadores, Produção</div>
     </div>`;
 }
 
 // ══════════════════════════════════════════
-// UPDATE & REFRESH
+// UPDATE
 // ══════════════════════════════════════════
-function updateH(acct,sub,area,key,val){
-  DATA[acct].horas[sub].horas[area][key]=parseFloat(val)||0;
-  refreshCharts(acct,sub);
+function updateH(acct,sub,area,val){
+  DATA[acct].horas[sub][area].v=parseFloat(val)||0;
+  refreshDetail(acct,sub);
 }
-function updateB(acct,sub,area,key,val){
-  DATA[acct].horas[sub].budget[area][key]=parseFloat(val)||0;
-  refreshCharts(acct,sub);
+
+function updateBud(acct,idx,campo,val){
+  DATA[acct].campanhas[idx][campo]=parseFloat(val)||0;
+  refreshBudKPI(acct);
+  refreshBudBars(acct);
 }
-function refreshCharts(acct,sub){
+
+function refreshBudKPI(acct){
+  const bud=budgetTotais(acct);
+  const el=id=>document.getElementById(acct+'-bud-'+id);
+  if(el('total'))  el('total').textContent =fmtR(bud.total);
+  if(el('midia'))  el('midia').textContent =fmtR(bud.midia);
+  if(el('inf'))    el('inf').textContent   =fmtR(bud.influenciador);
+  if(el('prod'))   el('prod').textContent  =fmtR(bud.producao);
+}
+
+function refreshBudBars(acct){
+  const bud=budgetTotais(acct);
+  const maxB=Math.max(bud.midia,bud.influenciador,bud.producao,1);
+  const vals=[bud.midia,bud.influenciador,bud.producao];
+  document.querySelectorAll('.bar[data-height]').forEach((b,i)=>{
+    if(i<vals.length){
+      const h=vals[i]>0?Math.max(Math.round((vals[i]/maxB)*115),4):0;
+      b.setAttribute('data-height',h);
+      b.style.height=h+'px';
+    }
+  });
+}
+
+function refreshDetail(acct,sub){
   const el=document.getElementById(acct+'-content');
   if(!el) return;
   const tmp=document.createElement('div');
   tmp.innerHTML=buildDetail(acct,sub);
-  const newKpi=tmp.querySelector('.kpi-row');
-  const oldKpi=el.querySelector('.kpi-row');
+  // atualiza só horas (KPI top + barras), preserva inputs budget
+  const newKpi=tmp.querySelector('.kpi-row-4');
+  const oldKpi=el.querySelector('.kpi-row-4');
   if(newKpi&&oldKpi) oldKpi.replaceWith(newKpi);
-  tmp.querySelectorAll('.chart-card').forEach((c,i)=>{
-    const old=el.querySelectorAll('.chart-card')[i];
-    if(old) old.replaceWith(c);
-  });
+  const newCharts=tmp.querySelectorAll('.chart-card');
+  const oldCharts=el.querySelectorAll('.chart-card');
+  if(newCharts[0]&&oldCharts[0]) oldCharts[0].replaceWith(newCharts[0]);
   animateBars();
 }
 
@@ -610,7 +619,7 @@ function animateBars(){
 }
 
 // ══════════════════════════════════════════
-// CSV IMPORT
+// CSV
 // ══════════════════════════════════════════
 function importCSV(event){
   const file=event.target.files[0];
@@ -619,16 +628,13 @@ function importCSV(event){
   reader.onload=e=>{
     const lines=e.target.result.trim().split('\n');
     let imported=0;
+    const activeTab=document.querySelector('.nav-tab.active');
+    const txt=activeTab?activeTab.textContent.toLowerCase():'';
+    const acct=txt.includes('risq')?'risque':txt.includes('bozz')?'bozzano':txt.includes('oet')?'oetker':'suhai';
     lines.slice(1).forEach(line=>{
       const cols=line.split(',').map(c=>c.trim());
-      if(cols.length>=2){
-        const activeTab=document.querySelector('.nav-tab.active');
-        const txt=activeTab?activeTab.textContent.toLowerCase():'';
-        const acct=txt.includes('risq')?'risque':txt.includes('bozz')?'bozzano':txt.includes('oet')?'oetker':'suhai';
-        const area=cols[0], v=parseFloat(cols[1]);
-        if(DATA[acct]&&DATA[acct].horas.base.horas[area]!==undefined){
-          DATA[acct].horas.base.horas[area].v=v; imported++;
-        }
+      if(cols.length>=2&&DATA[acct].horas.base[cols[0]]!==undefined){
+        DATA[acct].horas.base[cols[0]].v=parseFloat(cols[1])||0; imported++;
       }
     });
     showToast('✓ '+imported+' registros importados');
@@ -642,12 +648,12 @@ function importCSV(event){
 // SAVE / LOAD
 // ══════════════════════════════════════════
 function saveAll(){
-  try{ localStorage.setItem('n3_v3',JSON.stringify(DATA)); showToast('✓ Salvo com sucesso'); }
-  catch(e){ showToast('⚠ Erro ao salvar'); }
+  try{localStorage.setItem('n3_v4',JSON.stringify(DATA));showToast('✓ Salvo com sucesso')}
+  catch(e){showToast('⚠ Erro ao salvar')}
 }
 function loadSaved(){
   try{
-    const s=localStorage.getItem('n3_v3');
+    const s=localStorage.getItem('n3_v4');
     if(!s) return;
     const p=JSON.parse(s);
     Object.keys(p).forEach(acct=>{
@@ -655,6 +661,7 @@ function loadSaved(){
       if(p[acct].horas) Object.keys(p[acct].horas).forEach(sub=>{
         if(DATA[acct].horas[sub]) DATA[acct].horas[sub]=p[acct].horas[sub];
       });
+      if(p[acct].campanhas) DATA[acct].campanhas=p[acct].campanhas;
     });
   }catch(e){}
 }
