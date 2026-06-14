@@ -1,49 +1,739 @@
-N3 Dashboard — Ampfy
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>N3 Dashboard — Ampfy</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root {
+  --am: #FFD600; --pr: #111; --ce: #1E1E1E; --cm: #2A2A2A; --cl: #333;
+  --br: #FFFFFF; --vd: #4CAF50; --lr: #FF9800; --vm: #F44336; --az: #2196F3;
+  --tx: #E0E0E0; --dm: #888888;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--pr);color:var(--tx);font-family:'Inter','Arial',sans-serif;min-height:100vh}
+header{background:var(--ce);border-bottom:2px solid var(--am);padding:14px 28px;display:flex;align-items:center;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-box{background:var(--am);color:var(--pr);font-weight:900;font-size:12px;padding:4px 8px;letter-spacing:1px}
+.logo-txt{font-size:14px;font-weight:600;color:var(--br)}
+.logo-sub{font-size:10px;color:var(--dm);margin-top:2px}
+.badge{background:var(--cl);border:1px solid #444;padding:5px 12px;border-radius:4px;font-size:11px;color:var(--dm)}
+.tabs{display:flex;background:var(--ce);border-bottom:1px solid #222;padding:0 28px}
+.tab{padding:13px 18px;font-size:13px;font-weight:500;cursor:pointer;color:var(--dm);border-bottom:3px solid transparent;transition:all .2s;white-space:nowrap}
+.tab:hover{color:var(--br)}
+.tab.on{color:var(--am);border-bottom-color:var(--am)}
+#filtros{background:var(--ce);border-bottom:1px solid #222;padding:10px 28px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.flbl{font-size:10px;color:var(--dm);text-transform:uppercase;letter-spacing:1px}
+select{background:var(--cm);border:1px solid #3a3a3a;color:var(--tx);padding:5px 10px;border-radius:4px;font-size:12px;cursor:pointer;outline:none}
+select:focus{border-color:var(--am)}
+.fsep{width:1px;height:22px;background:#333}
+.page{padding:22px 28px;display:none}
+.page.on{display:block}
+/* KPI */
+.krow{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-bottom:20px}
+.kpi{background:var(--ce);border:1px solid #222;border-radius:6px;padding:14px}
+.kpi.am{border-top:3px solid var(--am)}
+.kpi.vd{border-top:3px solid var(--vd)}
+.kpi.lr{border-top:3px solid var(--lr)}
+.kpi.vm{border-top:3px solid var(--vm)}
+.kpi.gr{border-top:3px solid #555}
+.klbl{font-size:9px;color:var(--dm);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+.kval{font-size:22px;font-weight:700;color:var(--br)}
+.ksub{font-size:10px;color:var(--dm);margin-top:3px}
+/* secao */
+.stitle{font-size:10px;font-weight:700;color:var(--dm);text-transform:uppercase;letter-spacing:2px;margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid #222}
+/* barra */
+.brow{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #1a1a1a}
+.brow:last-child{border:none}
+.bnome{font-size:12px;color:var(--tx);min-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bnome span{font-size:10px;color:var(--dm);display:block;margin-top:2px}
+.btrack{flex:1;background:#1e1e1e;border-radius:3px;height:9px}
+.bfill{height:100%;border-radius:3px;min-width:2px}
+.bfill.vd{background:var(--vd)}
+.bfill.lr{background:var(--lr)}
+.bfill.vm{background:var(--vm)}
+.bfill.az{background:var(--az)}
+.bnum{font-size:11px;color:var(--dm);min-width:70px;text-align:right}
+.bpct{font-size:11px;font-weight:700;min-width:38px;text-align:right}
+/* badge */
+.bdg{font-size:10px;font-weight:700;padding:2px 7px;border-radius:3px;display:inline-block}
+.bdg.vd{background:#1a3a1a;color:var(--vd)}
+.bdg.lr{background:#3a2a0a;color:var(--lr)}
+.bdg.vm{background:#3a1a1a;color:var(--vm)}
+.bdg.gr{background:#222;color:#888}
+/* card cliente */
+.cgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;margin-bottom:20px}
+.ccard{background:var(--ce);border:1px solid #222;border-radius:6px;padding:18px;cursor:pointer;transition:border-color .2s}
+/* scroll */
+.sbox{max-height:500px;overflow-y:auto}
+.sbox::-webkit-scrollbar{width:3px}
+.sbox::-webkit-scrollbar-thumb{background:#444;border-radius:2px}
+/* chip area */
+.chip{display:inline-block;padding:2px 9px;border-radius:10px;font-size:9px;font-weight:700;letter-spacing:.5px}
+.chip-C{background:#2a1a3a;color:#BB86FC}
+.chip-M{background:#0a2a3a;color:#82D7F5}
+.chip-B{background:#1a2a0a;color:#A5D6A7}
+.chip-P{background:#3a2a0a;color:#FFD54F}
+.chip-A{background:#3a1a0a;color:#FFAB76}
+.chip-O{background:#1a1a3a;color:#90CAF9}
+/* meses */
+.mgrid{display:grid;grid-template-columns:repeat(12,1fr);gap:4px;margin-bottom:20px}
+.mchip{background:var(--cm);border:1px solid #333;border-radius:4px;padding:7px 3px;text-align:center;cursor:pointer;transition:all .2s}
+.mchip:hover,.mchip.on{background:var(--am);border-color:var(--am)}
+.mchip:hover .mn,.mchip.on .mn{color:var(--pr)}
+.mchip:hover .mh,.mchip.on .mh{color:var(--pr);opacity:.7}
+.mn{font-size:10px;font-weight:600;color:var(--br)}
+.mh{font-size:9px;color:var(--dm);margin-top:2px}
+/* resumo card */
+.rcrd{background:var(--ce);border:1px solid #222;border-radius:6px;padding:18px}
+.ritem{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #1e1e1e;font-size:12px}
+.ritem:last-child{border:none;font-weight:700;color:var(--am)}
+.rilbl{color:var(--dm)}
+.rival{color:var(--br);font-variant-numeric:tabular-nums}
+/* budget nav */
+.bnav{display:flex;align-items:center;gap:10px;margin-bottom:18px}
+.btnav{background:var(--cm);border:1px solid #444;color:var(--tx);padding:6px 13px;border-radius:4px;cursor:pointer;font-size:12px}
+.btitle{font-size:15px;font-weight:700;color:var(--br)}
+/* budget campanha item */
+.bcitem{background:var(--ce);border:1px solid #222;border-radius:6px;padding:14px 18px;margin-bottom:7px;cursor:pointer;display:flex;align-items:center;gap:14px;transition:border-color .2s}
+.bcitem:hover{border-color:#CC0000}
+/* tabela */
+.tbl{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:20px}
+.tbl th{background:var(--cm);color:var(--am);font-size:9px;text-transform:uppercase;letter-spacing:1px;padding:9px 11px;text-align:left;border-bottom:1px solid #333}
+.tbl td{padding:9px 11px;border-bottom:1px solid #1a1a1a;vertical-align:middle}
+.tbl tr:last-child td{border:none;font-weight:700;color:var(--am);background:#1a1a00}
+.tbl tr:hover td{background:#1e1e1e}
+.num{text-align:right;font-variant-numeric:tabular-nums}
+.inp{background:#1a1800;border:1px solid #443300;color:var(--am);padding:4px 8px;border-radius:3px;width:120px;text-align:right;font-size:12px;outline:none}
+.inp:focus{border-color:var(--am)}
+/* alert */
+.alert{background:#2a1a00;border:1px solid #664400;border-radius:5px;padding:10px 14px;font-size:12px;color:#ffbb66;margin-bottom:14px}
+/* frente tabs */
+.ftabs{display:flex;gap:7px;margin-bottom:14px;flex-wrap:wrap}
+.ftab{border:1px solid #444;padding:5px 13px;border-radius:4px;cursor:pointer;font-size:11px;font-weight:600;background:var(--cm);color:var(--tx)}
+.ftab.on{background:var(--am);border-color:var(--am);color:var(--pr)}
+/* status badge colors */
+.s-fat{background:#0a2a0a;color:#4CAF50}
+.s-apo{background:#2a1a0a;color:#FF9800}
+.s-anf{background:#1a1a2a;color:#64B5F6}
+.s-pre{background:#1a1a1a;color:#888}
+/* barra dupla budget */
+.bdbl{margin-bottom:20px}
+.bdbl-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.bdbl-nm{font-size:12px;font-weight:700}
+.bdbl-sd{font-size:11px;color:var(--dm)}
+.bline{display:flex;align-items:center;gap:9px;margin-bottom:5px}
+.blbl{font-size:10px;color:var(--dm);min-width:65px;text-align:right}
+.bbar{flex:1;background:#1a1a1a;border-radius:4px;height:11px;overflow:hidden}
+.bbarfill{height:100%;border-radius:4px;transition:width .4s}
+.bval{font-size:11px;min-width:140px;text-align:right;font-variant-numeric:tabular-nums}
+</style>
+</head>
+<body>
 
-ampfy
-N3 — Núcleo Operacional
-Dashboard de Consumo de Horas · 2026
-Timesheet: Jan–Jul 2026
-Resumo N3
-Por Pessoa
-Por Cliente
-Por Área
-Budget
-FILTROS
-    Todos os meses
-    Janeiro
-    Fevereiro
-    Março
-    Abril
-    Maio
-    Junho
-    Julho
-  
+<header>
+  <div class="logo">
+    <div class="logo-box">ampfy</div>
+    <div>
+      <div class="logo-txt">N3 — Núcleo Operacional</div>
+      <div class="logo-sub">Dashboard de Consumo de Horas · 2026</div>
+    </div>
+  </div>
+  <div class="badge">Timesheet: Jan–Jul 2026</div>
+</header>
 
-    Todas as áreas
-    Atendimento
-    Criação
-    Mídia
-    Planejamento
-    BI / Dados
-    Operações
-  
+<div class="tabs">
+  <div class="tab on" onclick="goTab('resumo',this)">Resumo N3</div>
+  <div class="tab" onclick="goTab('pessoas',this)">Por Pessoa</div>
+  <div class="tab" onclick="goTab('clientes',this)">Por Cliente</div>
+  <div class="tab" onclick="goTab('areas',this)">Por Área</div>
+  <div class="tab" onclick="goTab('budget',this)">Budget</div>
+</div>
 
-    Todas as pessoas
-  
-CONTRATOS ATIVOS — FEE ANUAL 2026
-Dr. Oetker (Jan–Dez)
-R$ 2.880.000
-Suhai (Mai–Dez)
-R$ 2.284.208
-Coty Fee Principal (Jul–Dez)
-R$ 1.917.746
-Coty Fee CM (Jul–Dez)
-R$ 216.601
-Total Fee N3 2026
-R$ 7.298.555
-HORAS CONTRATADAS POR CLIENTE
+<div id="filtros">
+  <span class="flbl">Filtros</span>
+  <select id="fmes" onchange="redraw()">
+    <option value="*">Todos os meses</option>
+    <option value="Jan">Janeiro</option><option value="Fev">Fevereiro</option>
+    <option value="Mar">Março</option><option value="Abr">Abril</option>
+    <option value="Mai">Maio</option><option value="Jun">Junho</option>
+    <option value="Jul">Julho</option>
+  </select>
+  <div class="fsep"></div>
+  <select id="farea" onchange="redraw()">
+    <option value="*">Todas as áreas</option>
+    <option value="ATENDIMENTO">Atendimento</option>
+    <option value="CRIAÇÃO">Criação</option>
+    <option value="MÍDIA">Mídia</option>
+    <option value="PLANEJAMENTO">Planejamento</option>
+    <option value="BI">BI / Dados</option>
+    <option value="OPERAÇÕES">Operações</option>
+  </select>
+  <div class="fsep"></div>
+  <select id="fpessoa" onchange="redraw()"><option value="*">Todas as pessoas</option></select>
+</div>
 
-CONSUMO MENSAL TOTAL DO NÚCLEO
-CONSUMO POR ÁREA — ACUMULADO 2026
+<div id="pg-resumo" class="page on">
+  <div class="krow" id="kr-resumo"></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:20px">
+    <div>
+      <div class="stitle">Contratos Ativos — Fee 2026</div>
+      <div class="rcrd">
+        <div class="ritem"><span class="rilbl">Dr. Oetker (Jan–Dez)</span><span class="rival">R$ 2.880.000</span></div>
+        <div class="ritem"><span class="rilbl">Suhai (Mai–Dez)</span><span class="rival">R$ 2.284.208</span></div>
+        <div class="ritem"><span class="rilbl">Coty Fee Principal (Jul–Dez)</span><span class="rival">R$ 1.917.746</span></div>
+        <div class="ritem"><span class="rilbl">Coty Fee CM (Jul–Dez)</span><span class="rival">R$ 216.601</span></div>
+        <div class="ritem"><span class="rilbl">Total Fee N3 2026</span><span class="rival">R$ 7.298.555</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="stitle">Horas Contratadas por Cliente</div>
+      <div id="horas-cli"></div>
+    </div>
+  </div>
+  <div class="stitle">Consumo Mensal</div>
+  <div class="mgrid" id="mgrid"></div>
+  <div class="stitle">Consumo por Área — Acumulado</div>
+  <div id="areas-resumo"></div>
+</div>
 
+<div id="pg-pessoas" class="page">
+  <div class="stitle">Consumo de Horas por Pessoa</div>
+  <div class="sbox" id="lista-pessoas"></div>
+</div>
+
+<div id="pg-clientes" class="page">
+  <div class="alert">⚠️ Timesheet atual sem split por cliente — consumo estimado proporcionalmente.</div>
+  <div class="cgrid" id="cards-clientes"></div>
+</div>
+
+<div id="pg-areas" class="page">
+  <div class="stitle">Consumo por Área</div>
+  <div id="lista-areas"></div>
+</div>
+
+<div id="pg-budget" class="page">
+  <!-- N1: home -->
+  <div id="b-home">
+    <div class="krow" id="kr-bgt-home"></div>
+    <div class="stitle">Selecione um cliente</div>
+    <div class="cgrid" id="cards-bgt"></div>
+  </div>
+  <!-- N2: campanhas -->
+  <div id="b-camp" style="display:none">
+    <div class="bnav">
+      <button class="btnav" onclick="bHome()">← Clientes</button>
+      <span class="btitle" id="b-camp-titulo"></span>
+    </div>
+    <div class="krow" id="kr-bgt-camp"></div>
+    <div style="background:var(--ce);border:1px solid #222;border-radius:6px;padding:18px;margin-bottom:18px">
+      <div class="stitle" style="margin-bottom:14px">Budget por Campanha</div>
+      <canvas id="chart-camp" height="80"></canvas>
+    </div>
+    <div class="stitle">Campanhas — clique para detalhar</div>
+    <div id="lista-camp"></div>
+    <div id="tbl-suhai-coty"></div>
+  </div>
+  <!-- N3: detalhe -->
+  <div id="b-det" style="display:none">
+    <div class="bnav">
+      <button class="btnav" onclick="bCamp()">← Campanhas</button>
+      <span class="btitle" id="b-det-titulo"></span>
+    </div>
+    <div class="krow" id="kr-bgt-det"></div>
+    <div id="b-det-barras" style="background:var(--ce);border:1px solid #222;border-radius:6px;padding:20px;margin-bottom:18px"></div>
+    <div class="ftabs" id="b-det-ftabs"></div>
+    <div class="alert" id="b-det-alert"></div>
+    <div style="overflow-x:auto"><table class="tbl" id="b-det-tbl"></table></div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════
+// DADOS TIMESHEET
+// ═══════════════════════════════════════
+const MS = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+const TS = {
+  "Adriane Joly":         {a:"CRIAÇÃO",     Jan:0,Fev:0,Mar:0,Abr:0,Mai:0,Jun:0,Jul:4,Ago:0,Set:0,Out:0,Nov:0,Dez:0},
+  "Adriano Gomes":        {a:"CRIAÇÃO",     Jan:0,Fev:0,Mar:0,Abr:0,Mai:1,Jun:88,Jul:25,Ago:0,Set:0,Out:0,Nov:0,Dez:0},
+  "Ana Beatriz Novaes":   {a:"BI",          Jan:0,Fev:0,Mar:0,Abr:0,Mai:33,Jun:64,Jul:3,Ago:0,Set:0,Out:0,Nov:0,Dez:0},
+  "Anderson Ramon":       {a:"MÍDIA",       Jan:0,Fev:94,Mar:120,Abr:172,Mai:32,Jun:0,Jul:0,Ago:0,Set:0,Out:0,Nov:0,Dez:0},
+  "Barbara Fernandes":    {a:"MÍDIA",       Jan:0,Fev:89,Mar:73,Abr:54.5,Mai:93.5,Jun:105.5,Jul:4,Ago:0,Set:0,Out:0,Nov:0,Dez:0},
+  "Daniela Martins":      {a:"OPERAÇÕES",   Jan:0,Fev:0,Mar:0,Abr:0,Mai:0,Jun:11,Jul:6,Ago:0,Set:0,Out:0,Nov:0,Dez:0},
+  "Deni Rodrigues Hong":  {a:"BI",          Jan:0,Fev:0,Mar:0,Abr:29,Mai:47,Jun:102.5,Jul:17.5,Ago:0,Set:0,Out:0,Nov:0,Dez:0},
+  "Fabio Guimaraes":      {a:"CRIAÇÃO",     Jan:0,Fev:33,Mar:62,Abr:90,Mai:35,Jun:71,Jul:3,Ago:0,Set:0,Out:0,Nov:0,Dez:0},
+  "Fabricio Gudima":      {a:"CRIAÇÃO",     Jan:0,Fev:57.25,Mar:32,Abr:44,Mai:71,Jun:83,Jul:19.75,Ago:0,Set:0,Out:0,Nov:0,Dez:0},
+  "Fernanda Aidar":       {a:"CRIAÇÃO",     Jan:0,Fev:0,Mar:0,Abr:0,Mai:0,Jun:135,Jul:32,Ago:0,Set:0,Out:0,Nov:0,Dez:0},
+  "Fernanda Verdi":       {a:"ATENDIMENTO", Jan:0,Fev:84,Mar:72,Abr:65,Mai:10,Jun:43,Jul:12,Ago:0,Set:0,Out:0,Nov:0,Dez:0},
+  "Gabriel Lobao":        {a:"ATENDIMENTO", Jan:0,Fev:0,Mar:0,Abr:143,Mai:160,Jun:172.5,Jul:29,Ago:0,Set:0,Out:0,Nov:0,Dez:0},
+  "Gabriela Moraes":      {a:"MÍDIA",       Jan:0,Fev:32,Mar:20.75,Abr:30.25,Mai:27.75,Jun:32,Jul:30.25,Ago:38.25,Set:32,Out:30.25,Nov:38.25,Dez:36.5},
+  "Gilberto Rodrigues":   {a:"BI",          Jan:0,Fev:28,Mar:140,Abr:96,Mai:40,Jun:30,Jul:8,Ago:0,Set:0,Out:0,Nov:0,Dez:0},
+  "Giulia Favalli":       {a:"PLANEJAMENTO",Jan:0,Fev:0,Mar:47,Abr:101,Mai:25,Jun:37.5,Jul:0,Ago:0,Set:0,Out:0,Nov:0,Dez:0},
+  "Helena Calazans":      {a:"MÍDIA",       Jan:0,Fev:111,Mar:103,Abr:105,Mai:130.5,Jun:153,Jul:0,Ago:0,Set:0,Out:0,Nov:0,Dez:0},
+  "Henrique Rodrigues":   {a:"OPERAÇÕES",   Jan:0,Fev:81,Mar:70,Abr:45,Mai:0,Jun:0,Jul:0,Ago:0,Set:0,Out:0,Nov:0,Dez:0},
+  "Irina Didier":         {a:"PLANEJAMENTO",Jan:0,Fev:31.5,Mar:72,Abr:58,Mai:29,Jun:56.5,Jul:3,Ago:0,Set:0,Out:0,Nov:0,Dez:0},
+  "Julia Barros":         {a:"CRIAÇÃO",     Jan:0,Fev:88,Mar:74,Abr:91,Mai:121.25,Jun:73.5,Jul:24,Ago:0,Set:0,Out:0,Nov:0,Dez:0},
+  "Marcella Fernandes":   {a:"ATENDIMENTO", Jan:0,Fev:0,Mar:33,Abr:27,Mai:22,Jun:40,Jul:0,Ago:0,Set:0,Out:0,Nov:0,Dez:0},
+  "Marina de Lima Silva": {a:"ATENDIMENTO", Jan:0,Fev:0,Mar:0,Abr:19,Mai:6,Jun:29,Jul:9,Ago:0,Set:0,Out:0,Nov:0,Dez:0},
+  "Matheus Dalmas":       {a:"CRIAÇÃO",     Jan:0,Fev:121,Mar:122,Abr:56,Mai:99,Jun:39.5,Jul:0,Ago:0,Set:0,Out:0,Nov:0,Dez:0},
+  "Matheus Samangaia":    {a:"CRIAÇÃO",     Jan:0,Fev:104,Mar:89.5,Abr:119.5,Mai:130,Jun:77.5,Jul:32,Ago:0,Set:0,Out:0,Nov:0,Dez:0},
+  "Renata Lemes":         {a:"BI",          Jan:0,Fev:0,Mar:0,Abr:0,Mai:33,Jun:70.5,Jul:6.5,Ago:0,Set:0,Out:0,Nov:0,Dez:0},
+};
+
+// ═══════════════════════════════════════
+// DADOS BUDGET
+// ═══════════════════════════════════════
+const OTK = [
+  {c:"AON",                   m:3243057.76, i:1100000,  p:330000,   t:4673057.76,  r:"João",    det:true},
+  {c:"Masterbrand",           m:13320000,   i:722000,   p:461413,   t:14503413,    r:"João",    det:true},
+  {c:"Natal",                 m:3850000,    i:0,        p:200000,   t:4050000,     r:"João",    det:false},
+  {c:"Gelatina Core",         m:6200000,    i:0,        p:450000,   t:6650000,     r:"Marisa",  det:false},
+  {c:"Gelatina Fini",         m:716400,     i:83600,    p:56000,    t:856000,      r:"Marisa",  det:false},
+  {c:"BPM Bolinho",           m:3917522,    i:421100,   p:17685.39, t:4356307.39,  r:"Gustavo", det:false},
+  {c:"Gelatina Cremosa",      m:3000000,    i:0,        p:300000,   t:3300000,     r:"Marisa",  det:false},
+  {c:"Linha Airfryer",        m:0,          i:0,        p:0,        t:0,           r:"Gustavo", det:false},
+  {c:"BPM Docinho e Salgado", m:0,          i:0,        p:500000,   t:500000,      r:"Gustavo", det:false},
+  {c:"Power Jelly",           m:0,          i:0,        p:0,        t:0,           r:"Marisa",  det:false},
+];
+const DET = {
+  "Masterbrand":{bm:12300000,bi:700000,bp:461413,gastos:[
+    {g:"Produção",d:"08/05",mes:"Jun",it:"Gestão influs",v:32721.05,s:"Aguardando PO"},
+    {g:"Produção",d:"21/05",mes:"Jun",it:"Gestão Merchan Record",v:8489,s:"Aguardando PO"},
+    {g:"Produção",d:"—",mes:"—",it:"Gestão Merchan Globo",v:15000,s:"Previsão"},
+    {g:"Influs",d:"06/05",mes:"Jun",it:"Booktok :: biaglion",v:11000,s:"Aguardando PO"},
+    {g:"Influs",d:"06/05",mes:"Jun",it:"Booktok :: otiagovalente",v:13000,s:"Aguardando PO"},
+    {g:"Influs",d:"06/05",mes:"Jun",it:"Booktok :: Capitutis",v:3500,s:"Aguardando PO"},
+    {g:"Influs",d:"26/05",mes:"Jun",it:"Namorados :: Leo Puricelli",v:28000,s:"Aguardando PO"},
+    {g:"Influs",d:"26/05",mes:"Jun",it:"Namorados :: Murillo Bizelli",v:34210.53,s:"Aguardando PO"},
+    {g:"Influs",d:"26/05",mes:"Jun",it:"Namorados :: Julia de Menu",v:22000,s:"Aguardando PO"},
+    {g:"Influs",d:"06/05",mes:"Jun",it:"Booktok :: Palavras Radioativas",v:3000,s:"Aguardando PO"},
+    {g:"Influs",d:"06/05",mes:"Jun",it:"Booktok :: Isa",v:3500,s:"Aguardando PO"},
+    {g:"Influs",d:"06/05",mes:"Jun",it:"Booktok :: Yasmim Brossi",v:9000,s:"Aguardando PO"},
+    {g:"Influs",d:"08/05",mes:"Jun",it:"Sweet Moments :: bianca_amordecasinha",v:25000,s:"Aguardando PO"},
+    {g:"Influs",d:"08/05",mes:"Jun",it:"Abrindo a Cozinha :: Receitas de Pai",v:175000,s:"Aguardando PO"},
+    {g:"Mídia",d:"06/05",mes:"Jun",it:"Total Plano de mídia",v:12300000,s:"Aguardando PO"},
+    {g:"Produção",d:"01/06",mes:"Jun",it:"Produção Merchan Record",v:84890,s:"Aguardando PO"},
+    {g:"Produção",d:"21/05",mes:"Mai",it:"Envio TV",v:10030,s:"Faturado"},
+  ]},
+  "AON":{bm:300000,bi:92000,bp:9200,gastos:[
+    {g:"Influs",d:"04/05",mes:"Mai",it:"Influs Dia das Mães",v:92000,s:"Faturado"},
+    {g:"Produção",d:"04/05",mes:"Mai",it:"Gestão influs Dia das Mães",v:9200,s:"Faturado"},
+    {g:"Mídia",d:"04/05",mes:"Mai",it:"Boost mídia além do AON mensal",v:300000,s:"Aguardando NF"},
+  ]},
+};
+// consumido manual por campanha+frente
+const CM = {};
+OTK.forEach(c=>{ CM[c.c+'_m']=0; CM[c.c+'_i']=0; CM[c.c+'_p']=0; });
+// Suhai e Coty editáveis
+const SUHAI_FR = ["Mídia Digital","Campanha P","Campanha M","Campanha G1","Campanha G2"];
+const COTY_FR  = ["Fee Principal","Fee CM","Shootings","Campanhas","Estratégia FY"];
+['Suhai','Coty'].forEach(cli=>{
+  const frs = cli==='Suhai'?SUHAI_FR:COTY_FR;
+  frs.forEach(f=>{ CM[cli+'_bgt_'+f]=0; CM[cli+'_cons_'+f]=0; });
+});
+
+let cliAtivo=null, campAtiva=null, frenteAtiva='*', chartInst=null;
+
+// ═══════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════
+const brl=v=>v>0?'R$ '+v.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}):'—';
+const pct=(a,b)=>b>0?Math.round(a/b*100):0;
+const sc=p=>p>=90?'vm':p>=60?'lr':'vd';
+const chipA=a=>{const k=a[0];return `<span class="chip chip-${k}">${a}</span>`;}
+function sbadge(s){
+  if(s.includes('Faturado'))   return '<span class="bdg s-fat">Faturado</span>';
+  if(s.includes('Aguardando PO')) return '<span class="bdg s-apo">Ag. PO</span>';
+  if(s.includes('Aguardando NF')) return '<span class="bdg s-anf">Ag. NF</span>';
+  return '<span class="bdg s-pre">Previsão</span>';
+}
+function hP(n,m='*'){const d=TS[n];if(!d)return 0;return m==='*'?MS.reduce((s,x)=>s+(d[x]||0),0):(d[m]||0);}
+function hA(a,m='*'){return Object.entries(TS).filter(([,d])=>d.a===a).reduce((s,[n])=>s+hP(n,m),0);}
+function hTot(m='*'){return Object.keys(TS).reduce((s,n)=>s+hP(n,m),0);}
+function hMes(m){return Object.keys(TS).reduce((s,n)=>s+(TS[n][m]||0),0);}
+
+// ═══════════════════════════════════════
+// TAB
+// ═══════════════════════════════════════
+function goTab(id,el){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  el.classList.add('on');
+  document.getElementById('pg-'+id).classList.add('on');
+  document.getElementById('filtros').style.display = id==='budget'?'none':'flex';
+  if(id==='resumo')  drawResumo();
+  if(id==='pessoas') drawPessoas();
+  if(id==='clientes')drawClientes();
+  if(id==='areas')   drawAreas();
+  if(id==='budget')  drawBgtHome();
+}
+function redraw(){
+  const active = document.querySelector('.page.on').id.replace('pg-','');
+  if(active==='resumo')  drawResumo();
+  if(active==='pessoas') drawPessoas();
+  if(active==='areas')   drawAreas();
+}
+
+// ═══════════════════════════════════════
+// RESUMO
+// ═══════════════════════════════════════
+function drawResumo(){
+  const mes=document.getElementById('fmes').value;
+  const tot=hTot(mes);
+  const areas=[...new Set(Object.values(TS).map(d=>d.a))];
+  // KPIs
+  document.getElementById('kr-resumo').innerHTML=`
+    <div class="kpi am"><div class="klbl">Total Horas Consumidas</div><div class="kval">${tot.toLocaleString('pt-BR',{maximumFractionDigits:0})}</div><div class="ksub">${mes==='*'?'Jan–Jul 2026':mes+' 2026'}</div></div>
+    <div class="kpi vd"><div class="klbl">Pessoas Ativas</div><div class="kval">${Object.keys(TS).length}</div><div class="ksub">${areas.length} áreas</div></div>
+    <div class="kpi lr"><div class="klbl">Área Mais Ativa</div><div class="kval" style="font-size:14px">${areas.sort((a,b)=>hA(b,mes)-hA(a,mes))[0]}</div><div class="ksub">${hA(areas.sort((a,b)=>hA(b,mes)-hA(a,mes))[0],mes).toLocaleString('pt-BR',{maximumFractionDigits:0})}h</div></div>
+    <div class="kpi am"><div class="klbl">Fee Total N3 2026</div><div class="kval" style="font-size:16px">R$ 7,3M</div><div class="ksub">3 clientes</div></div>
+  `;
+  // horas por cliente
+  const cli=[{n:'Dr. Oetker',h:2172*12},{n:'Suhai',h:1376*8},{n:'Coty',h:1772*6}];
+  document.getElementById('horas-cli').innerHTML=cli.map(c=>{
+    const est=Math.round(tot*(c.n==='Dr. Oetker'?.55:c.n==='Suhai'?.28:.17));
+    const p=pct(est,c.h); const s=sc(p);
+    return `<div class="brow"><div class="bnome">${c.n}<span>${c.h.toLocaleString()}h contratadas</span></div>
+    <div class="btrack"><div class="bfill ${s}" style="width:${Math.min(p,100)}%"></div></div>
+    <div class="bpct" style="color:var(--${s})">${p}%</div></div>`;
+  }).join('');
+  // meses
+  const mesAtivo=mes;
+  document.getElementById('mgrid').innerHTML=MS.map(m=>{
+    const h=hMes(m); const on=mesAtivo===m||(mesAtivo==='*'&&h>0)?'on':'';
+    return `<div class="mchip ${on}" onclick="selMes('${m}')"><div class="mn">${m}</div><div class="mh">${h>0?h.toLocaleString('pt-BR',{maximumFractionDigits:0})+'h':'—'}</div></div>`;
+  }).join('');
+  // areas
+  const areasOrd=[...areas].sort((a,b)=>hA(b,mes)-hA(a,mes));
+  const mx=hA(areasOrd[0],mes)||1;
+  document.getElementById('areas-resumo').innerHTML=areasOrd.map(a=>{
+    const h=hA(a,mes); const p=Math.round(h/mx*100);
+    return `<div class="brow"><div class="bnome">${chipA(a)}</div>
+    <div class="btrack"><div class="bfill az" style="width:${p}%"></div></div>
+    <div class="bnum">${h.toLocaleString('pt-BR',{maximumFractionDigits:0})}h</div>
+    <div class="bpct" style="color:var(--dm)">${Math.round(h/(hTot(mes)||1)*100)}%</div></div>`;
+  }).join('');
+}
+function selMes(m){document.getElementById('fmes').value=m;redraw();}
+
+// ═══════════════════════════════════════
+// PESSOAS
+// ═══════════════════════════════════════
+function drawPessoas(){
+  const mes=document.getElementById('fmes').value;
+  const area=document.getElementById('farea').value;
+  const pess=document.getElementById('fpessoa').value;
+  let lista=Object.entries(TS)
+    .filter(([n,d])=>(area==='*'||d.a===area)&&(pess==='*'||n===pess))
+    .map(([n,d])=>({n,a:d.a,h:hP(n,mes),ms:MS.map(m=>d[m]||0)}))
+    .sort((a,b)=>b.h-a.h);
+  const mx=lista[0]?.h||1;
+  document.getElementById('lista-pessoas').innerHTML=lista.map(p=>{
+    const pv=Math.round(p.h/mx*100); const sv=p.h>150?'vm':p.h>80?'lr':'vd';
+    const mini=mes==='*'?`<div style="display:grid;grid-template-columns:repeat(12,1fr);gap:2px;margin-top:5px">${MS.map((m,i)=>{const h=p.ms[i];const op=h>0?Math.max(.15,h/176):.04;return `<div title="${m}:${h}h" style="height:4px;border-radius:1px;background:var(--am);opacity:${op}"></div>`;}).join('')}</div>`:'';
+    return `<div class="brow"><div class="bnome" style="min-width:210px">${p.n}<span>${chipA(p.a)}</span>${mini}</div>
+    <div class="btrack"><div class="bfill ${sv}" style="width:${pv}%"></div></div>
+    <div class="bnum">${p.h.toLocaleString('pt-BR',{maximumFractionDigits:1})}h</div>
+    <div><span class="bdg ${sv}">${sv==='vm'?'🔴':sv==='lr'?'🟡':'🟢'}</span></div></div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════
+// CLIENTES
+// ═══════════════════════════════════════
+function drawClientes(){
+  const tot=hTot('*');
+  const cli=[{n:'Dr. Oetker',p:'Jan–Dez',h:2172*12,f:.55,cor:'#CC0000'},{n:'Suhai',p:'Mai–Dez',h:1376*8,f:.28,cor:'#F57C00'},{n:'Coty',p:'Jul–Dez',h:1772*6,f:.17,cor:'#FFD600'}];
+  document.getElementById('cards-clientes').innerHTML=cli.map(c=>{
+    const est=Math.round(tot*c.f); const sal=c.h-est; const p=pct(est,c.h); const s=sc(p);
+    return `<div class="ccard" style="border-top:3px solid ${c.cor}">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+        <div><div style="font-size:14px;font-weight:700;color:var(--br)">${c.n}</div><div style="font-size:11px;color:var(--dm)">${c.p} · ${c.h.toLocaleString()}h contratadas</div></div>
+        <span class="bdg ${s}">${s==='vm'?'🔴':s==='lr'?'🟡':'🟢'}</span>
+      </div>
+      <div style="background:#222;border-radius:3px;height:8px;margin-bottom:10px"><div style="height:100%;border-radius:3px;background:${c.cor};width:${Math.min(p,100)}%"></div></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+        ${[['Contratado',c.h.toLocaleString()+'h','var(--br)'],['Consumido*',est.toLocaleString()+'h','var(--'+s+')'],['Saldo Est.',sal.toLocaleString()+'h','var(--vd)']].map(([l,v,co])=>`
+        <div style="background:#1e1e1e;border-radius:4px;padding:9px;text-align:center">
+          <div style="font-size:9px;color:var(--dm);text-transform:uppercase;margin-bottom:3px">${l}</div>
+          <div style="font-size:13px;font-weight:700;color:${co}">${v}</div>
+        </div>`).join('')}
+      </div>
+      <div style="font-size:10px;color:var(--dm);margin-top:8px">* estimativa proporcional</div>
+    </div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════
+// ÁREAS
+// ═══════════════════════════════════════
+function drawAreas(){
+  const mes=document.getElementById('fmes').value;
+  const af=document.getElementById('farea').value;
+  const areas=[...new Set(Object.values(TS).map(d=>d.a))].filter(a=>af==='*'||a===af);
+  document.getElementById('lista-areas').innerHTML=areas.map(area=>{
+    const pessoas=Object.entries(TS).filter(([,d])=>d.a===area).map(([n])=>({n,h:hP(n,mes)})).sort((a,b)=>b.h-a.h);
+    const tot=pessoas.reduce((s,p)=>s+p.h,0); const mx=pessoas[0]?.h||1;
+    return `<div style="background:var(--ce);border:1px solid #222;border-radius:6px;padding:18px;margin-bottom:14px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+        ${chipA(area)}<span style="font-size:13px;font-weight:700;color:var(--br)">${tot.toLocaleString('pt-BR',{maximumFractionDigits:0})}h</span>
+      </div>
+      ${pessoas.map(p=>`<div class="brow"><div class="bnome">${p.n}</div>
+      <div class="btrack"><div class="bfill az" style="width:${Math.round(p.h/mx*100)}%"></div></div>
+      <div class="bnum">${p.h.toLocaleString('pt-BR',{maximumFractionDigits:1})}h</div>
+      <div class="bpct" style="color:var(--dm)">${Math.round(p.h/(tot||1)*100)}%</div></div>`).join('')}
+    </div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════
+// BUDGET — N1 HOME
+// ═══════════════════════════════════════
+const BCLI={
+  'Dr. Oetker':{cor:'#CC0000',lbl:'Dr. Oetker Budget',per:'Jan–Dez 2026',real:true},
+  'Suhai':     {cor:'#F57C00',lbl:'Suhai Budget',      per:'Mai–Dez 2026',real:false},
+  'Coty':      {cor:'#FFD600',lbl:'Coty Budget',       per:'Jul–Dez 2026',real:false},
+};
+function bgtTot(cli){
+  if(cli==='Dr. Oetker') return OTK.reduce((s,c)=>s+c.t,0);
+  const frs=cli==='Suhai'?SUHAI_FR:COTY_FR;
+  return frs.reduce((s,f)=>s+(CM[cli+'_bgt_'+f]||0),0);
+}
+function bgtCons(cli){
+  if(cli==='Dr. Oetker'){
+    return OTK.reduce((s,c)=>{
+      const d=DET[c.c];
+      return s+(d?d.gastos.reduce((x,g)=>x+g.v,0):(CM[c.c+'_m']||0)+(CM[c.c+'_i']||0)+(CM[c.c+'_p']||0));
+    },0);
+  }
+  const frs=cli==='Suhai'?SUHAI_FR:COTY_FR;
+  return frs.reduce((s,f)=>s+(CM[cli+'_cons_'+f]||0),0);
+}
+function drawBgtHome(){
+  const tots=Object.keys(BCLI).map(c=>bgtTot(c));
+  const cons=Object.keys(BCLI).map(c=>bgtCons(c));
+  const tT=tots.reduce((s,v)=>s+v,0), tC=cons.reduce((s,v)=>s+v,0);
+  document.getElementById('kr-bgt-home').innerHTML=`
+    <div class="kpi am"><div class="klbl">Budget Total N3</div><div class="kval" style="font-size:17px">${tT>0?brl(tT):'A preencher'}</div><div class="ksub">3 clientes</div></div>
+    <div class="kpi lr"><div class="klbl">Consumido</div><div class="kval" style="font-size:17px">${brl(tC)}</div><div class="ksub">${tT>0?pct(tC,tT)+'%':'—'}</div></div>
+    <div class="kpi vd"><div class="klbl">Saldo</div><div class="kval" style="font-size:17px">${tT>0?brl(tT-tC):'—'}</div></div>
+  `;
+  document.getElementById('cards-bgt').innerHTML=Object.entries(BCLI).map(([cli,d],i)=>{
+    const t=tots[i], c2=cons[i], sal=t-c2, p=pct(c2,t), s=sc(p);
+    return `<div onclick="bOpenCamp('${cli}')" class="ccard" style="border-top:3px solid ${d.cor}">
+      <div style="font-size:15px;font-weight:700;color:var(--br);margin-bottom:3px">${d.lbl}</div>
+      <div style="font-size:11px;color:var(--dm);margin-bottom:14px">${d.per}</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px">
+        ${[['Budget',t>0?brl(t):'—'],['Consumido',c2>0?brl(c2):'—'],['Saldo',t>0?brl(sal):'—']].map(([l,v])=>`
+        <div style="text-align:center"><div style="font-size:9px;color:var(--dm);text-transform:uppercase;margin-bottom:3px">${l}</div>
+        <div style="font-size:12px;font-weight:700;color:var(--br)">${v}</div></div>`).join('')}
+      </div>
+      <div style="background:#1e1e1e;border-radius:3px;height:5px;margin-bottom:8px">
+        <div style="height:100%;border-radius:3px;background:${d.cor};width:${Math.min(p,100)}%;opacity:.85"></div>
+      </div>
+      <div style="font-size:10px;color:${d.cor}">${d.real?'✅ Dados reais':'✏️ Editável'} · clique →</div>
+    </div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════
+// BUDGET — N2 CAMPANHAS
+// ═══════════════════════════════════════
+function bOpenCamp(cli){
+  cliAtivo=cli;
+  document.getElementById('b-home').style.display='none';
+  document.getElementById('b-camp').style.display='block';
+  document.getElementById('b-det').style.display='none';
+  document.getElementById('b-camp-titulo').textContent=BCLI[cli].lbl;
+  drawBgtCamp(cli);
+}
+function bHome(){
+  document.getElementById('b-home').style.display='block';
+  document.getElementById('b-camp').style.display='none';
+  document.getElementById('b-det').style.display='none';
+  if(chartInst){chartInst.destroy();chartInst=null;}
+  drawBgtHome();
+}
+function bCamp(){
+  document.getElementById('b-det').style.display='none';
+  document.getElementById('b-camp').style.display='block';
+  drawBgtCamp(cliAtivo);
+}
+function drawBgtCamp(cli){
+  if(cli==='Dr. Oetker'){
+    const tot=OTK.reduce((s,c)=>s+c.t,0);
+    const tm=OTK.reduce((s,c)=>s+c.m,0);
+    const ti=OTK.reduce((s,c)=>s+c.i,0);
+    const tp=OTK.reduce((s,c)=>s+c.p,0);
+    document.getElementById('kr-bgt-camp').innerHTML=`
+      <div class="kpi am"><div class="klbl">Budget Total</div><div class="kval" style="font-size:16px">${brl(tot)}</div></div>
+      <div class="kpi" style="border-top:3px solid #1565C0"><div class="klbl">Mídia</div><div class="kval" style="font-size:16px">${brl(tm)}</div><div class="ksub">${pct(tm,tot)}%</div></div>
+      <div class="kpi" style="border-top:3px solid #6A1B9A"><div class="klbl">Influenciadores</div><div class="kval" style="font-size:16px">${brl(ti)}</div><div class="ksub">${pct(ti,tot)}%</div></div>
+      <div class="kpi" style="border-top:3px solid #E65100"><div class="klbl">Produção</div><div class="kval" style="font-size:16px">${brl(tp)}</div><div class="ksub">${pct(tp,tot)}%</div></div>
+    `;
+    setTimeout(()=>{
+      const ctx=document.getElementById('chart-camp').getContext('2d');
+      if(chartInst)chartInst.destroy();
+      chartInst=new Chart(ctx,{type:'bar',data:{
+        labels:OTK.filter(c=>c.t>0).map(c=>c.c),
+        datasets:[
+          {label:'Mídia',data:OTK.filter(c=>c.t>0).map(c=>c.m),backgroundColor:'#1565C0'},
+          {label:'Influenciador',data:OTK.filter(c=>c.t>0).map(c=>c.i),backgroundColor:'#6A1B9A'},
+          {label:'Produção',data:OTK.filter(c=>c.t>0).map(c=>c.p),backgroundColor:'#E65100'},
+        ]},options:{indexAxis:'y',responsive:true,
+        plugins:{legend:{labels:{color:'#e0e0e0',font:{size:11}}},tooltip:{callbacks:{label:ctx2=>ctx2.dataset.label+': '+brl(ctx2.raw)}}},
+        scales:{x:{stacked:true,ticks:{color:'#888',callback:v=>v>=1e6?'R$'+(v/1e6).toFixed(1)+'M':v>=1000?'R$'+(v/1000).toFixed(0)+'K':'R$0'},grid:{color:'#222'}},y:{stacked:true,ticks:{color:'#e0e0e0'},grid:{color:'#222'}}}}
+      });
+    },100);
+    document.getElementById('tbl-suhai-coty').innerHTML='';
+    document.getElementById('lista-camp').innerHTML=OTK.map(c=>{
+      const d=DET[c.c];
+      const cons=d?d.gastos.reduce((s,g)=>s+g.v,0):(CM[c.c+'_m']||0)+(CM[c.c+'_i']||0)+(CM[c.c+'_p']||0);
+      const sal=c.t-cons; const p=pct(cons,c.t); const s=sc(p);
+      return `<div class="bcitem" onclick="bOpenDet('${c.c}')">
+        <div style="min-width:200px">
+          <div style="font-size:13px;font-weight:700;color:var(--br)">${c.c}</div>
+          <div style="font-size:10px;color:var(--dm);margin-top:2px">Resp: ${c.r} · ${d?'<span style="color:#4CAF50">✅ dados reais</span>':'<span style="color:#888">✏️ editável</span>'}</div>
+        </div>
+        <div style="flex:1">
+          <div style="background:#1e1e1e;border-radius:3px;height:7px;margin-bottom:5px"><div style="height:100%;border-radius:3px;background:var(--${s});width:${Math.min(p,100)}%"></div></div>
+          <div style="display:flex;gap:14px;font-size:10px;color:var(--dm)">
+            <span>Mídia: <b style="color:var(--br)">${c.m>0?brl(c.m):'—'}</b></span>
+            <span>Influs: <b style="color:var(--br)">${c.i>0?brl(c.i):'—'}</b></span>
+            <span>Prod: <b style="color:var(--br)">${c.p>0?brl(c.p):'—'}</b></span>
+          </div>
+        </div>
+        <div style="text-align:right;min-width:90px">
+          <div style="font-size:10px;color:var(--dm)">Total</div>
+          <div style="font-size:13px;font-weight:700;color:var(--br)">${c.t>0?brl(c.t):'A definir'}</div>
+        </div>
+        <div style="font-size:18px;color:#555">›</div>
+      </div>`;
+    }).join('');
+  } else {
+    // Suhai / Coty
+    const frs=cli==='Suhai'?SUHAI_FR:COTY_FR;
+    const tot=bgtTot(cli); const cons=bgtCons(cli);
+    document.getElementById('kr-bgt-camp').innerHTML=`
+      <div class="kpi am"><div class="klbl">Budget Total</div><div class="kval" style="font-size:16px">${tot>0?brl(tot):'A preencher'}</div></div>
+      <div class="kpi lr"><div class="klbl">Consumido</div><div class="kval" style="font-size:16px">${brl(cons)}</div></div>
+      <div class="kpi vd"><div class="klbl">Saldo</div><div class="kval" style="font-size:16px">${tot>0?brl(tot-cons):'—'}</div></div>
+    `;
+    document.getElementById('lista-camp').innerHTML='';
+    if(chartInst){chartInst.destroy();chartInst=null;}
+    document.getElementById('chart-camp').getContext('2d').clearRect(0,0,9999,9999);
+    document.getElementById('tbl-suhai-coty').innerHTML=`
+      <div class="alert">✏️ Preencha o budget e o consumido. Os KPIs atualizam automaticamente.</div>
+      <table class="tbl">
+        <thead><tr><th>Frente</th><th class="num">Budget</th><th class="num">Consumido</th><th class="num">Saldo</th><th>%</th></tr></thead>
+        <tbody>
+        ${frs.map((f,i)=>{
+          const bk=cli+'_bgt_'+f, ck=cli+'_cons_'+f;
+          const b=CM[bk]||0, c2=CM[ck]||0, sal=b-c2, p=pct(c2,b), s=sc(p);
+          return `<tr style="${i%2===0?'background:#1a1a1a':''}">
+            <td style="font-weight:600">${f}</td>
+            <td class="num"><input class="inp" type="number" value="${b||''}" placeholder="0" onchange="CM['${bk}']=(parseFloat(this.value)||0);drawBgtCamp('${cli}');drawBgtHome()"></td>
+            <td class="num"><input class="inp" type="number" value="${c2||''}" placeholder="0" onchange="CM['${ck}']=(parseFloat(this.value)||0);drawBgtCamp('${cli}');drawBgtHome()"></td>
+            <td class="num" style="color:var(--${s})">${b>0?brl(sal):'—'}</td>
+            <td><span class="bdg ${s}">${p>0?p+'%':'—'}</span></td>
+          </tr>`;
+        }).join('')}
+        </tbody>
+      </table>`;
+  }
+}
+
+// ═══════════════════════════════════════
+// BUDGET — N3 DETALHE CAMPANHA
+// ═══════════════════════════════════════
+function bOpenDet(camp){
+  campAtiva=camp; frenteAtiva='*';
+  document.getElementById('b-camp').style.display='none';
+  document.getElementById('b-det').style.display='block';
+  document.getElementById('b-det-titulo').textContent='Dr. Oetker — '+camp;
+  drawBgtDet(camp);
+}
+function drawBgtDet(camp){
+  const c=OTK.find(x=>x.c===camp);
+  const d=DET[camp];
+  const bm=d?d.bm:c.m, bi=d?d.bi:c.i, bp=d?d.bp:c.p;
+  const bt=bm+bi+bp;
+  const rm=d?d.gastos.filter(g=>g.g==='Mídia').reduce((s,g)=>s+g.v,0):(CM[camp+'_m']||0);
+  const ri=d?d.gastos.filter(g=>g.g==='Influs').reduce((s,g)=>s+g.v,0):(CM[camp+'_i']||0);
+  const rp=d?d.gastos.filter(g=>g.g==='Produção').reduce((s,g)=>s+g.v,0):(CM[camp+'_p']||0);
+  const rt=rm+ri+rp, sal=bt-rt, p=pct(rt,bt), s=sc(p);
+
+  document.getElementById('kr-bgt-det').innerHTML=`
+    <div class="kpi am"><div class="klbl">Budget Total</div><div class="kval" style="font-size:16px">${bt>0?brl(bt):'A definir'}</div></div>
+    <div class="kpi lr"><div class="klbl">Consumido</div><div class="kval" style="font-size:16px">${brl(rt)}</div><div class="ksub">${p}%</div></div>
+    <div class="kpi ${s}"><div class="klbl">Saldo</div><div class="kval" style="font-size:16px">${brl(sal)}</div><div class="ksub">${sal<0?'⚠️ Acima':''}</div></div>
+    <div class="kpi gr"><div class="klbl">Responsável</div><div class="kval" style="font-size:14px">${c.r}</div><div class="ksub">${d?'✅ Dados reais':'✏️ Editável'}</div></div>
+  `;
+
+  // Barras por frente
+  const fr=[{k:'m',n:'Mídia',b:bm,r:rm,cor:'#1565C0'},{k:'i',n:'Influenciador',b:bi,r:ri,cor:'#6A1B9A'},{k:'p',n:'Produção',b:bp,r:rp,cor:'#E65100'}];
+  const mx=Math.max(bm,bi,bp,1);
+  document.getElementById('b-det-barras').innerHTML=`
+    <div class="stitle" style="margin-bottom:16px">Budget × Consumido por Frente</div>
+    ${fr.map(f=>{
+      const pf=pct(f.r,f.b), sf=sc(pf), wB=Math.round(f.b/mx*100), wR=f.b>0?Math.min(Math.round(f.r/f.b*100),100):0;
+      const editInp=!d?`<input class="inp" type="number" value="${f.r||''}" placeholder="0,00" style="width:130px;text-align:right"
+        onchange="CM['${camp}_${f.k}']=(parseFloat(this.value)||0);drawBgtDet('${camp}');drawBgtCamp('${cliAtivo}');drawBgtHome()">`:brl(f.r);
+      return `<div class="bdbl">
+        <div class="bdbl-hd">
+          <span class="bdbl-nm" style="color:${f.cor}">${f.n}</span>
+          <span class="bdbl-sd">Saldo: <b style="color:var(--${sf})">${f.b>0?brl(f.b-f.r):'—'}</b>${pf>0?` <span class="bdg ${sf}">${pf}%</span>`:''}</span>
+        </div>
+        <div class="bline"><span class="blbl">Budget</span>
+          <div class="bbar"><div class="bbarfill" style="width:${wB}%;background:#333;border:1px solid #444"></div></div>
+          <span class="bval" style="color:var(--tx)">${f.b>0?brl(f.b):'A definir'}</span></div>
+        <div class="bline"><span class="blbl">Consumido</span>
+          <div class="bbar"><div class="bbarfill" style="width:${wR}%;background:${pf>100?'#F44336':f.cor}"></div></div>
+          <span class="bval" style="color:var(--${sf})">${editInp}</span></div>
+      </div>`;
+    }).join('')}
+  `;
+
+  // tabela de lançamentos (só se tiver dados reais)
+  if(!d){
+    document.getElementById('b-det-ftabs').innerHTML='';
+    document.getElementById('b-det-alert').textContent='✏️ Insira o consumido por frente nas barras acima.';
+    document.getElementById('b-det-tbl').innerHTML='';
+    return;
+  }
+  document.getElementById('b-det-alert').textContent=`✅ ${d.gastos.length} lançamentos reais`;
+  const opts=['*','Mídia','Influs','Produção'];
+  document.getElementById('b-det-ftabs').innerHTML=opts.map(f=>`
+    <div class="ftab ${frenteAtiva===f?'on':''}" onclick="selFrente('${f}','${camp}')">${f==='*'?'Todos':f}</div>
+  `).join('');
+  const lista=frenteAtiva==='*'?d.gastos:d.gastos.filter(g=>g.g===frenteAtiva);
+  const cor={Mídia:'#0d2040',Influs:'#1a0d2e',Produção:'#2a1a00'};
+  const txt={Mídia:'#64B5F6',Influs:'#BB86FC',Produção:'#FF9800'};
+  document.getElementById('b-det-tbl').innerHTML=`
+    <thead><tr><th>Frente</th><th>Data</th><th>Mês</th><th>Item</th><th class="num">Valor</th><th>Status</th></tr></thead>
+    <tbody>
+    ${lista.map((g,i)=>`<tr style="${i%2===0?'background:#1a1a1a':''}">
+      <td><span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:3px;background:${cor[g.g]||'#222'};color:${txt[g.g]||'#888'}">${g.g}</span></td>
+      <td style="color:var(--dm);font-size:11px">${g.d}</td>
+      <td style="color:var(--dm);font-size:11px">${g.mes}</td>
+      <td style="font-size:12px">${g.it}</td>
+      <td class="num" style="font-weight:700">${brl(g.v)}</td>
+      <td>${sbadge(g.s)}</td>
+    </tr>`).join('')}
+    <tr><td colspan="4">TOTAL</td><td class="num">${brl(lista.reduce((s,g)=>s+g.v,0))}</td><td></td></tr>
+    </tbody>`;
+}
+function selFrente(f,camp){frenteAtiva=f;drawBgtDet(camp);}
+
+// ═══════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════
+Object.keys(TS).sort().forEach(n=>{
+  const o=document.createElement('option'); o.value=n; o.textContent=n;
+  document.getElementById('fpessoa').appendChild(o);
+});
+drawResumo();
+</script>
+</body>
+</html>
