@@ -407,256 +407,198 @@ function buildDetail(acct,sub){
   const horas=d.horas[sub];
   const color=COLORS[acct];
   const aKeys=Object.keys(horas);
-  const isExtra = (sub==='belga');
+  const isExtra=(sub==='belga');
 
-  // v = consumido acumulado | vm = vendido acumulado (6m) | t = vendido/mês
-  let totV=0, totVM=0;
+  let totV=0,totVM=0;
   aKeys.forEach(a=>{
     totV+=horas[a].v;
-    totVM+=(horas[a].vm !== undefined ? horas[a].vm : horas[a].t*6);
+    totVM+=(horas[a].vm!==undefined?horas[a].vm:horas[a].t*6);
   });
   const totP=isExtra?0:pct(totV,totVM);
   const saldo=totVM-totV;
   const bud=budgetTotais(acct);
 
-  // Fee por sub (Expert tem fee próprio)
-  const subFee = {
-    expert: {feeMensal:145957.25, feeTotal:437871.74, feePeriodo:'Abr–Jun 2026 (3m)'},
-    belga:  {feeMensal:29874.35,  feeTotal:268667.10, feePeriodo:'Abr/Mai/Jul 2026 (3m) · FY Q1 + Belga'}
+  // Fee por sub
+  const subFee={
+    expert:{feeMensal:145957.25,feeTotal:437871.74,feePeriodo:'Abr–Jun 2026 (3m)'},
+    belga: {feeMensal:29874.35, feeTotal:268667.10,feePeriodo:'Abr/Mai/Jul 2026 (3m) · FY Q1 + Belga'}
   };
-  const fee = subFee[sub] || {feeMensal:d.feeMensal, feeTotal:d.feeTotal, feePeriodo:d.feePeriodo};
+  const fee=subFee[sub]||{feeMensal:d.feeMensal,feeTotal:d.feeTotal,feePeriodo:d.feePeriodo};
+
+  const subLbls={
     base:'',
-    fiscal27:' · Fiscal 27',
-    belga:' · FY27 Belga + D\'Gel (Extra FEE)',
-    desgel:' · Desgel Secante (Extra FEE)',
-    expert:' · Expert Gel (Abr–Jun 2026 · 344h/mês · R$89.296/mês)'
+    belga:" · FY27 Belga + D'Gel (Extra FEE)",
+    expert:' · Expert Gel (Abr–Jun 2026 · 344h/mês · R$145.957/mês)'
   };
   const label=LABELS[acct]+(subLbls[sub]||'');
 
-  // KPI para EXTRA FEE — só consumo, sem comparação com vendido
-  const kpiExtra=`<div class="kpi-row" style="grid-template-columns:repeat(2,1fr);margin-bottom:20px">
-    <div class="kpi-card" style="border-color:rgba(255,92,0,.3)">
-      <div class="kpi-label">Total Consumido Jan–Jun</div>
-      <div class="kpi-value" style="color:var(--orange)">${totV.toLocaleString('pt-BR',{maximumFractionDigits:1})}h</div>
-      <div class="kpi-sub">Projeto Extra FEE · fora do contrato base</div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-label">Áreas envolvidas</div>
-      <div class="kpi-value" style="font-size:18px">${aKeys.filter(a=>horas[a].v>0).length > 0 ? aKeys.filter(a=>horas[a].v>0).length : '0'}</div>
-      <div class="kpi-sub">com horas apontadas</div>
-    </div>
-  </div>`;
+  // KPI EXTRA
+  const kpiExtra='<div class="kpi-row" style="grid-template-columns:repeat(2,1fr);margin-bottom:20px">'
+    +'<div class="kpi-card" style="border-color:rgba(255,92,0,.3)">'
+    +'<div class="kpi-label">Total Consumido Jan–Jun</div>'
+    +'<div class="kpi-value" style="color:var(--orange)">'+totV.toLocaleString('pt-BR',{maximumFractionDigits:1})+'h</div>'
+    +'<div class="kpi-sub">Projeto Extra FEE · '+fee.feePeriodo+'</div>'
+    +'</div>'
+    +'<div class="kpi-card">'
+    +'<div class="kpi-label">Fee Total Projeto</div>'
+    +'<div class="kpi-value" style="font-size:15px;color:var(--orange)">'+fmtR(fee.feeTotal)+'</div>'
+    +'<div class="kpi-sub">Escopo extra · fora do contrato base</div>'
+    +'</div></div>';
 
-  // KPI row — horas + fee (BASE)
-  const kpiTop=`<div class="kpi-row-4">
-    <div class="kpi-card">
-      <div class="kpi-label">Consumido Jan–Jun</div>
-      <div class="kpi-value" style="color:${sCol(totP)}">${totV.toLocaleString('pt-BR',{maximumFractionDigits:1})}h</div>
-      <div class="kpi-sub">de ${totVM.toLocaleString('pt-BR')}h vendidas no período</div>
-      <span class="kpi-badge ${sCls(totP)}" style="margin-top:8px;display:inline-block">${sLbl(totP)}</span>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-label">Saldo</div>
-      <div class="kpi-value" style="color:${saldo>=0?'var(--green)':'var(--red)'}">${saldo>=0?'+':''}${saldo.toLocaleString('pt-BR',{maximumFractionDigits:1})}h</div>
-      <div class="kpi-sub">${saldo>=0?'horas disponíveis':'horas estouradas'}</div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-label">Fee Mensal</div>
-      <div class="kpi-value" style="font-size:15px;color:var(--orange)">${fmtR(fee.feeMensal)}</div>
-      <div class="kpi-sub">${fee.feePeriodo}</div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-label">Fee Total Contrato</div>
-      <div class="kpi-value" style="font-size:15px">${fmtR(fee.feeTotal)}</div>
-      <div class="kpi-sub">${totP}% do escopo consumido</div>
-    </div>
-  </div>`;
+  // KPI TOP
+  const kpiTop='<div class="kpi-row-4">'
+    +'<div class="kpi-card">'
+    +'<div class="kpi-label">Consumido Jan–Jun</div>'
+    +'<div class="kpi-value" style="color:'+sCol(totP)+'">'+totV.toLocaleString('pt-BR',{maximumFractionDigits:1})+'h</div>'
+    +'<div class="kpi-sub">de '+totVM.toLocaleString('pt-BR')+'h vendidas no período</div>'
+    +'<span class="kpi-badge '+sCls(totP)+'" style="margin-top:8px;display:inline-block">'+sLbl(totP)+'</span>'
+    +'</div>'
+    +'<div class="kpi-card">'
+    +'<div class="kpi-label">Saldo</div>'
+    +'<div class="kpi-value" style="color:'+(saldo>=0?'var(--green)':'var(--red)')+'">'+  (saldo>=0?'+':'')+saldo.toLocaleString('pt-BR',{maximumFractionDigits:1})+'h</div>'
+    +'<div class="kpi-sub">'+(saldo>=0?'horas disponíveis':'horas estouradas')+'</div>'
+    +'</div>'
+    +'<div class="kpi-card">'
+    +'<div class="kpi-label">Fee Mensal</div>'
+    +'<div class="kpi-value" style="font-size:15px;color:var(--orange)">'+fmtR(fee.feeMensal)+'</div>'
+    +'<div class="kpi-sub">'+fee.feePeriodo+'</div>'
+    +'</div>'
+    +'<div class="kpi-card">'
+    +'<div class="kpi-label">Fee Total Contrato</div>'
+    +'<div class="kpi-value" style="font-size:15px">'+fmtR(fee.feeTotal)+'</div>'
+    +'<div class="kpi-sub">'+totP+'% do escopo consumido</div>'
+    +'</div></div>';
 
-  // KPI budget — calculado ao vivo dos campanhas
-  const kpiBud=`<div class="kpi-row" style="grid-template-columns:repeat(4,1fr);margin-bottom:20px">
-    <div class="kpi-card" style="border-color:rgba(255,92,0,.3)">
-      <div class="kpi-label">Budget Total</div>
-      <div class="kpi-value" style="font-size:15px;color:var(--orange)" id="${acct}-bud-total">${fmtR(bud.total)}</div>
-      <div class="kpi-sub">soma de todas campanhas</div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-label">Mídia</div>
-      <div class="kpi-value" style="font-size:15px" id="${acct}-bud-midia">${fmtR(bud.midia)}</div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-label">Influenciadores</div>
-      <div class="kpi-value" style="font-size:15px" id="${acct}-bud-inf">${fmtR(bud.influenciador)}</div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-label">Produção</div>
-      <div class="kpi-value" style="font-size:15px" id="${acct}-bud-prod">${fmtR(bud.producao)}</div>
-    </div>
-  </div>`;
+  // KPI BUDGET
+  const kpiBud='<div class="kpi-row" style="grid-template-columns:repeat(4,1fr);margin-bottom:20px">'
+    +'<div class="kpi-card" style="border-color:rgba(255,92,0,.3)">'
+    +'<div class="kpi-label">Budget Total</div>'
+    +'<div class="kpi-value" style="font-size:15px;color:var(--orange)" id="'+acct+'-bud-total">'+fmtR(bud.total)+'</div>'
+    +'<div class="kpi-sub">soma de todas campanhas</div>'
+    +'</div>'
+    +'<div class="kpi-card"><div class="kpi-label">Mídia</div><div class="kpi-value" style="font-size:15px" id="'+acct+'-bud-midia">'+fmtR(bud.midia)+'</div></div>'
+    +'<div class="kpi-card"><div class="kpi-label">Influenciadores</div><div class="kpi-value" style="font-size:15px" id="'+acct+'-bud-inf">'+fmtR(bud.influenciador)+'</div></div>'
+    +'<div class="kpi-card"><div class="kpi-label">Produção</div><div class="kpi-value" style="font-size:15px" id="'+acct+'-bud-prod">'+fmtR(bud.producao)+'</div></div>'
+    +'</div>';
 
-  // Barras horas — extra fee usa só consumido para escala
+  // BARRAS HORAS
   const maxH=Math.max(...aKeys.map(a=>isExtra?horas[a].v:(horas[a].vm||horas[a].t*6)),1);
   let horasBars='';
   aKeys.forEach(a=>{
     const vm=horas[a].vm||horas[a].t*6;
-    const ap=isExtra?100:pct(horas[a].v,vm);
-    const hT=isExtra
-      ? (horas[a].v>0?Math.max(Math.round((horas[a].v/maxH)*115),8):0)
-      : Math.max(Math.round((vm/maxH)*115),3);
-    const hV=isExtra
-      ? (horas[a].v>0?Math.max(Math.round((horas[a].v/maxH)*115),8):0)
-      : (horas[a].v>0?Math.max(Math.round((horas[a].v/maxH)*115),2):0);
-    const sal=isExtra?0:(vm-horas[a].v);
-    const barColor=isExtra?'var(--orange)':sCol(ap);
-    const tip=isExtra
-      ? `${horas[a].v}h consumidas (Extra FEE)`
-      : `${horas[a].v}h consumidas · ${ap}% · saldo ${sal.toLocaleString('pt-BR',{maximumFractionDigits:1})}h`;
-
-    horasBars+=`<div class="bar-group">
-      <div class="bar-wrap">
-        ${isExtra
-          ? `<div class="bar-col" style="max-width:40px"><div class="bar" style="height:0px;background:${barColor}" data-height="${hT}" data-tip="${tip}"></div></div>`
-          : `<div class="bar-col"><div class="bar bar-scope" style="height:${hT}px" data-tip="Vendido 6m: ${vm}h (${horas[a].t}h/mês)"></div></div>
-             <div class="bar-col"><div class="bar" style="height:0px;background:${barColor}" data-height="${hV}" data-tip="${tip}"></div></div>`
-        }
-      </div>
-      <div class="bar-label">${a}</div>
-      <div class="bar-pct" style="color:${barColor}">${isExtra?(horas[a].v>0?horas[a].v+'h':'0h'):ap+'%'}</div>
-    </div>`;
+    const ap=isExtra?0:pct(horas[a].v,vm);
+    const hT=isExtra?(horas[a].v>0?Math.max(Math.round((horas[a].v/maxH)*115),8):0):Math.max(Math.round((vm/maxH)*115),3);
+    const hV=isExtra?(horas[a].v>0?Math.max(Math.round((horas[a].v/maxH)*115),8):0):(horas[a].v>0?Math.max(Math.round((horas[a].v/maxH)*115),2):0);
+    const barColor=isExtra?(horas[a].v>0?'var(--orange)':'var(--border)'):sCol(ap);
+    const tip=isExtra?(horas[a].v+'h consumidas (Extra FEE)'):(horas[a].v+'h consumidas · '+ap+'% · saldo '+(vm-horas[a].v).toLocaleString('pt-BR',{maximumFractionDigits:1})+'h');
+    const barHtml=isExtra
+      ?'<div class="bar-col" style="max-width:40px"><div class="bar" style="height:0px;background:'+barColor+'" data-height="'+hT+'" data-tip="'+tip+'"></div></div>'
+      :'<div class="bar-col"><div class="bar bar-scope" style="height:'+hT+'px" data-tip="Vendido 6m: '+vm+'h ('+horas[a].t+'h/mês)"></div></div>'
+       +'<div class="bar-col"><div class="bar" style="height:0px;background:'+barColor+'" data-height="'+hV+'" data-tip="'+tip+'"></div></div>';
+    horasBars+='<div class="bar-group"><div class="bar-wrap">'+barHtml+'</div>'
+      +'<div class="bar-label">'+a+'</div>'
+      +'<div class="bar-pct" style="color:'+barColor+'">'+(isExtra?(horas[a].v>0?horas[a].v+'h':'0h'):ap+'%')+'</div></div>';
   });
 
-  // Barras budget (por frente)
+  // BARRAS BUDGET
   const maxB=Math.max(bud.midia,bud.influenciador,bud.producao,1);
-  const budFrentes=[
-    {nome:'Mídia',         val:bud.midia},
-    {nome:'Influenciadores',val:bud.influenciador},
-    {nome:'Produção',      val:bud.producao},
-  ];
+  const budFrentes=[{nome:'Mídia',val:bud.midia},{nome:'Influenciadores',val:bud.influenciador},{nome:'Produção',val:bud.producao}];
   let budBars='';
   budFrentes.forEach(f=>{
     const hB=f.val>0?Math.max(Math.round((f.val/maxB)*115),4):0;
-    budBars+=`<div class="bar-group">
-      <div class="bar-wrap">
-        <div class="bar-col" style="max-width:40px"><div class="bar" style="height:0px;background:var(--orange)" data-height="${hB}" data-tip="${f.nome}: ${fmtRFull(f.val)}"></div></div>
-      </div>
-      <div class="bar-label">${f.nome.substring(0,3).toUpperCase()}</div>
-      <div class="bar-pct" style="color:var(--orange)">${bud.total>0?Math.round((f.val/bud.total)*100)+'%':'—'}</div>
-    </div>`;
+    budBars+='<div class="bar-group"><div class="bar-wrap">'
+      +'<div class="bar-col" style="max-width:40px"><div class="bar" style="height:0px;background:var(--orange)" data-height="'+hB+'" data-tip="'+f.nome+': '+fmtRFull(f.val)+'"></div></div>'
+      +'</div><div class="bar-label">'+f.nome.substring(0,3).toUpperCase()+'</div>'
+      +'<div class="bar-pct" style="color:var(--orange)">'+(bud.total>0?Math.round((f.val/bud.total)*100)+'%':'—')+'</div></div>';
   });
 
-  // Tabela horas
+  // LEGENDA HORAS
+  const legendaHoras=isExtra
+    ?'<div class="legend-item"><div class="legend-dot" style="background:var(--orange)"></div>Consumido (Extra FEE)</div>'
+    :'<div class="legend-item"><div class="legend-dot" style="background:var(--border)"></div>Vendido</div>'
+     +'<div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div>&lt;70%</div>'
+     +'<div class="legend-item"><div class="legend-dot" style="background:var(--yellow)"></div>70–90%</div>'
+     +'<div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div>+90%</div>';
+
+  // CHART DIREITO
+  const chartDireito=isExtra
+    ?'<div class="chart-card" style="display:flex;flex-direction:column;justify-content:center;align-items:center;gap:8px;text-align:center">'
+     +'<div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;font-weight:700">Projeto Extra FEE</div>'
+     +'<div style="font-size:32px;font-weight:900;color:var(--orange)">'+totV.toLocaleString('pt-BR',{maximumFractionDigits:1})+'h</div>'
+     +'<div style="font-size:11px;color:var(--muted)">total consumido Jan–Jun</div>'
+     +'<div style="font-size:10px;color:var(--secondary);margin-top:8px;padding:8px 12px;background:var(--surface2);border-radius:6px;border:1px solid var(--border)">Escopo extra · cobrado separado do fee base</div>'
+     +'</div>'
+    :'<div class="chart-card"><div class="chart-title">Budget por Frente</div>'
+     +'<div class="bar-chart">'+budBars+'</div>'
+     +'<div class="legend"><div class="legend-item"><div class="legend-dot" style="background:var(--orange)"></div>Mídia · Influenciadores · Produção</div></div>'
+     +'</div>';
+
+  // TABELA HORAS
   let rowsH='';
   aKeys.forEach(a=>{
     const vm=horas[a].vm||horas[a].t*6;
     const ap=isExtra?0:pct(horas[a].v,vm);
     const sal=vm-horas[a].v;
-    // cor barra extra = laranja se tem consumo, cinza se zero
     const barColor=isExtra?(horas[a].v>0?'var(--orange)':'var(--border)'):sCol(ap);
-    rowsH+=`<tr>
-      <td><span class="status-dot" style="background:${barColor}"></span>${a}</td>
-      <td><input class="h-input" type="number" min="0" value="${horas[a].v}" onchange="updateH('${acct}','${sub}','${a}',this.value)"/></td>
-      ${isExtra
-        ? `<td><span style="font-size:11px;color:${horas[a].v>0?'var(--orange)':'var(--muted)'}">${horas[a].v>0?'✓ Apontado':'—'}</span></td>`
-        : `<td style="color:var(--muted)">${vm}h</td>
-           <td style="color:${sal>=0?'var(--green)':'var(--red)'};font-weight:700">${sal>=0?'+':''}${sal.toLocaleString('pt-BR',{maximumFractionDigits:1})}h</td>
-           <td style="color:${sCol(ap)};font-weight:700">${ap}%</td>`
-      }
-      <td><span class="kpi-badge ${isExtra?(horas[a].v>0?'badge-yellow':''):''+sCls(ap)}">${isExtra?(horas[a].v>0?'Extra FEE':'—'):sLbl(ap)}</span></td>
-    </tr>`;
+    const extraCols=isExtra
+      ?'<td><span style="font-size:11px;color:'+(horas[a].v>0?'var(--orange)':'var(--muted)')+'">'+( horas[a].v>0?'✓ Apontado':'—')+'</span></td>'
+      :'<td style="color:var(--muted)">'+vm+'h</td>'
+       +'<td style="color:'+(sal>=0?'var(--green)':'var(--red)')+';font-weight:700">'+(sal>=0?'+':'')+sal.toLocaleString('pt-BR',{maximumFractionDigits:1})+'h</td>'
+       +'<td style="color:'+sCol(ap)+';font-weight:700">'+ap+'%</td>';
+    const badge=isExtra
+      ?(horas[a].v>0?'<span class="kpi-badge badge-yellow">Extra FEE</span>':'<span style="color:var(--muted);font-size:10px">—</span>')
+      :'<span class="kpi-badge '+sCls(ap)+'">'+sLbl(ap)+'</span>';
+    rowsH+='<tr>'
+      +'<td><span class="status-dot" style="background:'+barColor+'"></span>'+a+'</td>'
+      +'<td><input class="h-input" type="number" min="0" value="'+horas[a].v+'" onchange="updateH(\''+acct+'\',\''+sub+'\',\''+a+'\',this.value)"/></td>'
+      +extraCols
+      +'<td>'+badge+'</td></tr>';
   });
 
-  // Tabela campanhas/budget
+  const thExtra=isExtra?'':' <th>Vendido 6m (h)</th><th>Saldo</th><th>%</th>';
+
+  // TABELA CAMPANHAS
   let rowsC='';
   d.campanhas.forEach((c,i)=>{
     const tot=c.midia+c.influenciador+c.producao;
-    rowsC+=`<tr>
-      <td class="camp-name">${c.nome}</td>
-      <td><input class="edit-input" type="number" min="0" step="0.01" value="${c.midia||''}" placeholder="0" onchange="updateBud('${acct}',${i},'midia',this.value)"/></td>
-      <td><input class="edit-input" type="number" min="0" step="0.01" value="${c.influenciador||''}" placeholder="0" onchange="updateBud('${acct}',${i},'influenciador',this.value)"/></td>
-      <td><input class="edit-input" type="number" min="0" step="0.01" value="${c.producao||''}" placeholder="0" onchange="updateBud('${acct}',${i},'producao',this.value)"/></td>
-      <td style="font-weight:600">${tot>0?fmtRFull(tot):'—'}</td>
-    </tr>`;
+    rowsC+='<tr>'
+      +'<td class="camp-name">'+c.nome+'</td>'
+      +'<td><input class="edit-input" type="number" min="0" step="0.01" value="'+(c.midia||'')+'" placeholder="0" onchange="updateBud(\''+acct+'\','+i+',\'midia\',this.value)"/></td>'
+      +'<td><input class="edit-input" type="number" min="0" step="0.01" value="'+(c.influenciador||'')+'" placeholder="0" onchange="updateBud(\''+acct+'\','+i+',\'influenciador\',this.value)"/></td>'
+      +'<td><input class="edit-input" type="number" min="0" step="0.01" value="'+(c.producao||'')+'" placeholder="0" onchange="updateBud(\''+acct+'\','+i+',\'producao\',this.value)"/></td>'
+      +'<td style="font-weight:600">'+(tot>0?fmtRFull(tot):'—')+'</td></tr>';
   });
+  rowsC+='<tr><td>TOTAL</td><td>'+fmtRFull(bud.midia)+'</td><td>'+fmtRFull(bud.influenciador)+'</td><td>'+fmtRFull(bud.producao)+'</td><td>'+fmtRFull(bud.total)+'</td></tr>';
 
-  // Totais
-  rowsC+=`<tr>
-    <td>TOTAL</td>
-    <td>${fmtRFull(bud.midia)}</td>
-    <td>${fmtRFull(bud.influenciador)}</td>
-    <td>${fmtRFull(bud.producao)}</td>
-    <td>${fmtRFull(bud.total)}</td>
-  </tr>`;
+  const campTable=!isExtra
+    ?'<div class="camp-table-wrap"><div class="camp-table-head"><span class="sec-title">✏ Budget por Campanha</span><span class="sec-hint">Valores em R$ · total atualiza automaticamente</span></div>'
+     +'<table class="camp-table"><thead><tr><th>Campanha</th><th>Mídia (R$)</th><th>Influenciadores (R$)</th><th>Produção (R$)</th><th>Total</th></tr></thead>'
+     +'<tbody>'+rowsC+'</tbody></table></div>'
+    :'';
 
-  return `
-    <div class="acct-heading">
-      <div class="acct-bar" style="background:${color}"></div>
-      <div>
-        <div style="font-size:18px;font-weight:800;letter-spacing:-.5px">${label}</div>
-        <div style="font-size:11px;color:var(--muted);margin-top:2px">Horas por área · Budget por campanha · sem nomes de pessoas</div>
-      </div>
-    </div>
-
-    ${isExtra ? kpiExtra : kpiTop}
-    ${isExtra ? '' : kpiBud}
-
-    <div class="charts-row">
-      <div class="chart-card">
-        <div class="chart-title">${isExtra ? 'Horas Consumidas por Área — Extra FEE' : 'Horas por Área — Consumido vs. Vendido'}</div>
-        <div class="bar-chart">${horasBars}</div>
-        <div class="legend">
-          ${isExtra
-            ? `<div class="legend-item"><div class="legend-dot" style="background:var(--orange)"></div>Consumido (Extra FEE)</div>`
-            : `<div class="legend-item"><div class="legend-dot" style="background:var(--border)"></div>Vendido</div>
-               <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div>&lt;70%</div>
-               <div class="legend-item"><div class="legend-dot" style="background:var(--yellow)"></div>70–90%</div>
-               <div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div>+90%</div>`
-          }
-        </div>
-      </div>
-      ${isExtra ? `
-      <div class="chart-card" style="display:flex;flex-direction:column;justify-content:center;align-items:center;gap:8px;text-align:center">
-        <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;font-weight:700">Projeto Extra FEE</div>
-        <div style="font-size:32px;font-weight:900;color:var(--orange)">${totV.toLocaleString('pt-BR',{maximumFractionDigits:1})}h</div>
-        <div style="font-size:11px;color:var(--muted)">total consumido Jan–Jun</div>
-        <div style="font-size:10px;color:var(--secondary);margin-top:8px;padding:8px 12px;background:var(--surface2);border-radius:6px;border:1px solid var(--border)">Escopo extra · cobrado separado do fee base</div>
-      </div>` : `
-      <div class="chart-card">
-        <div class="chart-title">Budget por Frente</div>
-        <div class="bar-chart">${budBars}</div>
-        <div class="legend">
-          <div class="legend-item"><div class="legend-dot" style="background:var(--orange)"></div>Mídia · Influenciadores · Produção</div>
-        </div>
-      </div>`}
-    </div>
-
-    <div class="edit-wrap">
-      <div class="edit-head">
-        <span class="sec-title">✏ ${isExtra ? 'Horas consumidas — Extra FEE' : 'Horas consumidas por área'}</span>
-        <span class="sec-hint">${isExtra ? 'Insira o consumido por área neste projeto extra' : 'Horas vendidas são fixas · insira o consumido'}</span>
-      </div>
-      <table class="edit-table">
-        <thead><tr>
-          <th>Área</th>
-          <th>Consumido (h)</th>
-          ${isExtra ? '' : '<th>Vendido 6m (h)</th><th>Saldo</th><th>%</th>'}
-          <th>Status</th>
-        </tr></thead>
-        <tbody>${rowsH}</tbody>
-      </table>
-    </div>
-
-    ${!isExtra ? `
-    <div class="camp-table-wrap">
-      <div class="camp-table-head">
-        <span class="sec-title">✏ Budget por Campanha</span>
-        <span class="sec-hint">Valores em R$ · total atualiza automaticamente</span>
-      </div>
-      <table class="camp-table">
-        <thead><tr><th>Campanha</th><th>Mídia (R$)</th><th>Influenciadores (R$)</th><th>Produção (R$)</th><th>Total</th></tr></thead>
-        <tbody>${rowsC}</tbody>
-      </table>
-    </div>` : ''}
-
-    `;
+  return '<div class="acct-heading">'
+    +'<div class="acct-bar" style="background:'+color+'"></div>'
+    +'<div>'
+    +'<div style="font-size:18px;font-weight:800;letter-spacing:-.5px">'+label+'</div>'
+    +'<div style="font-size:11px;color:var(--muted);margin-top:2px">Horas por área · Budget por campanha · sem nomes de pessoas</div>'
+    +'</div></div>'
+    +(isExtra?kpiExtra:kpiTop)
+    +(isExtra?'':kpiBud)
+    +'<div class="charts-row">'
+    +'<div class="chart-card">'
+    +'<div class="chart-title">'+(isExtra?'Horas Consumidas por Área — Extra FEE':'Horas por Área — Consumido vs. Vendido')+'</div>'
+    +'<div class="bar-chart">'+horasBars+'</div>'
+    +'<div class="legend">'+legendaHoras+'</div>'
+    +'</div>'
+    +chartDireito
+    +'</div>'
+    +'<div class="edit-wrap"><div class="edit-head">'
+    +'<span class="sec-title">✏ '+(isExtra?'Horas consumidas — Extra FEE':'Horas consumidas por área')+'</span>'
+    +'<span class="sec-hint">'+(isExtra?'Insira o consumido por área neste projeto extra':'Horas vendidas são fixas · insira o consumido')+'</span>'
+    +'</div>'
+    +'<table class="edit-table"><thead><tr><th>Área</th><th>Consumido (h)</th>'+thExtra+'<th>Status</th></tr></thead>'
+    +'<tbody>'+rowsH+'</tbody></table></div>'
+    +campTable;
 }
 
 // ══════════════════════════════════════════
