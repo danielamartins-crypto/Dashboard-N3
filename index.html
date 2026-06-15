@@ -133,8 +133,6 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
     <div class="header-title">N3 · Dashboard Operacional</div>
   </div>
   <div class="hactions">
-    <label class="btn btn-ghost" for="csvInput">⬆ Importar CSV</label>
-    <input type="file" id="csvInput" accept=".csv" onchange="importCSV(event)">
     <button class="btn btn-primary" onclick="saveAll()">✓ Salvar</button>
   </div>
 </header>
@@ -153,8 +151,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
   <div id="page-risque" class="page">
     <div class="sub-tabs" id="risque-subtabs">
       <button class="sub-tab active" onclick="showSub('risque','base',this)">Base</button>
-      <button class="sub-tab" onclick="showSub('risque','belga',this)">FY27 Belga + D'Gel</button>
-      <button class="sub-tab" onclick="showSub('risque','desgel',this)">Desgel Secante</button>
+      <button class="sub-tab" onclick="showSub('risque','belga',this)">FY27 — Belga + D'Gel (Extra FEE)</button>
     </div>
     <div style="height:20px"></div>
     <div id="risque-content"></div>
@@ -180,7 +177,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
 // ══════════════════════════════════════════
 const DATA = {
   risque: {
-    feeMensal:225805, feePeriodo:'Jul–Dez 2026 (6m)', feeTotal:1354832,
+    feeMensal:225805, feePeriodo:'Mar–Jul 2026 (6m)', feeTotal:1354832,
     // v = consumido acumulado Jan-Jun (Fee + Extra Fee) | t = vendido/mês | periodo=6m
     horas:{
       base:  {
@@ -196,13 +193,13 @@ const DATA = {
       desgel:{Atendimento:{v:0,t:0,vm:0},    Criação:{v:0,t:0,vm:0},  Planejamento:{v:0,t:0,vm:0}, Mídia:{v:0,t:0,vm:0}, 'Dados/BI':{v:0,t:0,vm:0}, Operações:{v:0,t:0,vm:0}},
     },
     campanhas:[
-      {nome:'AON',         midia:0, influenciador:0, producao:0},
-      {nome:'Belga',       midia:0, influenciador:0, producao:0},
-      {nome:'Desgel Sec.', midia:0, influenciador:0, producao:0},
+      {nome:'AON',                              midia:0, influenciador:0, producao:0},
+      {nome:'Fiscal Year Q1 (Extra FEE)',        midia:0, influenciador:0, producao:190773.90},
+      {nome:'Campanha Belga (Extra FEE)',         midia:0, influenciador:0, producao:77893.20},
     ]
   },
   bozzano: {
-    feeMensal:129919, feePeriodo:'Jul–Dez 2026 (6m)', feeTotal:779514,
+    feeMensal:129919, feePeriodo:'Mar–Jul 2026 (6m)', feeTotal:779514,
     horas:{
       base:  {
         Planejamento: {v:216,    t:17,  vm:102},
@@ -212,8 +209,16 @@ const DATA = {
         Atendimento:  {v:587.50, t:200, vm:1200},
         Operações:    {v:52.25,  t:15,  vm:90},
       },
-      // BZN EXPERT — Fiscal 27 Expert Gel (total 472h Jan-Jun)
-      expert:{Atendimento:{v:29,t:0,vm:0}, Criação:{v:281.50,t:0,vm:0}, Mídia:{v:98,t:0,vm:0}, Operações:{v:17.50,t:0,vm:0}, Planejamento:{v:46,t:0,vm:0}, 'Dados/BI':{v:0,t:0,vm:0}},
+      // BZN EXPERT — Fiscal 27 Expert Gel | Abr–Jun 2026 (3m) | 344h/mês | R$ 89.296,44/mês
+      // v = consumido Jan-Jun (timesheet) | t = vendido/mês | vm = vendido 3m
+      expert:{
+        Criação:    {v:281.50, t:180, vm:540},
+        Mídia:      {v:98,     t:72,  vm:216},
+        'Dados/BI': {v:0,      t:48,  vm:144},
+        Atendimento:{v:29,     t:36,  vm:108},
+        Operações:  {v:17.50,  t:8,   vm:24},
+        Planejamento:{v:46,    t:0,   vm:0},
+      },
     },
     campanhas:[
       {nome:'AON',    midia:0, influenciador:0, producao:0},
@@ -266,7 +271,7 @@ const DATA = {
 
 const LABELS={risque:'Risqué',bozzano:'Bozzano',oetker:'Dr. Oetker',suhai:'Suhai'};
 const COLORS={risque:'#E91E8C',bozzano:'#2196F3',oetker:'#FF9800',suhai:'#9C27B0'};
-const SUBS={risque:['base','belga','desgel'],bozzano:['base','expert'],oetker:['base'],suhai:['base']};
+const SUBS={risque:['base','belga'],bozzano:['base','expert'],oetker:['base'],suhai:['base']};
 
 // helpers
 const pct=(v,t)=>t>0?Math.min(Math.round((v/t)*100),100):0;
@@ -402,7 +407,7 @@ function buildDetail(acct,sub){
   const horas=d.horas[sub];
   const color=COLORS[acct];
   const aKeys=Object.keys(horas);
-  const isExtra = (sub==='belga'||sub==='desgel'||sub==='expert');
+  const isExtra = (sub==='belga');
 
   // v = consumido acumulado | vm = vendido acumulado (6m) | t = vendido/mês
   let totV=0, totVM=0;
@@ -414,7 +419,18 @@ function buildDetail(acct,sub){
   const saldo=totVM-totV;
   const bud=budgetTotais(acct);
 
-  const subLbls={base:'',fiscal27:' · Fiscal 27',belga:' · FY27 Belga + D\'Gel (Extra FEE)',desgel:' · Desgel Secante (Extra FEE)',expert:' · Expert Gel (Extra FEE)'};
+  // Fee por sub (Expert tem fee próprio)
+  const subFee = {
+    expert: {feeMensal:145957.25, feeTotal:437871.74, feePeriodo:'Abr–Jun 2026 (3m)'},
+    belga:  {feeMensal:29874.35,  feeTotal:268667.10, feePeriodo:'Abr/Mai/Jul 2026 (3m) · FY Q1 + Belga'}
+  };
+  const fee = subFee[sub] || {feeMensal:d.feeMensal, feeTotal:d.feeTotal, feePeriodo:d.feePeriodo};
+    base:'',
+    fiscal27:' · Fiscal 27',
+    belga:' · FY27 Belga + D\'Gel (Extra FEE)',
+    desgel:' · Desgel Secante (Extra FEE)',
+    expert:' · Expert Gel (Abr–Jun 2026 · 344h/mês · R$89.296/mês)'
+  };
   const label=LABELS[acct]+(subLbls[sub]||'');
 
   // KPI para EXTRA FEE — só consumo, sem comparação com vendido
@@ -426,7 +442,7 @@ function buildDetail(acct,sub){
     </div>
     <div class="kpi-card">
       <div class="kpi-label">Áreas envolvidas</div>
-      <div class="kpi-value" style="font-size:18px">${aKeys.filter(a=>horas[a].v>0).length || '—'}</div>
+      <div class="kpi-value" style="font-size:18px">${aKeys.filter(a=>horas[a].v>0).length > 0 ? aKeys.filter(a=>horas[a].v>0).length : '0'}</div>
       <div class="kpi-sub">com horas apontadas</div>
     </div>
   </div>`;
@@ -446,12 +462,12 @@ function buildDetail(acct,sub){
     </div>
     <div class="kpi-card">
       <div class="kpi-label">Fee Mensal</div>
-      <div class="kpi-value" style="font-size:15px;color:var(--orange)">${fmtR(d.feeMensal)}</div>
-      <div class="kpi-sub">${d.feePeriodo}</div>
+      <div class="kpi-value" style="font-size:15px;color:var(--orange)">${fmtR(fee.feeMensal)}</div>
+      <div class="kpi-sub">${fee.feePeriodo}</div>
     </div>
     <div class="kpi-card">
       <div class="kpi-label">Fee Total Contrato</div>
-      <div class="kpi-value" style="font-size:15px">${fmtR(d.feeTotal)}</div>
+      <div class="kpi-value" style="font-size:15px">${fmtR(fee.feeTotal)}</div>
       <div class="kpi-sub">${totP}% do escopo consumido</div>
     </div>
   </div>`;
@@ -477,16 +493,18 @@ function buildDetail(acct,sub){
     </div>
   </div>`;
 
-  // Barras horas — consumido vs vendido acumulado (vm)
-  const maxH=Math.max(...aKeys.map(a=>isExtra?horas[a].v:horas[a].vm||horas[a].t*6),1);
+  // Barras horas — extra fee usa só consumido para escala
+  const maxH=Math.max(...aKeys.map(a=>isExtra?horas[a].v:(horas[a].vm||horas[a].t*6)),1);
   let horasBars='';
   aKeys.forEach(a=>{
     const vm=horas[a].vm||horas[a].t*6;
     const ap=isExtra?100:pct(horas[a].v,vm);
     const hT=isExtra
-      ? (horas[a].v>0?Math.max(Math.round((horas[a].v/maxH)*115),4):8)
+      ? (horas[a].v>0?Math.max(Math.round((horas[a].v/maxH)*115),8):0)
       : Math.max(Math.round((vm/maxH)*115),3);
-    const hV=horas[a].v>0?Math.max(Math.round((horas[a].v/maxH)*115),2):0;
+    const hV=isExtra
+      ? (horas[a].v>0?Math.max(Math.round((horas[a].v/maxH)*115),8):0)
+      : (horas[a].v>0?Math.max(Math.round((horas[a].v/maxH)*115),2):0);
     const sal=isExtra?0:(vm-horas[a].v);
     const barColor=isExtra?'var(--orange)':sCol(ap);
     const tip=isExtra
@@ -496,13 +514,13 @@ function buildDetail(acct,sub){
     horasBars+=`<div class="bar-group">
       <div class="bar-wrap">
         ${isExtra
-          ? `<div class="bar-col" style="max-width:36px"><div class="bar" style="height:0px;background:${barColor}" data-height="${hT}" data-tip="${tip}"></div></div>`
+          ? `<div class="bar-col" style="max-width:40px"><div class="bar" style="height:0px;background:${barColor}" data-height="${hT}" data-tip="${tip}"></div></div>`
           : `<div class="bar-col"><div class="bar bar-scope" style="height:${hT}px" data-tip="Vendido 6m: ${vm}h (${horas[a].t}h/mês)"></div></div>
              <div class="bar-col"><div class="bar" style="height:0px;background:${barColor}" data-height="${hV}" data-tip="${tip}"></div></div>`
         }
       </div>
       <div class="bar-label">${a}</div>
-      <div class="bar-pct" style="color:${barColor}">${isExtra?(horas[a].v>0?horas[a].v+'h':'—'):ap+'%'}</div>
+      <div class="bar-pct" style="color:${barColor}">${isExtra?(horas[a].v>0?horas[a].v+'h':'0h'):ap+'%'}</div>
     </div>`;
   });
 
@@ -638,11 +656,7 @@ function buildDetail(acct,sub){
       </table>
     </div>` : ''}
 
-    <div class="import-area" onclick="document.getElementById('csvInput').click()">
-      <div style="font-size:20px;margin-bottom:6px">📂</div>
-      <div class="import-text">Clique para <strong>importar CSV</strong></div>
-      <div class="import-hint">Formato: Área, Consumido</div>
-    </div>`;
+    `;
 }
 
 // ══════════════════════════════════════════
