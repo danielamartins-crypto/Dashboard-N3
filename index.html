@@ -153,7 +153,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
   <div id="page-risque" class="page">
     <div class="sub-tabs" id="risque-subtabs">
       <button class="sub-tab active" onclick="showSub('risque','base',this)">Base</button>
-      <button class="sub-tab" onclick="showSub('risque','belga',this)">Belga</button>
+      <button class="sub-tab" onclick="showSub('risque','belga',this)">FY27 Belga + D'Gel</button>
       <button class="sub-tab" onclick="showSub('risque','desgel',this)">Desgel Secante</button>
     </div>
     <div style="height:20px"></div>
@@ -163,7 +163,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
   <div id="page-bozzano" class="page">
     <div class="sub-tabs" id="bozzano-subtabs">
       <button class="sub-tab active" onclick="showSub('bozzano','base',this)">Base</button>
-      <button class="sub-tab" onclick="showSub('bozzano','expert',this)">Expert</button>
+      <button class="sub-tab" onclick="showSub('bozzano','expert',this)">Expert Gel (Extra FEE)</button>
     </div>
     <div style="height:20px"></div>
     <div id="bozzano-content"></div>
@@ -181,11 +181,19 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
 const DATA = {
   risque: {
     feeMensal:225805, feePeriodo:'Jul–Dez 2026 (6m)', feeTotal:1354832,
+    // v = consumido acumulado Jan-Jun (Fee + Extra Fee) | t = vendido/mês | periodo=6m
     horas:{
-      // Dados reais: 65% do time Coty (1152h/mês total)
-      base:  {Planejamento:{v:0,t:31}, Criação:{v:0,t:543}, Mídia:{v:0,t:146}, 'Dados/BI':{v:0,t:31}, Atendimento:{v:0,t:372}, Operações:{v:0,t:29}},
-      belga: {Planejamento:{v:0,t:20}, Criação:{v:0,t:120}, Mídia:{v:0,t:40},  'Dados/BI':{v:0,t:15}, Atendimento:{v:0,t:50},  Operações:{v:0,t:10}},
-      desgel:{Planejamento:{v:0,t:10}, Criação:{v:0,t:80},  Mídia:{v:0,t:20},  'Dados/BI':{v:0,t:8},  Atendimento:{v:0,t:25},  Operações:{v:0,t:5}},
+      base:  {
+        Planejamento: {v:245.50, t:31,  vm:186},
+        Criação:      {v:3331.75,t:543, vm:3258},
+        Mídia:        {v:329.75, t:146, vm:876},
+        'Dados/BI':   {v:424,    t:31,  vm:186},
+        Atendimento:  {v:799,    t:372, vm:2232},
+        Operações:    {v:54.50,  t:29,  vm:174},
+      },
+      // RSQ FY27 — Belga + D'Gel (timesheet consolida os dois, total 19.25h Jan-Jun)
+      belga: {Atendimento:{v:0.25,t:0,vm:0}, Criação:{v:15,t:0,vm:0}, Planejamento:{v:4,t:0,vm:0}, Mídia:{v:0,t:0,vm:0}, 'Dados/BI':{v:0,t:0,vm:0}, Operações:{v:0,t:0,vm:0}},
+      desgel:{Atendimento:{v:0,t:0,vm:0},    Criação:{v:0,t:0,vm:0},  Planejamento:{v:0,t:0,vm:0}, Mídia:{v:0,t:0,vm:0}, 'Dados/BI':{v:0,t:0,vm:0}, Operações:{v:0,t:0,vm:0}},
     },
     campanhas:[
       {nome:'AON',         midia:0, influenciador:0, producao:0},
@@ -196,9 +204,16 @@ const DATA = {
   bozzano: {
     feeMensal:129919, feePeriodo:'Jul–Dez 2026 (6m)', feeTotal:779514,
     horas:{
-      // Dados reais: 35% do time Coty (620h/mês total)
-      base:   {Planejamento:{v:0,t:17}, Criação:{v:0,t:293}, Mídia:{v:0,t:78}, 'Dados/BI':{v:0,t:17}, Atendimento:{v:0,t:200}, Operações:{v:0,t:15}},
-      expert: {Planejamento:{v:0,t:10}, Criação:{v:0,t:150}, Mídia:{v:0,t:40}, 'Dados/BI':{v:0,t:10}, Atendimento:{v:0,t:60},  Operações:{v:0,t:10}},
+      base:  {
+        Planejamento: {v:216,    t:17,  vm:102},
+        Criação:      {v:2400,   t:293, vm:1758},
+        Mídia:        {v:324,    t:78,  vm:468},
+        'Dados/BI':   {v:272.50, t:17,  vm:102},
+        Atendimento:  {v:587.50, t:200, vm:1200},
+        Operações:    {v:52.25,  t:15,  vm:90},
+      },
+      // BZN EXPERT — Fiscal 27 Expert Gel (total 472h Jan-Jun)
+      expert:{Atendimento:{v:29,t:0,vm:0}, Criação:{v:281.50,t:0,vm:0}, Mídia:{v:98,t:0,vm:0}, Operações:{v:17.50,t:0,vm:0}, Planejamento:{v:46,t:0,vm:0}, 'Dados/BI':{v:0,t:0,vm:0}},
     },
     campanhas:[
       {nome:'AON',    midia:0, influenciador:0, producao:0},
@@ -208,8 +223,14 @@ const DATA = {
   oetker: {
     feeMensal:240000, feePeriodo:'Jan–Dez 2026 (12m)', feeTotal:2880000,
     horas:{
-      // Dados reais: 2172h/mês — Cenário Otimizado
-      base:{Atendimento:{v:0,t:368}, Operações:{v:0,t:8}, Planejamento:{v:0,t:68}, Criação:{v:0,t:754}, Mídia:{v:0,t:622}, Dados:{v:0,t:352}},
+      base:{
+        Atendimento:  {v:1191.75, t:368, vm:2208},
+        Operações:    {v:295.75,  t:8,   vm:48},
+        Planejamento: {v:489.50,  t:68,  vm:408},
+        Criação:      {v:3064.50, t:754, vm:4524},
+        Mídia:        {v:1847.75, t:622, vm:3732},
+        'Dados/BI':   {v:981,     t:352, vm:2112},
+      },
     },
     campanhas:[
       {nome:'AON',               midia:3243057.76,  influenciador:1100000.00, producao:330000.00},
@@ -227,8 +248,13 @@ const DATA = {
   suhai: {
     feeMensal:285526, feePeriodo:'Mai–Dez 2026 (8m)', feeTotal:2284208,
     horas:{
-      // Dados reais: 1376h/mês
-      base:{Atendimento:{v:0,t:308}, Operações:{v:0,t:44}, Planejamento:{v:0,t:100}, Criação:{v:0,t:724}, 'Mídia/BI':{v:0,t:200}},
+      base:{
+        Atendimento:  {v:1329.25, t:308, vm:1848},
+        Operações:    {v:438.50,  t:44,  vm:264},
+        Planejamento: {v:372,     t:100, vm:600},
+        Criação:      {v:10295,   t:724, vm:4344},
+        'Mídia/BI':   {v:1269.25, t:200, vm:1200},
+      },
     },
     campanhas:[
       {nome:'Histórias de Acordar', midia:0, influenciador:0, producao:0},
@@ -252,14 +278,16 @@ const fmtRFull=v=>v>0?'R$\u00A0'+v.toLocaleString('pt-BR',{minimumFractionDigits
 
 function totalHoras(acct){
   let v=0,t=0;
-  SUBS[acct].forEach(sub=>Object.values(DATA[acct].horas[sub]).forEach(h=>{v+=h.v;t+=h.t}));
+  SUBS[acct].forEach(sub=>Object.values(DATA[acct].horas[sub]).forEach(h=>{
+    v+=h.v; t+=(h.vm!==undefined?h.vm:h.t*6);
+  }));
   return{v,t};
 }
 function horasPorArea(acct){
   const areas={};
   SUBS[acct].forEach(sub=>Object.entries(DATA[acct].horas[sub]).forEach(([a,h])=>{
     if(!areas[a]) areas[a]={v:0,t:0};
-    areas[a].v+=h.v; areas[a].t+=h.t;
+    areas[a].v+=h.v; areas[a].t+=(h.vm!==undefined?h.vm:h.t*6);
   }));
   return areas;
 }
@@ -374,26 +402,47 @@ function buildDetail(acct,sub){
   const horas=d.horas[sub];
   const color=COLORS[acct];
   const aKeys=Object.keys(horas);
-  let totV=0,totT=0;
-  aKeys.forEach(a=>{totV+=horas[a].v;totT+=horas[a].t});
-  const totP=pct(totV,totT);
+  const isExtra = (sub==='belga'||sub==='desgel'||sub==='expert');
+
+  // v = consumido acumulado | vm = vendido acumulado (6m) | t = vendido/mês
+  let totV=0, totVM=0;
+  aKeys.forEach(a=>{
+    totV+=horas[a].v;
+    totVM+=(horas[a].vm !== undefined ? horas[a].vm : horas[a].t*6);
+  });
+  const totP=isExtra?0:pct(totV,totVM);
+  const saldo=totVM-totV;
   const bud=budgetTotais(acct);
 
-  const subLbls={base:'',fiscal27:' · Fiscal 27',belga:' · Belga',desgel:' · Desgel Secante',expert:' · Expert'};
+  const subLbls={base:'',fiscal27:' · Fiscal 27',belga:' · FY27 Belga + D\'Gel (Extra FEE)',desgel:' · Desgel Secante (Extra FEE)',expert:' · Expert Gel (Extra FEE)'};
   const label=LABELS[acct]+(subLbls[sub]||'');
 
-  // KPI row — horas + fee
+  // KPI para EXTRA FEE — só consumo, sem comparação com vendido
+  const kpiExtra=`<div class="kpi-row" style="grid-template-columns:repeat(2,1fr);margin-bottom:20px">
+    <div class="kpi-card" style="border-color:rgba(255,92,0,.3)">
+      <div class="kpi-label">Total Consumido Jan–Jun</div>
+      <div class="kpi-value" style="color:var(--orange)">${totV.toLocaleString('pt-BR',{maximumFractionDigits:1})}h</div>
+      <div class="kpi-sub">Projeto Extra FEE · fora do contrato base</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Áreas envolvidas</div>
+      <div class="kpi-value" style="font-size:18px">${aKeys.filter(a=>horas[a].v>0).length || '—'}</div>
+      <div class="kpi-sub">com horas apontadas</div>
+    </div>
+  </div>`;
+
+  // KPI row — horas + fee (BASE)
   const kpiTop=`<div class="kpi-row-4">
     <div class="kpi-card">
-      <div class="kpi-label">Horas Consumidas</div>
-      <div class="kpi-value" style="color:${sCol(totP)}">${totV}h</div>
-      <div class="kpi-sub">de ${totT}h/mês vendidas</div>
+      <div class="kpi-label">Consumido Jan–Jun</div>
+      <div class="kpi-value" style="color:${sCol(totP)}">${totV.toLocaleString('pt-BR',{maximumFractionDigits:1})}h</div>
+      <div class="kpi-sub">de ${totVM.toLocaleString('pt-BR')}h vendidas no período</div>
       <span class="kpi-badge ${sCls(totP)}" style="margin-top:8px;display:inline-block">${sLbl(totP)}</span>
     </div>
     <div class="kpi-card">
-      <div class="kpi-label">Horas Disponíveis</div>
-      <div class="kpi-value">${totT-totV}h</div>
-      <div class="kpi-sub">restantes no escopo</div>
+      <div class="kpi-label">Saldo</div>
+      <div class="kpi-value" style="color:${saldo>=0?'var(--green)':'var(--red)'}">${saldo>=0?'+':''}${saldo.toLocaleString('pt-BR',{maximumFractionDigits:1})}h</div>
+      <div class="kpi-sub">${saldo>=0?'horas disponíveis':'horas estouradas'}</div>
     </div>
     <div class="kpi-card">
       <div class="kpi-label">Fee Mensal</div>
@@ -403,7 +452,7 @@ function buildDetail(acct,sub){
     <div class="kpi-card">
       <div class="kpi-label">Fee Total Contrato</div>
       <div class="kpi-value" style="font-size:15px">${fmtR(d.feeTotal)}</div>
-      <div class="kpi-sub">${totP}% escopo consumido</div>
+      <div class="kpi-sub">${totP}% do escopo consumido</div>
     </div>
   </div>`;
 
@@ -428,20 +477,32 @@ function buildDetail(acct,sub){
     </div>
   </div>`;
 
-  // Barras horas
-  const maxH=Math.max(...aKeys.map(a=>horas[a].t),1);
+  // Barras horas — consumido vs vendido acumulado (vm)
+  const maxH=Math.max(...aKeys.map(a=>isExtra?horas[a].v:horas[a].vm||horas[a].t*6),1);
   let horasBars='';
   aKeys.forEach(a=>{
-    const ap=pct(horas[a].v,horas[a].t);
-    const hT=Math.max(Math.round((horas[a].t/maxH)*115),3);
+    const vm=horas[a].vm||horas[a].t*6;
+    const ap=isExtra?100:pct(horas[a].v,vm);
+    const hT=isExtra
+      ? (horas[a].v>0?Math.max(Math.round((horas[a].v/maxH)*115),4):8)
+      : Math.max(Math.round((vm/maxH)*115),3);
     const hV=horas[a].v>0?Math.max(Math.round((horas[a].v/maxH)*115),2):0;
+    const sal=isExtra?0:(vm-horas[a].v);
+    const barColor=isExtra?'var(--orange)':sCol(ap);
+    const tip=isExtra
+      ? `${horas[a].v}h consumidas (Extra FEE)`
+      : `${horas[a].v}h consumidas · ${ap}% · saldo ${sal.toLocaleString('pt-BR',{maximumFractionDigits:1})}h`;
+
     horasBars+=`<div class="bar-group">
       <div class="bar-wrap">
-        <div class="bar-col"><div class="bar bar-scope" style="height:${hT}px" data-tip="Vendido: ${horas[a].t}h"></div></div>
-        <div class="bar-col"><div class="bar" style="height:0px;background:${sCol(ap)}" data-height="${hV}" data-tip="${horas[a].v}h consumidas (${ap}%)"></div></div>
+        ${isExtra
+          ? `<div class="bar-col" style="max-width:36px"><div class="bar" style="height:0px;background:${barColor}" data-height="${hT}" data-tip="${tip}"></div></div>`
+          : `<div class="bar-col"><div class="bar bar-scope" style="height:${hT}px" data-tip="Vendido 6m: ${vm}h (${horas[a].t}h/mês)"></div></div>
+             <div class="bar-col"><div class="bar" style="height:0px;background:${barColor}" data-height="${hV}" data-tip="${tip}"></div></div>`
+        }
       </div>
       <div class="bar-label">${a}</div>
-      <div class="bar-pct" style="color:${sCol(ap)}">${ap}%</div>
+      <div class="bar-pct" style="color:${barColor}">${isExtra?(horas[a].v>0?horas[a].v+'h':'—'):ap+'%'}</div>
     </div>`;
   });
 
@@ -467,13 +528,21 @@ function buildDetail(acct,sub){
   // Tabela horas
   let rowsH='';
   aKeys.forEach(a=>{
-    const ap=pct(horas[a].v,horas[a].t);
+    const vm=horas[a].vm||horas[a].t*6;
+    const ap=isExtra?0:pct(horas[a].v,vm);
+    const sal=vm-horas[a].v;
+    // cor barra extra = laranja se tem consumo, cinza se zero
+    const barColor=isExtra?(horas[a].v>0?'var(--orange)':'var(--border)'):sCol(ap);
     rowsH+=`<tr>
-      <td><span class="status-dot" style="background:${sCol(ap)}"></span>${a}</td>
+      <td><span class="status-dot" style="background:${barColor}"></span>${a}</td>
       <td><input class="h-input" type="number" min="0" value="${horas[a].v}" onchange="updateH('${acct}','${sub}','${a}',this.value)"/></td>
-      <td style="color:var(--muted)">${horas[a].t}h</td>
-      <td style="color:${sCol(ap)};font-weight:700">${ap}%</td>
-      <td><span class="kpi-badge ${sCls(ap)}">${sLbl(ap)}</span></td>
+      ${isExtra
+        ? `<td><span style="font-size:11px;color:${horas[a].v>0?'var(--orange)':'var(--muted)'}">${horas[a].v>0?'✓ Apontado':'—'}</span></td>`
+        : `<td style="color:var(--muted)">${vm}h</td>
+           <td style="color:${sal>=0?'var(--green)':'var(--red)'};font-weight:700">${sal>=0?'+':''}${sal.toLocaleString('pt-BR',{maximumFractionDigits:1})}h</td>
+           <td style="color:${sCol(ap)};font-weight:700">${ap}%</td>`
+      }
+      <td><span class="kpi-badge ${isExtra?(horas[a].v>0?'badge-yellow':''):''+sCls(ap)}">${isExtra?(horas[a].v>0?'Extra FEE':'—'):sLbl(ap)}</span></td>
     </tr>`;
   });
 
@@ -507,37 +576,57 @@ function buildDetail(acct,sub){
         <div style="font-size:11px;color:var(--muted);margin-top:2px">Horas por área · Budget por campanha · sem nomes de pessoas</div>
       </div>
     </div>
-    ${kpiTop}
-    ${kpiBud}
+
+    ${isExtra ? kpiExtra : kpiTop}
+    ${isExtra ? '' : kpiBud}
+
     <div class="charts-row">
       <div class="chart-card">
-        <div class="chart-title">Horas por Área — Consumido vs. Vendido</div>
+        <div class="chart-title">${isExtra ? 'Horas Consumidas por Área — Extra FEE' : 'Horas por Área — Consumido vs. Vendido'}</div>
         <div class="bar-chart">${horasBars}</div>
         <div class="legend">
-          <div class="legend-item"><div class="legend-dot" style="background:var(--border)"></div>Vendido</div>
-          <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div>&lt;70%</div>
-          <div class="legend-item"><div class="legend-dot" style="background:var(--yellow)"></div>70–90%</div>
-          <div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div>+90%</div>
+          ${isExtra
+            ? `<div class="legend-item"><div class="legend-dot" style="background:var(--orange)"></div>Consumido (Extra FEE)</div>`
+            : `<div class="legend-item"><div class="legend-dot" style="background:var(--border)"></div>Vendido</div>
+               <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div>&lt;70%</div>
+               <div class="legend-item"><div class="legend-dot" style="background:var(--yellow)"></div>70–90%</div>
+               <div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div>+90%</div>`
+          }
         </div>
       </div>
+      ${isExtra ? `
+      <div class="chart-card" style="display:flex;flex-direction:column;justify-content:center;align-items:center;gap:8px;text-align:center">
+        <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;font-weight:700">Projeto Extra FEE</div>
+        <div style="font-size:32px;font-weight:900;color:var(--orange)">${totV.toLocaleString('pt-BR',{maximumFractionDigits:1})}h</div>
+        <div style="font-size:11px;color:var(--muted)">total consumido Jan–Jun</div>
+        <div style="font-size:10px;color:var(--secondary);margin-top:8px;padding:8px 12px;background:var(--surface2);border-radius:6px;border:1px solid var(--border)">Escopo extra · cobrado separado do fee base</div>
+      </div>` : `
       <div class="chart-card">
         <div class="chart-title">Budget por Frente</div>
         <div class="bar-chart">${budBars}</div>
         <div class="legend">
           <div class="legend-item"><div class="legend-dot" style="background:var(--orange)"></div>Mídia · Influenciadores · Produção</div>
         </div>
-      </div>
+      </div>`}
     </div>
+
     <div class="edit-wrap">
       <div class="edit-head">
-        <span class="sec-title">✏ Horas consumidas por área</span>
-        <span class="sec-hint">Horas vendidas são fixas · insira o consumido</span>
+        <span class="sec-title">✏ ${isExtra ? 'Horas consumidas — Extra FEE' : 'Horas consumidas por área'}</span>
+        <span class="sec-hint">${isExtra ? 'Insira o consumido por área neste projeto extra' : 'Horas vendidas são fixas · insira o consumido'}</span>
       </div>
       <table class="edit-table">
-        <thead><tr><th>Área</th><th>Consumido (h)</th><th>Vendido (h)</th><th>%</th><th>Status</th></tr></thead>
+        <thead><tr>
+          <th>Área</th>
+          <th>Consumido (h)</th>
+          ${isExtra ? '' : '<th>Vendido 6m (h)</th><th>Saldo</th><th>%</th>'}
+          <th>Status</th>
+        </tr></thead>
         <tbody>${rowsH}</tbody>
       </table>
     </div>
+
+    ${!isExtra ? `
     <div class="camp-table-wrap">
       <div class="camp-table-head">
         <span class="sec-title">✏ Budget por Campanha</span>
@@ -547,11 +636,12 @@ function buildDetail(acct,sub){
         <thead><tr><th>Campanha</th><th>Mídia (R$)</th><th>Influenciadores (R$)</th><th>Produção (R$)</th><th>Total</th></tr></thead>
         <tbody>${rowsC}</tbody>
       </table>
-    </div>
+    </div>` : ''}
+
     <div class="import-area" onclick="document.getElementById('csvInput').click()">
       <div style="font-size:20px;margin-bottom:6px">📂</div>
       <div class="import-text">Clique para <strong>importar CSV</strong></div>
-      <div class="import-hint">Horas: Área, Consumido · Budget: Campanha, Mídia, Influenciadores, Produção</div>
+      <div class="import-hint">Formato: Área, Consumido</div>
     </div>`;
 }
 
