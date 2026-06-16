@@ -143,6 +143,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
   <button class="nav-tab" onclick="showPage('bozzano',this)">Bozzano</button>
   <button class="nav-tab" onclick="showPage('oetker',this)">Dr. Oetker</button>
   <button class="nav-tab" onclick="showPage('suhai',this)">Suhai</button>
+  <button class="nav-tab" onclick="showPage('taskrow',this)">⚡ Taskrow</button>
 </nav>
 
 <main class="main">
@@ -168,6 +169,11 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
 
   <div id="page-oetker" class="page"><div id="oetker-content"></div></div>
   <div id="page-suhai" class="page"><div id="suhai-content"></div></div>
+
+  <!-- ══ TASKROW ══ -->
+  <div id="page-taskrow" class="page">
+    <div id="taskrow-content"></div>
+  </div>
 </main>
 <div class="toast" id="toast"></div>
 
@@ -319,6 +325,7 @@ function showPage(id,btn){
   else if(id==='bozzano') renderSub('bozzano','base');
   else if(id==='oetker')  renderDetail('oetker','base');
   else if(id==='suhai')   renderDetail('suhai','base');
+  else if(id==='taskrow') renderTaskrow();
 }
 function showSub(acct,sub,btn){
   document.querySelectorAll('#'+acct+'-subtabs .sub-tab').forEach(t=>t.classList.remove('active'));
@@ -714,6 +721,258 @@ function loadSaved(){
 
 loadSaved();
 renderOverview();
+
+// ══════════════════════════════════════════
+// TASKROW — PAINEL DE TAREFAS
+// ══════════════════════════════════════════
+const TK_HOJE = new Date(2026,5,16);
+
+const TK_CONTAS = {
+  TODAS:  {label:'Todas',     cor:'#FF5C00', corLight:'rgba(255,92,0,.12)'},
+  OTK:    {label:'Dr. Oetker',cor:'#4FC3F7', corLight:'rgba(79,195,247,.12)'},
+  SUHAI:  {label:'Suhai',     cor:'#A5D6A7', corLight:'rgba(165,214,167,.12)'},
+  RISQUE: {label:'Risqué',    cor:'#F48FB1', corLight:'rgba(244,143,177,.12)'},
+  BOZZANO:{label:'Bozzano',   cor:'#FFB74D', corLight:'rgba(255,183,77,.12)'},
+};
+
+const TK_FASE_COR = {
+  'Não iniciada':'#666','Alocado':'#4472C4','Em execução':'#00E676',
+  'Em ajuste':'#FF3D3D','Em aprovação interna':'#FF9800',
+  'Aprovado Internamente':'#69F0AE','Em aprovação com cliente':'#29B6F6','Masters':'#555',
+};
+
+const TK_FASES = ['Não iniciada','Alocado','Em execução','Em ajuste','Em aprovação interna','Aprovado Internamente','Em aprovação com cliente','Masters'];
+
+const TK_TAREFAS = [
+  {id:'#88416',conta:'OTK',fase:'Em aprovação com cliente',area:'ATENDIMENTO',prazo:'30/04/2026',nome:'OTK :: COLLAB FINI'},
+  {id:'#89740',conta:'OTK',fase:'Em execução',area:'CRIAÇÃO',prazo:'14/05/2026',nome:'OTK :: Social Junho :: Direcional de conteúdo'},
+  {id:'#88836',conta:'OTK',fase:'Masters',area:'CRIAÇÃO',prazo:'15/05/2026',nome:'PLANO INTEGRADO 2026'},
+  {id:'#89773',conta:'OTK',fase:'Não iniciada',area:'CRIAÇÃO',prazo:'18/05/2026',nome:'OTK :: Masterbrand :: RTV :: Série proprietária'},
+  {id:'#89896',conta:'OTK',fase:'Alocado',area:'ATENDIMENTO',prazo:'18/05/2026',nome:'OTK :: Masterbrand :: Conteúdo :: Calendário'},
+  {id:'#89648',conta:'OTK',fase:'Em aprovação interna',area:'CRIAÇÃO',prazo:'20/05/2026',nome:'OTK :: Masterbrand :: RTV :: Press Kit'},
+  {id:'#89947',conta:'OTK',fase:'Alocado',area:'MÍDIA',prazo:'20/05/2026',nome:'OTK :: Masterbrand :: Mídia :: Material Bjorn'},
+  {id:'#89901',conta:'OTK',fase:'Em execução',area:'CRIAÇÃO',prazo:'22/05/2026',nome:'OTK :: Masterbrand :: Conteúdo :: Recomendações'},
+  {id:'#87191',conta:'OTK',fase:'Masters',area:'ATENDIMENTO',prazo:'25/05/2026',nome:'BOM PRA MIM :: BOLINHOS FASE 2'},
+  {id:'#89946',conta:'OTK',fase:'Alocado',area:'PLANEJAMENTO',prazo:'25/05/2026',nome:'OTK :: Campanha Creamy Jelly :: Plan estratégico'},
+  {id:'#89937',conta:'OTK',fase:'Não iniciada',area:'ATENDIMENTO',prazo:'31/05/2026',nome:'OTK :: DIA DOS NAMORADOS + FESTA JUNINA'},
+  {id:'#89794',conta:'OTK',fase:'Alocado',area:'CRIAÇÃO',prazo:'01/06/2026',nome:'OTK :: Masterbrand :: Criação :: Roteiro macro'},
+  {id:'#89938',conta:'OTK',fase:'Aprovado Internamente',area:'ATENDIMENTO',prazo:'03/06/2026',nome:'IDEIA MACRO :: CRIAÇÃO + CONTEÚDO + MÍDIA'},
+  {id:'#90101',conta:'OTK',fase:'Alocado',area:'ATENDIMENTO',prazo:'03/06/2026',nome:'OTK :: Masterbrand :: Conteúdo :: Briefing influencers'},
+  {id:'#89715',conta:'OTK',fase:'Alocado',area:'ATENDIMENTO',prazo:'11/06/2026',nome:'OTK :: Masterbrand :: Conteúdo :: Direcional'},
+  {id:'#90322',conta:'OTK',fase:'Aprovado Internamente',area:'ATENDIMENTO',prazo:'11/06/2026',nome:'OTK :: Masterbrand :: Motion :: Mosca bizi'},
+  {id:'#90297',conta:'OTK',fase:'Alocado',area:'ATENDIMENTO',prazo:'12/06/2026',nome:'OTK :: Masterbrand :: Criação :: Merchan Globo'},
+  {id:'#89818',conta:'OTK',fase:'Em execução',area:'ATENDIMENTO',prazo:'12/06/2026',nome:'OTK :: Masterbrand :: Gestão Influencers'},
+  {id:'#89943',conta:'OTK',fase:'Em execução',area:'ATENDIMENTO',prazo:'15/06/2026',nome:'OTK :: Masterbrand :: Veiculação YouTube'},
+  {id:'#90099',conta:'OTK',fase:'Em execução',area:'BI',prazo:'15/06/2026',nome:'OTK :: Social Maio :: BI :: Report AON Maio'},
+  {id:'#90154',conta:'OTK',fase:'Alocado',area:'MÍDIA',prazo:'15/06/2026',nome:'OTK :: Campanha Creamy Jelly :: Estratégia Mídia'},
+  {id:'#90143',conta:'OTK',fase:'Aprovado Internamente',area:'ATENDIMENTO',prazo:'15/06/2026',nome:'OTK :: Masterbrand :: Post 30.06'},
+  {id:'#90329',conta:'OTK',fase:'Alocado',area:'ATENDIMENTO',prazo:'15/06/2026',nome:'OTK :: Masterbrand :: Briefing Lançamento'},
+  {id:'#90002',conta:'OTK',fase:'Alocado',area:'CRIAÇÃO',prazo:'16/06/2026',nome:'OTK :: Campanha Creamy Jelly :: Estratégia Criação'},
+  {id:'#90228',conta:'OTK',fase:'Alocado',area:'CRIAÇÃO',prazo:'16/06/2026',nome:'OTK :: Social Junho :: Conteúdo :: Postagens'},
+  {id:'#89865',conta:'OTK',fase:'Alocado',area:'ATENDIMENTO',prazo:'16/06/2026',nome:'OTK :: Masterbrand :: Mídia :: Liberação'},
+  {id:'#90142',conta:'OTK',fase:'Em ajuste',area:'CRIAÇÃO',prazo:'16/06/2026',nome:'OTK :: Masterbrand :: Post Carrossel'},
+  {id:'#90288',conta:'OTK',fase:'Em aprovação interna',area:'ATENDIMENTO',prazo:'16/06/2026',nome:'OTK :: Social Junho :: Report anúncios'},
+  {id:'#89719',conta:'OTK',fase:'Alocado',area:'CRIAÇÃO',prazo:'17/06/2026',nome:'OTK :: PLANO INTEGRADO 2026 :: Tático'},
+  {id:'#90336',conta:'OTK',fase:'Alocado',area:'CRIAÇÃO',prazo:'17/06/2026',nome:'OTK :: Masterbrand :: Merchan Globo 2'},
+  {id:'#90146',conta:'OTK',fase:'Alocado',area:'CRIAÇÃO',prazo:'18/06/2026',nome:'OTK :: Social Junho :: ST 25.06'},
+  {id:'#89951',conta:'OTK',fase:'Em execução',area:'CRIAÇÃO',prazo:'19/06/2026',nome:'OTK :: Masterbrand :: Postagens'},
+  {id:'#89882',conta:'OTK',fase:'Alocado',area:'CRIAÇÃO',prazo:'19/06/2026',nome:'OTK :: Masterbrand :: TikTok Incubator'},
+  {id:'#90117',conta:'OTK',fase:'Alocado',area:'BI',prazo:'24/06/2026',nome:'OTK :: COLLAB FINI :: BI :: Post mortem'},
+  {id:'#88989',conta:'OTK',fase:'Masters',area:'ATENDIMENTO',prazo:'30/06/2026',nome:'OTK :: Social Maio'},
+  {id:'#90017',conta:'SUHAI',fase:'Em execução',area:'CRIAÇÃO',prazo:'22/05/2026',nome:'SUHAI :: HISTÓRIAS PARA ACORDAR :: PRODUÇÃO'},
+  {id:'#89442',conta:'SUHAI',fase:'Em ajuste',area:'CRIAÇÃO',prazo:'29/05/2026',nome:'CAMPANHA INSTITUCIONAL 2026 :: CONTEÚDO :: ESTRATÉGIA'},
+  {id:'#87639',conta:'SUHAI',fase:'Em execução',area:'ATENDIMENTO',prazo:'29/05/2026',nome:'SUHAI :: CAMPANHA INSTITUCIONAL 2026'},
+  {id:'#90204',conta:'SUHAI',fase:'Não iniciada',area:'CRIAÇÃO',prazo:'02/06/2026',nome:'CAMPANHA INSTITUCIONAL 2026 :: PRODUÇÃO :: TRATAMENTO'},
+  {id:'#90081',conta:'SUHAI',fase:'Alocado',area:'BI',prazo:'10/06/2026',nome:'SUHAI :: AON Maio :: BI :: Report Mensal'},
+  {id:'#90195',conta:'SUHAI',fase:'Não iniciada',area:'PLANEJAMENTO',prazo:'12/06/2026',nome:'SUHAI :: MAPEAMENTO DE CRISE (SOCIAL LISTENING)'},
+  {id:'#90006',conta:'SUHAI',fase:'Em execução',area:'CRIAÇÃO',prazo:'12/06/2026',nome:'SUHAI :: FESTIVAL INTERLAGOS :: ESTRATÉGIA INTEGRADA'},
+  {id:'#90284',conta:'SUHAI',fase:'Aprovado Internamente',area:'ATENDIMENTO',prazo:'12/06/2026',nome:'SUHAI :: AON Junho :: Destaques Suhai Music'},
+  {id:'#90008',conta:'SUHAI',fase:'Em execução',area:'CRIAÇÃO',prazo:'12/06/2026',nome:'SUHAI :: HISTÓRIAS PARA ACORDAR :: CRIAÇÃO + PLAN'},
+  {id:'#89569',conta:'SUHAI',fase:'Em execução',area:'ATENDIMENTO',prazo:'15/06/2026',nome:'SUHAI :: AON Maio'},
+  {id:'#90216',conta:'SUHAI',fase:'Alocado',area:'BI',prazo:'15/06/2026',nome:'CAMPANHA INSTITUCIONAL 2026 :: BI + MÍDIA :: REPORT'},
+  {id:'#90326',conta:'SUHAI',fase:'Alocado',area:'BI',prazo:'16/06/2026',nome:'SUHAI :: AON Julho :: Social Listening Junho'},
+  {id:'#90233',conta:'SUHAI',fase:'Em ajuste',area:'CRIAÇÃO',prazo:'16/06/2026',nome:'SUHAI :: AON Junho :: Segunda Semana'},
+  {id:'#90364',conta:'SUHAI',fase:'Não iniciada',area:'OPERAÇÕES',prazo:'17/06/2026',nome:'SUHAI :: AON Junho :: Post Feed Jogo do Brasil'},
+  {id:'#90377',conta:'SUHAI',fase:'Não iniciada',area:'OPERAÇÕES',prazo:'17/06/2026',nome:'SUHAI :: AON Junho :: Captação e edição'},
+  {id:'#90045',conta:'SUHAI',fase:'Não iniciada',area:'OPERAÇÕES',prazo:'17/06/2026',nome:'CAMPANHA INSTITUCIONAL 2026 :: PM DIGITAL'},
+  {id:'#90312',conta:'SUHAI',fase:'Em execução',area:'CRIAÇÃO',prazo:'18/06/2026',nome:'SUHAI :: AON Junho :: Quarta e Quinta Semana'},
+  {id:'#90256',conta:'SUHAI',fase:'Alocado',area:'MÍDIA',prazo:'26/06/2026',nome:'CAMPANHA INSTITUCIONAL 2026 :: MÍDIA :: GESTÃO TTCX'},
+  {id:'#90197',conta:'SUHAI',fase:'Alocado',area:'OPERAÇÕES',prazo:'30/06/2026',nome:'SUHAI :: AON Junho :: Mídia + BI :: Dashboard'},
+  {id:'#89825',conta:'SUHAI',fase:'Alocado',area:'BI',prazo:'30/06/2026',nome:'CAMPANHA INSTITUCIONAL 2026 :: BI + MÍDIA :: GESTÃO'},
+  {id:'#90063',conta:'SUHAI',fase:'Em execução',area:'ATENDIMENTO',prazo:'30/06/2026',nome:'SUHAI :: AON Junho'},
+  {id:'#90064',conta:'SUHAI',fase:'Em execução',area:'ATENDIMENTO',prazo:'30/06/2026',nome:'SUHAI :: AON Junho :: Gestão de Atendimento'},
+  {id:'#89447',conta:'RISQUE',fase:'Alocado',area:'MÍDIA',prazo:'15/06/2026',nome:'RISQUÉ :: FY27 + BELGA :: MÍDIA'},
+  {id:'#90258',conta:'RISQUE',fase:'Alocado',area:'PLANEJAMENTO',prazo:'15/06/2026',nome:'RISQUÉ :: FY27 :: Diamond Gel :: Planejamento'},
+  {id:'#90217',conta:'RISQUE',fase:'Alocado',area:'CRIAÇÃO',prazo:'16/06/2026',nome:'RISQUÉ :: FY26 :: AON JUNHO :: PUBLICAÇÃO'},
+  {id:'#90259',conta:'RISQUE',fase:'Em aprovação interna',area:'ATENDIMENTO',prazo:'16/06/2026',nome:'RISQUÉ :: FY27 :: Diamond Gel :: Mídia'},
+  {id:'#90052',conta:'RISQUE',fase:'Alocado',area:'BI',prazo:'17/06/2026',nome:'RISQUÉ :: FY26 :: Relatório Mensal Maio/2026'},
+  {id:'#90016',conta:'RISQUE',fase:'Alocado',area:'CRIAÇÃO',prazo:'17/06/2026',nome:'RISQUÉ :: FY26 :: AON JUNHO :: Gravação'},
+  {id:'#90011',conta:'RISQUE',fase:'Não iniciada',area:'OPERAÇÕES',prazo:'17/06/2026',nome:'RISQUÉ :: FY26 :: AON JUNHO :: Criação 2a Semana'},
+  {id:'#90250',conta:'RISQUE',fase:'Em ajuste',area:'CRIAÇÃO',prazo:'17/06/2026',nome:'RISQUÉ :: AON JULHO :: DIRECIONAL DE CONTEÚDO'},
+  {id:'#90279',conta:'RISQUE',fase:'Em aprovação com cliente',area:'CRIAÇÃO',prazo:'19/06/2026',nome:'RISQUÉ :: FY26 :: AON JUNHO :: POST 19/06'},
+  {id:'#90013',conta:'RISQUE',fase:'Em ajuste',area:'CRIAÇÃO',prazo:'19/06/2026',nome:'RISQUÉ :: FY26 :: AON JUNHO :: Criação 3a Semana'},
+  {id:'#90014',conta:'RISQUE',fase:'Em aprovação com cliente',area:'ATENDIMENTO',prazo:'19/06/2026',nome:'RISQUÉ :: FY26 :: AON JUNHO :: Criação 4a Semana'},
+  {id:'#90183',conta:'RISQUE',fase:'Alocado',area:'CRIAÇÃO',prazo:'19/06/2026',nome:'RISQUÉ :: FY27 :: Diamond Gel :: Criação'},
+  {id:'#89362',conta:'RISQUE',fase:'Em aprovação com cliente',area:'PLANEJAMENTO',prazo:'19/06/2026',nome:'RISQUÉ :: FY27 + BELGA :: PLANEJAMENTO'},
+  {id:'#89363',conta:'RISQUE',fase:'Em aprovação com cliente',area:'ATENDIMENTO',prazo:'26/06/2026',nome:'RISQUÉ :: FY27 + BELGA :: CRIAÇÃO E CONTEÚDO'},
+  {id:'#88973',conta:'RISQUE',fase:'Em execução',area:'CRIAÇÃO',prazo:'26/06/2026',nome:'RISQUÉ :: FY26 :: CM/Responding :: Entrega Semanal'},
+  {id:'#82216',conta:'RISQUE',fase:'Em execução',area:'OPERAÇÕES',prazo:'30/06/2026',nome:'RISQUÉ :: FY26 :: PROJETOS & OPERAÇÕES'},
+  {id:'#87663',conta:'RISQUE',fase:'Em aprovação com cliente',area:'ATENDIMENTO',prazo:'30/06/2026',nome:'RISQUE :: FY26 :: Descida tática compilado'},
+  {id:'#87559',conta:'RISQUE',fase:'Em execução',area:'CRIAÇÃO',prazo:'30/06/2026',nome:'RISQUE :: FY26 :: GESTÃO DE HORAS CONTEUDO'},
+  {id:'#88610',conta:'RISQUE',fase:'Em execução',area:'CRIAÇÃO',prazo:'30/06/2026',nome:'RISQUÉ :: FY26 :: CM/Responding :: GESTÃO'},
+  {id:'#88657',conta:'RISQUE',fase:'Em execução',area:'OPERAÇÕES',prazo:'30/06/2026',nome:'RISQUE :: FY26 :: GESTÃO OPERAÇÕES'},
+  {id:'#90050',conta:'BOZZANO',fase:'Alocado',area:'ATENDIMENTO',prazo:'16/06/2026',nome:'BOZZANO :: FY26 :: RELATÓRIOS :: Mensal + Concorrência'},
+  {id:'#89301',conta:'BOZZANO',fase:'Em ajuste',area:'CRIAÇÃO',prazo:'16/06/2026',nome:'BOZZANO :: BOZZANO EXPERT :: CRIAÇÃO + CONTEÚDO'},
+  {id:'#89423',conta:'BOZZANO',fase:'Alocado',area:'ATENDIMENTO',prazo:'16/06/2026',nome:'BOZZANO :: BOZZANO EXPERT :: MÍDIA'},
+  {id:'#90192',conta:'BOZZANO',fase:'Alocado',area:'CRIAÇÃO',prazo:'19/06/2026',nome:'BOZZANO :: FY26 :: AON JUNHO :: 24/06 Festa junina'},
+  {id:'#90265',conta:'BOZZANO',fase:'Em aprovação interna',area:'ATENDIMENTO',prazo:'19/06/2026',nome:'BOZZANO :: BOZZANO EXPERT: PEDIDO DE MATERIAL'},
+  {id:'#90236',conta:'BOZZANO',fase:'Em aprovação com cliente',area:'OPERAÇÕES',prazo:'19/06/2026',nome:'BOZZANO :: BOZZANO EXPERT :: Orçamento desdobramento'},
+  {id:'#89005',conta:'BOZZANO',fase:'Em aprovação com cliente',area:'PLANEJAMENTO',prazo:'19/06/2026',nome:'BOZZANO :: BOZZANO EXPERT :: ESTRATÉGIA'},
+  {id:'#88990',conta:'BOZZANO',fase:'Em aprovação com cliente',area:'PLANEJAMENTO',prazo:'19/06/2026',nome:'BOZZANO :: FY26 :: BRANDBOOK - Ajustes'},
+  {id:'#90032',conta:'BOZZANO',fase:'Em aprovação com cliente',area:'ATENDIMENTO',prazo:'19/06/2026',nome:'BOZZANO :: FY26 :: AON JUNHO :: CRIAÇÃO CONTEÚDOS'},
+  {id:'#90207',conta:'BOZZANO',fase:'Em aprovação com cliente',area:'ATENDIMENTO',prazo:'19/06/2026',nome:'BOZZANO :: FY26 :: AON JULHO :: Direcional de conteúdo'},
+  {id:'#90181',conta:'BOZZANO',fase:'Alocado',area:'CRIAÇÃO',prazo:'22/06/2026',nome:'BOZZANO :: FY26 :: AON JUNHO :: PUBLICAÇÃO'},
+  {id:'#89831',conta:'BOZZANO',fase:'Em aprovação interna',area:'CRIAÇÃO',prazo:'26/06/2026',nome:'BOZZANO :: FY26 :: CM/Responding :: RESUMO DA SEMANA'},
+  {id:'#88971',conta:'BOZZANO',fase:'Em execução',area:'CRIAÇÃO',prazo:'26/06/2026',nome:'BOZZANO :: FY26 :: CM/Responding - Entrega Semanal'},
+  {id:'#82234',conta:'BOZZANO',fase:'Masters',area:'ATENDIMENTO',prazo:'30/06/2026',nome:'BOZZANO :: FY26 :: RELATÓRIOS'},
+  {id:'#76792',conta:'BOZZANO',fase:'Masters',area:'MÍDIA',prazo:'30/06/2026',nome:'BOZZANO :: FY26 :: MÍDIA'},
+  {id:'#76794',conta:'BOZZANO',fase:'Masters',area:'PLANEJAMENTO',prazo:'30/06/2026',nome:'BOZZANO :: FY26 :: PLANEJAMENTO'},
+  {id:'#77110',conta:'BOZZANO',fase:'Masters',area:'CRIAÇÃO',prazo:'30/06/2026',nome:'BOZZANO :: FY26 :: CRIAÇÃO'},
+  {id:'#86748',conta:'BOZZANO',fase:'Em execução',area:'CRIAÇÃO',prazo:'30/06/2026',nome:'BOZZANO :: FY26 :: CRIACAO :: GESTÃO DE HORAS'},
+  {id:'#87576',conta:'BOZZANO',fase:'Alocado',area:'ATENDIMENTO',prazo:'30/06/2026',nome:'BOZZANO :: FY26 :: RELATÓRIOS :: tag'},
+  {id:'#88613',conta:'BOZZANO',fase:'Em execução',area:'CRIAÇÃO',prazo:'30/06/2026',nome:'BOZZANO :: FY26 :: CM/Responding :: GESTÃO'},
+  {id:'#82217',conta:'BOZZANO',fase:'Em execução',area:'OPERAÇÕES',prazo:'30/06/2026',nome:'BOZZANO :: FY26 :: OPERAÇÕES :: GESTÃO DE HORAS'},
+  {id:'#76265',conta:'BOZZANO',fase:'Masters',area:'CRIAÇÃO',prazo:'30/06/2026',nome:'BOZZANO :: FY26 :: CONTEÚDO'},
+  {id:'#89004',conta:'BOZZANO',fase:'Em execução',area:'CRIAÇÃO',prazo:'30/06/2026',nome:'BOZZANO :: BOZZANO EXPERT :: CAMPANHA'},
+];
+
+let tkConta='TODAS', tkAba='urgente';
+
+function tkParsePrazo(s){const[d,m,y]=s.split('/');return new Date(+y,+m-1,+d);}
+function tkDias(prazo){return Math.round((tkParsePrazo(prazo)-TK_HOJE)/86400000);}
+
+function tkGetTarefas(){return tkConta==='TODAS'?TK_TAREFAS:TK_TAREFAS.filter(t=>t.conta===tkConta);}
+
+function tkPrazoTag(prazo){
+  const d=tkDias(prazo);
+  const cor=d<0?'var(--red)':d<=3?'var(--orange)':d<=7?'#FFD600':'var(--green)';
+  const lbl=d<0?Math.abs(d)+'d atraso':d===0?'hoje':d+'d';
+  return`<span style="background:${cor}22;color:${cor};border-radius:4px;padding:2px 7px;font-size:10px;font-weight:700;white-space:nowrap">${lbl}</span>`;
+}
+function tkFaseBadge(fase){
+  const cor=TK_FASE_COR[fase]||'#666';
+  return`<span style="background:${cor}22;color:${cor};border-radius:4px;padding:2px 7px;font-size:10px;font-weight:700;white-space:nowrap">${fase}</span>`;
+}
+
+function renderTaskrow(){
+  const el=document.getElementById('taskrow-content');
+  el.innerHTML=buildTaskrow();
+}
+
+function buildTaskrow(){
+  const t=tkGetTarefas();
+  const urgentes=t.filter(x=>x.fase!=='Masters'&&tkDias(x.prazo)<=3).sort((a,b)=>tkDias(a.prazo)-tkDias(b.prazo));
+  const ajuste=t.filter(x=>x.fase==='Em ajuste');
+  const cliente=t.filter(x=>x.fase==='Em aprovação com cliente');
+  const naoInic=t.filter(x=>x.fase==='Não iniciada').length;
+
+  // KPIs
+  const kpis=`<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px">
+    ${[
+      {lbl:'Total de tarefas',val:t.length,sub:'em aberto',cor:'var(--secondary)'},
+      {lbl:'🚨 Em retrabalho',val:ajuste.length,sub:'em ajuste agora',cor:'var(--red)'},
+      {lbl:'⏳ Aguardando cliente',val:cliente.length,sub:'aprovações pendentes',cor:'#29B6F6'},
+      {lbl:'⚪ Não iniciadas',val:naoInic,sub:'risco de atraso',cor:'var(--muted)'},
+    ].map(k=>`<div class="kpi-card" style="border-top:2px solid ${k.cor}">
+      <div class="kpi-value" style="color:${k.cor};font-size:26px">${k.val}</div>
+      <div class="kpi-label" style="margin-top:6px">${k.lbl}</div>
+      <div class="kpi-sub">${k.sub}</div>
+    </div>`).join('')}
+  </div>`;
+
+  // Filtros de conta
+  const filtros=`<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px">
+    ${Object.entries(TK_CONTAS).map(([key,val])=>`
+      <button onclick="tkSetConta('${key}')" id="tkbtn-${key}"
+        style="padding:6px 14px;border-radius:6px;border:1px solid ${tkConta===key?val.cor:'var(--border)'};
+        background:${tkConta===key?val.cor+'22':'transparent'};color:${tkConta===key?val.cor:'var(--muted)'};
+        font-size:11px;font-weight:700;cursor:pointer;font-family:Inter,sans-serif;letter-spacing:.5px;text-transform:uppercase;transition:all .15s">
+        ${val.label}
+      </button>`).join('')}
+  </div>`;
+
+  // Distribuição por fase (mini bars)
+  const faseMap={};
+  t.forEach(x=>{faseMap[x.fase]=(faseMap[x.fase]||0)+1;});
+  const maxF=Math.max(...Object.values(faseMap),1);
+  const faseBars=`<div class="chart-card" style="margin-bottom:20px">
+    <div class="chart-title">Distribuição por fase</div>
+    <div style="display:flex;gap:6px;align-items:flex-end;height:80px;margin-bottom:8px">
+      ${TK_FASES.map(f=>{
+        const n=faseMap[f]||0;
+        if(!n) return '';
+        const h=Math.max(Math.round((n/maxF)*64),4);
+        const cor=TK_FASE_COR[f];
+        return`<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">
+          <div style="font-size:9px;color:${cor};font-weight:700">${n}</div>
+          <div style="width:100%;max-width:32px;height:${h}px;background:${cor}44;border-radius:3px 3px 0 0;border-top:2px solid ${cor}" title="${f}"></div>
+        </div>`;
+      }).join('')}
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:4px">
+      ${TK_FASES.filter(f=>faseMap[f]).map(f=>`
+        <div style="display:flex;align-items:center;gap:5px;font-size:9px;color:var(--muted)">
+          <div style="width:7px;height:7px;border-radius:2px;background:${TK_FASE_COR[f]}"></div>${f}
+        </div>`).join('')}
+    </div>
+  </div>`;
+
+  // Abas de detalhe
+  const items=tkAba==='urgente'?urgentes:tkAba==='ajuste'?ajuste:cliente;
+  const abas=`<div style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap">
+    ${[
+      {key:'urgente',lbl:`🔴 Urgente esta semana (${urgentes.length})`},
+      {key:'ajuste', lbl:`🔄 Em retrabalho (${ajuste.length})`},
+      {key:'cliente',lbl:`⏳ Aguardando cliente (${cliente.length})`},
+    ].map(a=>`<button onclick="tkSetAba('${a.key}')" style="padding:6px 13px;border-radius:5px;border:none;cursor:pointer;font-size:11px;font-weight:700;font-family:Inter,sans-serif;background:${tkAba===a.key?'var(--orange)':'var(--surface2)'};color:${tkAba===a.key?'#fff':'var(--muted)'};transition:all .15s">${a.lbl}</button>`).join('')}
+  </div>`;
+
+  const rows=items.length===0
+    ?`<div style="text-align:center;color:var(--muted);padding:24px;font-size:13px">Nenhuma tarefa nesta categoria</div>`
+    :items.map(tarefa=>{
+      const cc=TK_CONTAS[tarefa.conta];
+      return`<div style="display:grid;grid-template-columns:80px 88px 90px 1fr 160px;align-items:center;gap:12px;
+        padding:9px 14px;border-radius:8px;background:var(--surface);margin-bottom:5px;
+        border-left:3px solid ${cc.cor};transition:background .15s" onmouseover="this.style.background='var(--surface2)'" onmouseout="this.style.background='var(--surface)'">
+        <span style="font-size:10px;color:var(--muted);font-family:monospace">${tarefa.id}</span>
+        <span style="font-size:10px;font-weight:700;color:${cc.cor};background:${cc.corLight};border-radius:4px;padding:2px 7px;text-align:center">${cc.label}</span>
+        ${tkPrazoTag(tarefa.prazo)}
+        <span style="font-size:12px;color:var(--secondary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${tarefa.nome}">${tarefa.nome}</span>
+        ${tkFaseBadge(tarefa.fase)}
+      </div>`;
+    }).join('');
+
+  return`
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:22px">
+      <div style="width:4px;height:30px;border-radius:2px;background:var(--orange)"></div>
+      <div>
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted)">Taskrow · 16/06/2026</div>
+        <div style="font-size:16px;font-weight:800;letter-spacing:-.3px">Painel de Tarefas — N3</div>
+      </div>
+      <div style="margin-left:auto;font-size:11px;color:var(--muted)">100 tarefas · 4 contas</div>
+    </div>
+    ${kpis}
+    ${filtros}
+    ${faseBars}
+    <div class="chart-card">
+      ${abas}
+      ${rows}
+    </div>`;
+}
+
+function tkSetConta(key){tkConta=key;renderTaskrow();}
+function tkSetAba(key){tkAba=key;renderTaskrow();}
+
 </script>
 </body>
 </html>
